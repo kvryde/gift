@@ -2,590 +2,1610 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#19172e">
-  <meta name="description" content="A little birthday page made with love.">
-  <title>A Little Birthday Universe</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#141329">
+  <meta name="description" content="A little birthday quest with slimes, letters, and memories.">
+  <title>Birthday Quest</title>
   <style>
     :root {
-      color-scheme: light;
-      --night: #19172e;
-      --ink: #29263f;
-      --muted: #746f83;
-      --paper: #fbf8f2;
-      --line: #e7e0d7;
+      color-scheme: dark;
+      --bg: #141329;
+      --panel: #201d3b;
+      --panel-2: #292545;
+      --ink: #f7f3ff;
+      --muted: #b7afc9;
+      --line: rgba(255, 255, 255, .1);
       --mint: #bce8d7;
-      --rose: #f3c6d7;
-      --lavender: #ded8f5;
+      --pink: #f3c6d7;
+      --purple: #b9a7ee;
       --gold: #f3d58f;
+      --blue: #b9ddf4;
+      --danger: #ff9fae;
+      --shadow: 0 22px 60px rgba(0, 0, 0, .25);
     }
 
     * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
     body {
-      margin: 0;
       min-width: 320px;
       color: var(--ink);
       background:
-        radial-gradient(circle at 8% 8%, rgba(222, 216, 245, .5), transparent 26rem),
-        radial-gradient(circle at 92% 32%, rgba(188, 232, 215, .28), transparent 25rem),
-        var(--paper);
+        radial-gradient(circle at 12% 10%, rgba(185, 167, 238, .15), transparent 30rem),
+        radial-gradient(circle at 90% 80%, rgba(188, 232, 215, .1), transparent 28rem),
+        var(--bg);
       font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       -webkit-font-smoothing: antialiased;
     }
-
-    a { color: inherit; text-decoration: none; }
-    button, a { -webkit-tap-highlight-color: transparent; }
-    button { font: inherit; }
-    img, svg { display: block; max-width: 100%; }
-    [hidden] { display: none !important; }
-    ::selection { color: var(--night); background: var(--mint); }
-
-    .skip-link {
-      position: fixed;
-      top: -80px;
-      left: 1rem;
-      z-index: 20;
-      padding: .75rem 1rem;
-      border-radius: 0 0 10px 10px;
-      color: white;
-      background: var(--night);
+    button, input, select, textarea { font: inherit; }
+    button { color: inherit; cursor: pointer; }
+    button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
+    button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, [contenteditable="true"]:focus-visible {
+      outline: 3px solid var(--gold);
+      outline-offset: 3px;
     }
-    .skip-link:focus { top: 0; }
+    [hidden] { display: none !important; }
+    .icon { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
 
-    .site-header {
-      position: sticky;
-      top: 0;
-      z-index: 10;
+    .game-app {
+      display: grid;
+      width: 100%;
+      height: 100dvh;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      background: rgba(20, 19, 41, .82);
+    }
+
+    .hud {
+      z-index: 20;
       display: flex;
+      min-height: 70px;
       align-items: center;
       justify-content: space-between;
-      gap: 1.5rem;
-      padding: 1rem clamp(1rem, 4vw, 3rem);
-      border-bottom: 1px solid rgba(231, 224, 215, .9);
-      background: rgba(251, 248, 242, .9);
-      backdrop-filter: blur(16px);
+      gap: 1rem;
+      padding: .75rem clamp(.85rem, 3vw, 2rem);
+      border-bottom: 1px solid var(--line);
+      background: rgba(20, 19, 41, .92);
+      backdrop-filter: blur(18px);
     }
-
     .brand {
       display: inline-flex;
       align-items: center;
-      gap: .7rem;
+      gap: .65rem;
+      padding: 0;
+      border: 0;
+      color: var(--ink);
+      background: transparent;
       font-family: Georgia, "Times New Roman", serif;
       font-size: 1.05rem;
       white-space: nowrap;
     }
-
     .brand-mark {
       display: grid;
-      width: 36px;
-      height: 36px;
-      place-items: center;
-      border-radius: 50%;
-      background: var(--night);
-    }
-    .brand-mark span {
-      width: 16px;
-      height: 16px;
-      border-radius: 55% 45% 60% 40%;
-      background: var(--mint);
-    }
-
-    nav {
-      display: flex;
-      gap: .2rem;
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
-    nav::-webkit-scrollbar { display: none; }
-    nav a {
+      width: 38px;
+      height: 38px;
       flex: 0 0 auto;
-      padding: .6rem .75rem;
+      place-items: center;
+      border: 1px solid rgba(188, 232, 215, .35);
+      border-radius: 13px;
+      background: rgba(188, 232, 215, .12);
+    }
+    .brand-mark .icon { width: 24px; height: 24px; color: var(--mint); }
+    .hud-center { display: flex; align-items: center; gap: .65rem; }
+    .player-chip {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      padding: .45rem .7rem;
+      border: 1px solid var(--line);
       border-radius: 999px;
-      color: var(--muted);
-      font-size: .78rem;
-      font-weight: 700;
+      background: rgba(255, 255, 255, .04);
+      font-size: .75rem;
     }
-    nav a:hover, nav a:focus-visible { color: var(--night); background: #eee9f6; }
-
-    main { width: min(1120px, calc(100% - 2rem)); margin: 0 auto; }
-    section { scroll-margin-top: 110px; }
-
-    .hero {
-      display: grid;
-      min-height: 520px;
-      grid-template-columns: 1.1fr .9fr;
-      align-items: center;
-      gap: 2rem;
-      margin: 2rem 0 1.25rem;
-      padding: clamp(2rem, 6vw, 5rem);
-      overflow: hidden;
-      border-radius: 32px;
-      color: white;
-      background:
-        radial-gradient(circle at 80% 15%, rgba(243, 213, 143, .2), transparent 17rem),
-        radial-gradient(circle at 75% 85%, rgba(188, 232, 215, .16), transparent 18rem),
-        linear-gradient(135deg, #1d1a35, #302a4d);
-      box-shadow: 0 28px 70px rgba(25, 23, 46, .18);
-    }
-
-    .eyebrow {
-      display: inline-block;
-      color: #75698e;
-      font-size: .66rem;
-      font-weight: 800;
-      letter-spacing: .16em;
-      text-transform: uppercase;
-    }
-    .hero .eyebrow { color: #bbb2cf; }
-
-    .hero-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: .55rem;
+    .player-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--mint); box-shadow: 0 0 0 4px rgba(188, 232, 215, .1); }
+    .level-chip { padding: .3rem .5rem; border-radius: 7px; color: var(--gold); background: rgba(243, 213, 143, .1); font-size: .65rem; font-weight: 900; letter-spacing: .06em; }
+    .xp-track { width: 90px; height: 5px; overflow: hidden; border-radius: 999px; background: rgba(255, 255, 255, .08); }
+    .xp-fill { width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--mint), var(--gold)); transition: width .3s ease; }
+    .hud-actions { display: flex; align-items: center; gap: .45rem; }
+    .hud-button {
+      min-height: 36px;
       padding: .5rem .75rem;
-      border: 1px solid rgba(255, 255, 255, .14);
-      border-radius: 999px;
-      color: #d5cfe2;
-      background: rgba(255, 255, 255, .06);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, .04);
       font-size: .7rem;
+      font-weight: 800;
     }
-    .hero-pill::before {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--mint);
-      box-shadow: 0 0 0 4px rgba(188, 232, 215, .12);
-      content: "";
-    }
+    .hud-button:hover { color: var(--ink); border-color: rgba(255, 255, 255, .22); }
+    .hud-button.primary { color: var(--bg); border-color: var(--mint); background: var(--mint); }
+    .role-badge { color: var(--gold); font-size: .65rem; font-weight: 900; text-transform: uppercase; letter-spacing: .08em; }
 
+    .editor-toolbar {
+      position: fixed;
+      top: 78px;
+      left: 50%;
+      z-index: 25;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .5rem;
+      border: 1px solid rgba(243, 213, 143, .35);
+      border-radius: 14px;
+      background: rgba(32, 29, 59, .96);
+      box-shadow: var(--shadow);
+      transform: translateX(-50%);
+    }
+    .editor-toolbar span { padding: 0 .45rem; color: var(--gold); font-size: .68rem; font-weight: 900; text-transform: uppercase; letter-spacing: .06em; }
+    .toolbar-button { min-height: 32px; padding: .4rem .65rem; border: 1px solid var(--line); border-radius: 9px; background: rgba(255, 255, 255, .05); font-size: .68rem; font-weight: 800; }
+    .toolbar-button.save { color: var(--bg); border-color: var(--mint); background: var(--mint); }
+
+    .page-viewport {
+      display: flex;
+      width: 100%;
+      max-width: 1280px;
+      min-height: 0;
+      margin: 0 auto;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-behavior: smooth;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      touch-action: pan-y;
+    }
+    .page-viewport::-webkit-scrollbar { display: none; }
+    .app-page {
+      position: relative;
+      width: 100%;
+      min-width: 100%;
+      height: 100%;
+      overflow-x: hidden;
+      overflow-y: auto;
+      padding: clamp(1rem, 3vw, 2.25rem);
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, .16) transparent;
+    }
+    .page-heading { margin-bottom: 1.25rem; }
+    .eyebrow { display: block; margin-bottom: .45rem; color: var(--purple); font-size: .62rem; font-weight: 900; letter-spacing: .16em; text-transform: uppercase; }
     h1, h2, h3, p { margin-top: 0; }
-    .hero h1 {
-      max-width: 650px;
-      margin: 1.2rem 0 1rem;
+    .page-heading h1, .page-heading h2, .home-copy h1, .gift-copy h2 {
+      margin-bottom: .65rem;
       font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(2.8rem, 6vw, 5rem);
+      font-size: clamp(2rem, 4.5vw, 4rem);
       font-weight: 400;
-      letter-spacing: -.055em;
-      line-height: 1.02;
+      letter-spacing: -.045em;
+      line-height: 1.04;
     }
-    .hero-text {
-      max-width: 510px;
-      margin-bottom: 0;
-      color: #c6bed5;
-      font-size: 1rem;
-      line-height: 1.75;
-    }
-    .hero-actions { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: 2rem; }
+    .page-heading p, .home-text, .gift-intro, .slime-intro, .gallery-intro { max-width: 650px; margin-bottom: 0; color: var(--muted); line-height: 1.7; }
 
+    .home-page { display: grid; align-items: center; }
+    .home-layout { display: grid; grid-template-columns: 1.1fr .9fr; align-items: center; gap: 2rem; min-height: 100%; }
+    .home-copy { padding: 1rem 0; }
+    .home-copy h1 { max-width: 720px; font-size: clamp(2.8rem, 6vw, 5.8rem); }
+    .home-actions { display: flex; flex-wrap: wrap; gap: .65rem; margin-top: 1.6rem; }
     .button {
       display: inline-flex;
       min-height: 44px;
       align-items: center;
       justify-content: center;
-      padding: .75rem 1.1rem;
+      gap: .5rem;
+      padding: .7rem 1rem;
       border: 1px solid transparent;
-      border-radius: 999px;
-      font-size: .8rem;
-      font-weight: 800;
-      cursor: pointer;
-      transition: transform .18s ease, box-shadow .18s ease;
+      border-radius: 13px;
+      font-size: .76rem;
+      font-weight: 900;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
     }
     .button:hover { transform: translateY(-2px); }
-    .button-light { color: var(--night); background: white; }
-    .button-outline { border-color: rgba(255, 255, 255, .22); color: white; background: rgba(255, 255, 255, .07); }
-    .button-dark { color: white; background: var(--night); box-shadow: 0 8px 20px rgba(25, 23, 46, .14); }
-    .button-soft { border-color: #ddd4e9; color: #5d4a78; background: #f0ebf8; }
-
-    .hero-art { position: relative; display: grid; min-height: 330px; place-items: center; }
-    .orbit {
-      position: absolute;
-      width: 330px;
-      height: 190px;
-      border: 1px solid rgba(255, 255, 255, .12);
-      border-radius: 50%;
-      transform: rotate(-18deg);
-    }
-    .orbit.second { width: 240px; height: 310px; transform: rotate(30deg); }
-    .hero-slime { position: relative; width: min(310px, 90%); filter: drop-shadow(0 25px 24px rgba(0, 0, 0, .2)); animation: float 7s ease-in-out infinite; }
-    .star { position: absolute; width: 10px; height: 10px; background: var(--gold); clip-path: polygon(50% 0, 61% 37%, 100% 50%, 61% 63%, 50% 100%, 39% 63%, 0 50%, 39% 37%); }
-    .star.one { top: 12%; right: 15%; }
-    .star.two { bottom: 15%; left: 9%; width: 7px; height: 7px; }
-    .star.three { top: 45%; left: 3%; width: 6px; height: 6px; }
+    .button:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+    .button-mint { color: #162b25; border-color: var(--mint); background: var(--mint); box-shadow: 0 10px 25px rgba(188, 232, 215, .14); }
+    .button-gold { color: #332b18; border-color: var(--gold); background: var(--gold); }
+    .button-ghost { border-color: var(--line); background: rgba(255, 255, 255, .05); }
+    .button-danger { color: #35151d; border-color: var(--danger); background: var(--danger); }
+    .home-footer { margin-top: 1.5rem; color: #817a96; font-size: .68rem; }
+    .hero-wrap { position: relative; display: grid; min-height: 330px; place-items: center; }
+    .hero-orbit { position: absolute; width: min(390px, 90%); height: 220px; border: 1px solid rgba(255, 255, 255, .09); border-radius: 50%; transform: rotate(-14deg); }
+    .hero-orbit.second { width: 270px; height: 350px; transform: rotate(28deg); }
+    .hero-slime { width: min(350px, 88%); filter: drop-shadow(0 28px 30px rgba(0, 0, 0, .28)); animation: float 6s ease-in-out infinite; }
+    .hero-slime.petted { animation: bounce .45s ease; }
+    .spark { position: absolute; width: 12px; height: 12px; background: var(--gold); clip-path: polygon(50% 0, 61% 37%, 100% 50%, 61% 63%, 50% 100%, 39% 63%, 0 50%, 39% 37%); }
+    .spark.one { top: 12%; right: 12%; }
+    .spark.two { bottom: 12%; left: 10%; width: 8px; height: 8px; }
     @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    @keyframes bounce { 0%, 100% { transform: scale(1); } 45% { transform: scale(1.06, .94) translateY(4px); } 75% { transform: scale(.98, 1.02) translateY(-4px); } }
 
-    .section { padding: 4.5rem 0 1rem; }
-    .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 1.5rem; margin-bottom: 1.6rem; }
-    .section-heading h2, .letter-copy h2, .joy-copy h2 {
-      margin: .5rem 0 .7rem;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(2rem, 4vw, 3.2rem);
-      font-weight: 400;
-      letter-spacing: -.045em;
-      line-height: 1.08;
-    }
-    .section-heading p, .letter-copy p, .joy-copy p { max-width: 620px; margin-bottom: 0; color: var(--muted); line-height: 1.75; }
-
-    .memory-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem; }
-    .memory-card {
-      overflow: hidden;
+    .slime-layout { display: grid; grid-template-columns: minmax(260px, .8fr) minmax(340px, 1.2fr); gap: 1.1rem; }
+    .game-card { border: 1px solid var(--line); border-radius: 22px; background: linear-gradient(145deg, rgba(255, 255, 255, .065), rgba(255, 255, 255, .025)); box-shadow: var(--shadow); }
+    .slime-preview-card { display: flex; min-height: 350px; align-items: center; justify-content: center; flex-direction: column; padding: 1.2rem; overflow: hidden; }
+    .slime-preview { width: min(280px, 90%); }
+    .preview-name { margin-top: .4rem; color: var(--mint); font-family: Georgia, "Times New Roman", serif; font-size: 1.25rem; }
+    .slime-controls { display: grid; gap: 1rem; padding: 1.2rem; align-content: start; }
+    .control-label { display: block; margin-bottom: .45rem; color: var(--muted); font-size: .68rem; font-weight: 900; letter-spacing: .05em; text-transform: uppercase; }
+    .text-input, .select-input {
+      width: 100%;
+      min-height: 43px;
+      padding: .65rem .8rem;
       border: 1px solid var(--line);
-      border-radius: 22px;
-      background: white;
-      box-shadow: 0 12px 32px rgba(41, 38, 63, .05);
-      transition: transform .2s ease, box-shadow .2s ease;
+      border-radius: 11px;
+      color: var(--ink);
+      background: rgba(10, 9, 24, .45);
     }
-    .memory-card:hover { transform: translateY(-5px); box-shadow: 0 20px 45px rgba(41, 38, 63, .09); }
-    .memory-art { aspect-ratio: 4 / 3; overflow: hidden; background: #eee8df; }
-    .memory-art svg { width: 100%; height: 100%; }
-    .memory-copy { padding: 1.2rem; }
-    .memory-copy span { color: #8a7c96; font-size: .64rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
-    .memory-copy h3 { margin: .4rem 0 .5rem; font-family: Georgia, "Times New Roman", serif; font-size: 1.3rem; font-weight: 400; }
-    .memory-copy p { margin-bottom: 0; color: var(--muted); font-size: .8rem; line-height: 1.65; }
-
-    .letter-section {
-      display: grid;
-      grid-template-columns: .85fr 1.15fr;
+    .text-input::placeholder { color: #746d88; }
+    fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
+    .option-row { display: flex; flex-wrap: wrap; gap: .5rem; }
+    .option-button {
+      display: inline-flex;
+      min-height: 38px;
       align-items: center;
-      gap: 2rem;
-      margin-top: 4.5rem;
-      padding: clamp(2rem, 5vw, 4rem);
-      border: 1px solid #e7dac6;
-      border-radius: 28px;
-      background:
-        repeating-linear-gradient(0deg, transparent 0 31px, rgba(126, 103, 76, .05) 31px 32px),
-        #fffaf0;
-    }
-    .envelope {
-      position: relative;
-      width: min(330px, 100%);
-      aspect-ratio: 1.45;
-      margin: 0 auto;
-      border: 1px solid #e1d2ba;
+      gap: .45rem;
+      padding: .5rem .7rem;
+      border: 1px solid var(--line);
       border-radius: 10px;
-      background: #f6ead6;
-      box-shadow: 0 22px 45px rgba(92, 69, 39, .12);
-      transform: rotate(-4deg);
+      color: var(--muted);
+      background: rgba(255, 255, 255, .035);
+      font-size: .7rem;
+      font-weight: 800;
     }
-    .envelope::before {
-      position: absolute;
-      inset: 0;
-      background: #fff7e8;
-      clip-path: polygon(0 0, 50% 58%, 100% 0, 100% 100%, 0 100%);
-      content: "";
-    }
-    .envelope::after {
-      position: absolute;
-      inset: 0;
-      background: #f1dfc3;
-      clip-path: polygon(0 100%, 50% 42%, 100% 100%);
-      content: "";
-    }
-    .envelope-seal {
-      position: absolute;
-      top: 48%;
-      left: 50%;
-      z-index: 2;
-      display: grid;
-      width: 48px;
-      height: 48px;
-      place-items: center;
-      border-radius: 50%;
-      color: #fff4f7;
-      background: #b96f86;
-      box-shadow: 0 5px 12px rgba(117, 62, 78, .2);
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: 1.2rem;
-      transform: translate(-50%, -50%);
-    }
-    .letter-copy .button { margin-top: 1.5rem; }
+    .option-button.active { color: var(--ink); border-color: var(--purple); background: rgba(185, 167, 238, .14); }
+    .color-dot { width: 15px; height: 15px; border: 2px solid rgba(255, 255, 255, .35); border-radius: 50%; }
+    .collection-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin: 1.4rem 0 .8rem; }
+    .collection-head h3 { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: 1.35rem; font-weight: 400; }
+    .slime-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: .75rem; }
+    .slime-card { position: relative; padding: .75rem; border: 1px solid var(--line); border-radius: 16px; background: rgba(255, 255, 255, .035); text-align: left; }
+    .slime-card:hover { border-color: rgba(188, 232, 215, .35); }
+    .slime-card svg { width: 100%; max-height: 130px; }
+    .slime-card-name { display: block; overflow: hidden; margin-top: .35rem; font-size: .78rem; font-weight: 900; text-overflow: ellipsis; white-space: nowrap; }
+    .slime-card-owner { display: block; margin-top: .15rem; color: var(--muted); font-size: .62rem; }
+    .card-delete { position: absolute; top: .45rem; right: .45rem; display: grid; width: 28px; height: 28px; padding: 0; place-items: center; border: 1px solid rgba(255, 159, 174, .3); border-radius: 8px; color: var(--danger); background: rgba(20, 19, 41, .8); font-size: 1rem; }
+    .empty-state { grid-column: 1 / -1; padding: 1.4rem; border: 1px dashed var(--line); border-radius: 16px; color: var(--muted); text-align: center; font-size: .78rem; line-height: 1.6; }
 
-    .joy-section {
-      display: grid;
-      grid-template-columns: .85fr 1.15fr;
-      align-items: center;
-      gap: 2rem;
-      margin-top: 1.25rem;
-      padding: clamp(2rem, 5vw, 4rem);
-      overflow: hidden;
-      border: 1px solid #d6e7de;
-      border-radius: 28px;
-      background: linear-gradient(135deg, #edf8f3, #e3f2eb);
-    }
-    .joy-slime { width: min(300px, 100%); margin: 0 auto; }
-    .joy-slime.petted { animation: bounce .5s ease; }
-    @keyframes bounce { 0%, 100% { transform: scale(1); } 45% { transform: scale(1.06, .94) translateY(5px); } 70% { transform: scale(.97, 1.03) translateY(-5px); } }
-    .joy-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .9rem; margin-top: 1.5rem; }
-    .pat-count { color: #6c7d75; font-size: .75rem; }
+    .gift-page { display: grid; align-items: center; }
+    .gift-layout { display: grid; grid-template-columns: .9fr 1.1fr; align-items: center; gap: 2rem; min-height: 100%; }
+    .gift-stage { display: grid; min-height: 360px; place-items: center; }
+    .gift-box { position: relative; width: min(300px, 80%); aspect-ratio: 1; transition: transform .5s ease, opacity .5s ease; }
+    .gift-box.opened { opacity: 0; pointer-events: none; transform: translateY(-30px) rotate(-8deg) scale(.85); }
+    .gift-lid { position: absolute; top: 18%; left: 8%; z-index: 3; width: 84%; height: 24%; border: 1px solid rgba(255, 255, 255, .2); border-radius: 12px; background: linear-gradient(135deg, #e7afc4, #ca8eaa); box-shadow: 0 12px 25px rgba(0, 0, 0, .2); transition: transform .5s ease; }
+    .gift-box.opened .gift-lid { transform: translateY(-70px) rotate(12deg); }
+    .gift-base { position: absolute; top: 39%; left: 8%; width: 84%; height: 52%; border: 1px solid rgba(255, 255, 255, .16); border-radius: 12px; background: linear-gradient(135deg, #dba1bb, #b97798); box-shadow: 0 20px 40px rgba(0, 0, 0, .25); }
+    .gift-ribbon-v { position: absolute; top: 39%; left: 44%; z-index: 4; width: 12%; height: 52%; background: var(--gold); }
+    .gift-ribbon-h { position: absolute; top: 18%; left: 8%; z-index: 5; width: 84%; height: 12%; background: var(--gold); }
+    .bow { position: absolute; top: 2%; left: 50%; z-index: 6; width: 54px; height: 54px; border: 12px solid var(--gold); border-radius: 50% 50% 45% 55%; transform: translateX(-50%) rotate(-20deg); }
+    .bow.second { left: calc(50% - 44px); transform: rotate(35deg); }
+    .unwrap-button { position: absolute; bottom: -22px; left: 50%; z-index: 8; transform: translateX(-50%); white-space: nowrap; }
+    .letter-reveal { position: relative; padding: clamp(1.4rem, 4vw, 3rem); border: 1px solid rgba(243, 213, 143, .25); border-radius: 22px; background: linear-gradient(145deg, rgba(243, 213, 143, .1), rgba(255, 255, 255, .03)); animation: reveal .5s ease both; }
+    @keyframes reveal { from { opacity: 0; transform: translateY(20px) scale(.97); } to { opacity: 1; transform: none; } }
+    .letter-body { color: #e4dce9; font-family: Georgia, "Times New Roman", serif; font-size: clamp(1rem, 2vw, 1.25rem); line-height: 1.9; white-space: pre-line; }
+    .letter-signature { margin-top: 1.5rem; color: var(--pink); font-family: Georgia, "Times New Roman", serif; font-style: italic; text-align: right; }
+    .rewrap-button { margin-top: 1rem; }
 
-    footer {
+    .color-grid { display: grid; max-height: 148px; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: .32rem; overflow-y: auto; padding: .45rem; border: 1px solid var(--line); border-radius: 12px; background: rgba(8, 7, 20, .35); scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, .18) transparent; }
+    .color-swatch { width: 100%; aspect-ratio: 1; padding: 0; border: 2px solid rgba(255, 255, 255, .14); border-radius: 7px; background: var(--swatch); transition: transform .15s ease, border-color .15s ease; }
+    .color-swatch:hover { transform: scale(1.12); }
+    .color-swatch.active { border-color: white; box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--gold); }
+    .color-picker-footer { display: flex; align-items: center; justify-content: space-between; gap: .6rem; margin-top: .4rem; color: var(--muted); font-size: .62rem; }
+    .random-color { min-height: 30px; padding: .3rem .55rem; border: 1px solid var(--line); border-radius: 8px; color: var(--purple); background: rgba(185, 167, 238, .08); font-size: .62rem; font-weight: 900; }
+    .slime-preview.jelly { animation: jelly .55s ease; }
+    .slime-preview.pop { animation: pop .6s ease; }
+    .slime-card { animation: cardIn .4s ease both; }
+    @keyframes jelly { 0%, 100% { transform: scale(1); } 30% { transform: scale(1.07, .93) rotate(-2deg); } 60% { transform: scale(.96, 1.04) rotate(2deg); } }
+    @keyframes pop { 0% { transform: scale(.75); opacity: .3; } 55% { transform: scale(1.1, .9); } 100% { transform: scale(1); opacity: 1; } }
+    @keyframes cardIn { from { opacity: 0; transform: translateY(10px) scale(.96); } to { opacity: 1; transform: none; } }
+
+    .gallery-toolbar { display: flex; min-height: 54px; align-items: center; justify-content: space-between; gap: .7rem; margin: .7rem 0 1rem; padding: .65rem .8rem; border: 1px solid var(--line); border-radius: 16px; background: rgba(255, 255, 255, .035); }
+    .upload-status { color: var(--muted); font-size: .7rem; text-align: right; }
+    .gallery-stage { display: grid; grid-template-columns: 42px minmax(0, 1fr) 42px; align-items: center; gap: .7rem; }
+    .gallery-flip-wrap { min-width: 0; perspective: 1400px; }
+    .gallery-sheet { min-height: 330px; padding: clamp(.75rem, 2vw, 1.1rem); border: 1px solid var(--line); border-radius: 22px; background: linear-gradient(145deg, rgba(255, 255, 255, .06), rgba(255, 255, 255, .025)); box-shadow: var(--shadow); transform-style: preserve-3d; }
+    .gallery-sheet.flip-out-next { animation: flipOutNext .2s ease forwards; }
+    .gallery-sheet.flip-in-next { animation: flipInNext .34s ease both; }
+    .gallery-sheet.flip-out-prev { animation: flipOutPrev .2s ease forwards; }
+    .gallery-sheet.flip-in-prev { animation: flipInPrev .34s ease both; }
+    @keyframes flipOutNext { to { opacity: 0; transform: rotateY(-90deg) translateX(-12px); } }
+    @keyframes flipInNext { from { opacity: 0; transform: rotateY(90deg) translateX(12px); } to { opacity: 1; transform: none; } }
+    @keyframes flipOutPrev { to { opacity: 0; transform: rotateY(90deg) translateX(12px); } }
+    @keyframes flipInPrev { from { opacity: 0; transform: rotateY(-90deg) translateX(-12px); } to { opacity: 1; transform: none; } }
+    .gallery-flip-button { display: grid; width: 42px; height: 54px; padding: 0; place-items: center; border: 1px solid var(--line); border-radius: 13px; color: var(--mint); background: rgba(188, 232, 215, .07); font-size: 1.35rem; }
+    .gallery-flip-button:disabled { opacity: .3; cursor: not-allowed; }
+    .gallery-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .7rem; }
+    .photo-slot { position: relative; min-height: 150px; overflow: hidden; border: 1px solid var(--line); border-radius: 15px; background: #100e22; }
+    .photo-slot img { width: 100%; height: 100%; min-height: 150px; aspect-ratio: 4 / 3; object-fit: cover; }
+    .photo-slot.empty { display: grid; place-items: center; border-style: dashed; color: var(--muted); background: rgba(255, 255, 255, .02); text-align: center; }
+    .photo-slot.empty button { display: grid; width: 100%; height: 100%; min-height: 150px; padding: 1rem; place-items: center; border: 0; color: inherit; background: transparent; font-size: .72rem; font-weight: 800; cursor: pointer; }
+    .photo-slot.empty span { display: block; margin-top: .35rem; font-size: 1.4rem; }
+    .photo-delete { position: absolute; top: .45rem; right: .45rem; display: grid; width: 30px; height: 30px; padding: 0; place-items: center; border: 1px solid rgba(255, 159, 174, .35); border-radius: 9px; color: var(--danger); background: rgba(20, 19, 41, .86); font-size: 1rem; }
+    .gallery-page-copy { margin-top: .9rem; }
+    .gallery-page-copy textarea { width: 100%; min-height: 86px; padding: .75rem; resize: vertical; border: 1px solid var(--line); border-radius: 12px; color: var(--ink); background: rgba(8, 7, 20, .4); font-family: Georgia, "Times New Roman", serif; font-size: .95rem; line-height: 1.65; }
+    .gallery-page-text { margin: 0; color: #ddd6e8; font-family: Georgia, "Times New Roman", serif; font-size: .98rem; line-height: 1.7; white-space: pre-line; }
+    .gallery-page-actions { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: .65rem; }
+    .gallery-admin-actions { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: .65rem; }
+    .photo-action { min-height: 32px; padding: .4rem .65rem; border: 1px solid var(--line); border-radius: 9px; color: var(--muted); background: rgba(255, 255, 255, .04); font-size: .66rem; font-weight: 900; }
+    .photo-action.publish { color: var(--mint); }
+    .photo-action.delete { color: var(--danger); }
+    .gallery-pager { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: .7rem; color: var(--muted); font-size: .68rem; }
+    .gallery-page-status { color: var(--gold); font-weight: 900; text-transform: uppercase; letter-spacing: .05em; }
+    .gallery-page-status.published { color: var(--mint); }
+
+    .tab-bar {
+      z-index: 20;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      min-height: 66px;
+      padding: .45rem clamp(.5rem, 3vw, 2rem) max(.45rem, env(safe-area-inset-bottom));
+      border-top: 1px solid var(--line);
+      background: rgba(20, 19, 41, .95);
+      backdrop-filter: blur(18px);
+    }
+    .tab-button {
+      position: relative;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      width: min(1120px, calc(100% - 2rem));
-      margin: 4rem auto 0;
-      padding: 2rem 0 2.5rem;
-      border-top: 1px solid var(--line);
-      color: var(--muted);
-      font-size: .75rem;
+      justify-content: center;
+      gap: .45rem;
+      padding: .5rem;
+      border: 0;
+      border-radius: 12px;
+      color: #8e87a3;
+      background: transparent;
+      font-size: .68rem;
+      font-weight: 900;
     }
-    footer a { font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+    .tab-button .icon { width: 21px; height: 21px; }
+    .tab-button.active { color: var(--mint); background: rgba(188, 232, 215, .08); }
+    .tab-button.active::after { position: absolute; bottom: 2px; width: 18px; height: 3px; border-radius: 999px; background: var(--mint); content: ""; }
 
-    .modal-backdrop {
+    .rotate-gate {
       position: fixed;
       inset: 0;
-      z-index: 30;
-      display: grid;
-      overflow-y: auto;
+      z-index: 100;
+      display: none;
       padding: 1.5rem;
       place-items: center;
-      background: rgba(18, 16, 31, .66);
-      backdrop-filter: blur(8px);
+      background:
+        radial-gradient(circle at 50% 35%, rgba(188, 232, 215, .13), transparent 20rem),
+        var(--bg);
+      text-align: center;
     }
-    .modal {
-      width: min(620px, 100%);
-      max-height: calc(100vh - 3rem);
-      overflow: auto;
-      border-radius: 22px;
-      background: var(--paper);
-      box-shadow: 0 30px 100px rgba(0, 0, 0, .3);
+    .rotate-card { max-width: 360px; }
+    .rotate-icon { width: 84px; height: 84px; margin: 0 auto 1.2rem; color: var(--mint); animation: rotate-phone 2.8s ease-in-out infinite; }
+    @keyframes rotate-phone { 0%, 25%, 100% { transform: rotate(0); } 60%, 80% { transform: rotate(90deg); } }
+    .rotate-card h2 { margin-bottom: .6rem; font-family: Georgia, "Times New Roman", serif; font-size: 2rem; font-weight: 400; }
+    .rotate-card p { margin-bottom: 1.2rem; color: var(--muted); line-height: 1.6; }
+    body.portrait-allowed .rotate-gate { display: none; }
+    @media (orientation: portrait) and (max-width: 900px) {
+      body:not(.portrait-allowed) .rotate-gate { display: grid; }
     }
-    .modal-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 1.25rem; border-bottom: 1px solid var(--line); }
-    .modal-header h2 { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: 1.3rem; font-weight: 400; }
-    .close-button { display: grid; width: 34px; height: 34px; padding: 0; place-items: center; border: 1px solid var(--line); border-radius: 50%; color: var(--muted); background: transparent; cursor: pointer; }
-    .letter-paper { padding: clamp(1.4rem, 5vw, 3rem); color: #514958; font-family: Georgia, "Times New Roman", serif; font-size: 1.05rem; line-height: 2; white-space: pre-line; }
-    .signature { margin-top: 2rem; color: #756477; font-style: italic; text-align: right; }
 
-    button:focus-visible, a:focus-visible { outline: 3px solid #8d7fc4; outline-offset: 3px; }
+    .modal-backdrop { position: fixed; inset: 0; z-index: 80; display: grid; overflow-y: auto; padding: 1rem; place-items: center; background: rgba(7, 6, 17, .75); backdrop-filter: blur(10px); }
+    .modal { width: min(480px, 100%); max-height: calc(100dvh - 2rem); overflow-y: auto; border: 1px solid var(--line); border-radius: 22px; background: #211e3c; box-shadow: 0 30px 100px rgba(0, 0, 0, .45); }
+    .modal.wide { width: min(620px, 100%); }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 1.1rem; border-bottom: 1px solid var(--line); }
+    .modal-header h2 { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: 1.35rem; font-weight: 400; }
+    .modal-close { display: grid; width: 32px; height: 32px; padding: 0; place-items: center; border: 1px solid var(--line); border-radius: 9px; color: var(--muted); background: transparent; font-size: 1.2rem; }
+    .modal-body { display: grid; gap: .9rem; padding: 1.1rem; }
+    .modal-note { margin: 0; color: var(--muted); font-size: .75rem; line-height: 1.6; }
+    .form-error { min-height: 1.2rem; margin: 0; color: var(--danger); font-size: .72rem; }
+    .form-actions { display: flex; flex-wrap: wrap; gap: .55rem; }
+    .uid-box { display: flex; align-items: center; gap: .5rem; padding: .65rem; border: 1px solid var(--line); border-radius: 10px; background: rgba(0, 0, 0, .15); }
+    .uid-box code { min-width: 0; flex: 1; overflow: hidden; color: var(--mint); font-size: .68rem; text-overflow: ellipsis; white-space: nowrap; }
+    .toast { position: fixed; bottom: 82px; left: 50%; z-index: 120; max-width: min(520px, calc(100% - 2rem)); padding: .7rem 1rem; border: 1px solid rgba(188, 232, 215, .25); border-radius: 12px; color: var(--ink); background: rgba(32, 29, 59, .97); box-shadow: var(--shadow); font-size: .74rem; line-height: 1.5; opacity: 0; pointer-events: none; transform: translate(-50%, 12px); transition: opacity .2s ease, transform .2s ease; }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    [contenteditable="true"] { border-radius: 5px; background: rgba(243, 213, 143, .08); box-shadow: 0 0 0 1px rgba(243, 213, 143, .35); cursor: text; }
+    [contenteditable="true"]:empty::before { color: #8d849d; content: "Type something..."; }
 
     @media (max-width: 800px) {
-      .site-header { align-items: flex-start; flex-direction: column; gap: .6rem; }
-      nav { width: 100%; }
-      .hero { grid-template-columns: 1fr; min-height: auto; }
-      .hero-art { min-height: 280px; }
-      .memory-grid { grid-template-columns: 1fr 1fr; }
-      .memory-card:last-child { grid-column: 1 / -1; }
-      .letter-section, .joy-section { grid-template-columns: 1fr; }
-      .envelope { max-width: 280px; }
-      .joy-slime { max-width: 240px; }
+      .hud-center .xp-track { display: none; }
+      .home-layout, .slime-layout, .gift-layout { grid-template-columns: 1fr; }
+      .home-page, .gift-page { align-items: start; }
+      .hero-wrap { min-height: 260px; }
+      .slime-preview-card { min-height: 260px; }
+      .gift-stage { min-height: 280px; }
+      .gift-box { width: min(250px, 70%); }
+    }
+
+    @media (orientation: landscape) and (max-height: 600px) {
+      .hud { min-height: 54px; padding-top: .4rem; padding-bottom: .4rem; }
+      .brand-mark { width: 32px; height: 32px; border-radius: 10px; }
+      .brand { font-size: .9rem; }
+      .player-chip { padding: .3rem .55rem; }
+      .hud-button { min-height: 31px; padding: .35rem .55rem; }
+      .tab-bar { min-height: 54px; padding-top: .25rem; padding-bottom: max(.25rem, env(safe-area-inset-bottom)); }
+      .tab-button { padding: .3rem; }
+      .editor-toolbar { top: 60px; }
+      .app-page { padding: .85rem clamp(.85rem, 3vw, 2rem); }
+      .page-heading { margin-bottom: .7rem; }
+      .page-heading h1, .page-heading h2, .home-copy h1, .gift-copy h2 { font-size: clamp(1.8rem, 4vw, 3rem); }
+      .home-copy h1 { font-size: clamp(2.2rem, 5vw, 4rem); }
+      .hero-wrap { min-height: 240px; }
+      .hero-slime { width: min(260px, 75%); }
+      .slime-preview-card { min-height: 250px; }
+      .slime-preview { width: min(210px, 75%); }
+      .slime-controls { gap: .65rem; padding: .85rem; }
+      .gift-stage { min-height: 250px; }
+      .gift-box { width: min(220px, 62%); }
+      .letter-body { font-size: .92rem; line-height: 1.65; }
+      .gallery-toolbar { margin: .6rem 0 .8rem; padding: .7rem; }
+      .toast { bottom: 66px; }
     }
 
     @media (max-width: 540px) {
-      main, footer { width: min(100% - 1.25rem, 1120px); }
-      .hero { margin-top: 1rem; padding: 1.7rem 1.35rem 1rem; border-radius: 24px; }
-      .hero h1 { font-size: clamp(2.5rem, 12vw, 3.5rem); }
-      .hero-actions { align-items: stretch; flex-direction: column; }
-      .hero-art { min-height: 240px; }
-      .orbit { width: 260px; height: 160px; }
-      .orbit.second { width: 200px; height: 240px; }
-      .section { padding-top: 3.25rem; }
-      .section-heading { align-items: flex-start; flex-direction: column; }
-      .memory-grid { grid-template-columns: 1fr; }
-      .memory-card:last-child { grid-column: auto; }
-      .letter-section, .joy-section { margin-top: 3.25rem; padding: 1.6rem; border-radius: 22px; }
-      footer { align-items: flex-start; flex-direction: column; }
+      .hud { gap: .5rem; padding-left: .65rem; padding-right: .65rem; }
+      .brand { font-size: .85rem; }
+      .brand-mark { width: 32px; height: 32px; }
+      .player-chip { display: none; }
+      .hud-actions { gap: .3rem; }
+      .hud-button { padding: .4rem .55rem; font-size: .62rem; }
+      .tab-button { flex-direction: column; gap: .15rem; font-size: .58rem; }
+      .tab-button .icon { width: 19px; height: 19px; }
+      .editor-toolbar { top: 64px; }
+      .gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      html { scroll-behavior: auto; }
       *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
     }
   </style>
 </head>
 <body>
-  <a class="skip-link" href="#main">Skip to content</a>
+  <svg class="sprite" aria-hidden="true">
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10M9 20v-6h6v6"/></symbol>
+    <symbol id="i-slime" viewBox="0 0 24 24"><path d="M4 19c0-3 2-5 3-8 1-4 3-6 6-6s5 2 6 6c1 3 2 5 2 8 0 2-17 3-17 0Z"/><path d="M9 13h.01M15 13h.01M10 16c1 1 3 1 4 0"/></symbol>
+    <symbol id="i-gift" viewBox="0 0 24 24"><path d="M3 9h18v4H3zM5 13v8h14v-8M12 9v12"/><path d="M12 9H8a3 3 0 1 1 3-3ZM12 9h4a3 3 0 1 0-3-3Z"/></symbol>
+    <symbol id="i-photo" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8" cy="9" r="1.5"/><path d="m4 17 5-5 4 4 3-3 4 4"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9Z"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-rotate" viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M3 8a9 9 0 0 1 14-3M3 3v5h5M21 16a9 9 0 0 1-14 3M21 21v-5h-5"/></symbol>
+  </svg>
 
-  <header class="site-header">
-    <a class="brand" href="#home"><span class="brand-mark" aria-hidden="true"><span></span></span>A Little Birthday Universe</a>
-    <nav aria-label="Main navigation">
-      <a href="#home">Home</a>
-      <a href="#memories">Little moments</a>
-      <a href="#letter">A letter</a>
-      <a href="#joy">A tiny joy</a>
-    </nav>
-  </header>
-
-  <main id="main">
-    <section class="hero" id="home">
-      <div>
-        <span class="hero-pill">A day worth celebrating</span>
-        <h1>A little corner of the internet, made just for you.</h1>
-        <p class="hero-text">For the laughs, the late-night talks, and all the small moments that became my favorite memories.</p>
-        <div class="hero-actions">
-          <a class="button button-light" href="#letter">Open your letter</a>
-          <a class="button button-outline" href="#memories">See little moments</a>
-        </div>
-      </div>
-      <div class="hero-art" aria-hidden="true">
-        <span class="orbit"></span>
-        <span class="orbit second"></span>
-        <span class="star one"></span>
-        <span class="star two"></span>
-        <span class="star three"></span>
-        <svg class="hero-slime" viewBox="0 0 240 190">
-          <defs><linearGradient id="slime-gradient" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffffff" stop-opacity=".55"/><stop offset=".45" stop-color="#bce8d7"/><stop offset="1" stop-color="#9ed8c3"/></linearGradient></defs>
-          <ellipse cx="120" cy="163" rx="76" ry="13" fill="#0f0e20" opacity=".25"/>
-          <path d="M38 153c0-27 18-41 24-70 7-37 27-57 59-57s53 20 59 57c6 29 23 43 23 70 0 19-74 28-165 0Z" fill="url(#slime-gradient)"/>
-          <path d="M71 90c2-18 8-30 18-38" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" opacity=".42"/>
-          <ellipse cx="96" cy="114" rx="6" ry="8" fill="#26233e"/>
-          <ellipse cx="145" cy="114" rx="6" ry="8" fill="#26233e"/>
-          <path d="M109 132c7 7 16 7 23 0" fill="none" stroke="#26233e" stroke-width="4" stroke-linecap="round"/>
-          <ellipse cx="78" cy="130" rx="10" ry="5" fill="#f3c6d7" opacity=".65"/>
-          <ellipse cx="163" cy="130" rx="10" ry="5" fill="#f3c6d7" opacity=".65"/>
-        </svg>
-      </div>
-    </section>
-
-    <section class="section" id="memories">
-      <div class="section-heading">
-        <div><span class="eyebrow">The little things</span><h2>Moments worth keeping</h2></div>
-        <p>Ordinary days have a way of becoming the stories we tell forever.</p>
-      </div>
-      <div class="memory-grid">
-        <article class="memory-card">
-          <div class="memory-art">
-            <svg viewBox="0 0 400 300" role="img" aria-label="A soft sunset over rolling hills">
-              <defs><linearGradient id="sunset" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f5c9d7"/><stop offset="1" stop-color="#f8e6bd"/></linearGradient></defs>
-              <rect width="400" height="300" fill="url(#sunset)"/>
-              <circle cx="290" cy="85" r="38" fill="#fff4cf"/>
-              <path d="M0 205c80-75 135-55 205 5 65-65 125-70 195-15v105H0Z" fill="#b8d8c7"/>
-              <path d="M0 245c95-60 155-35 220 15 65-45 120-55 180-30v70H0Z" fill="#84b69f"/>
-              <path d="M120 300c25-65 50-80 80-80s55 15 80 80" fill="#f7f1df" opacity=".8"/>
-            </svg>
-          </div>
-          <div class="memory-copy"><span>Golden hour</span><h3>That one perfect evening</h3><p>We took the long way home and pretended we were not ready for the day to end.</p></div>
-        </article>
-
-        <article class="memory-card">
-          <div class="memory-art">
-            <svg viewBox="0 0 400 300" role="img" aria-label="A starry night sky">
-              <rect width="400" height="300" fill="#24213f"/>
-              <circle cx="305" cy="75" r="34" fill="#f3d58f"/>
-              <circle cx="320" cy="62" r="34" fill="#24213f"/>
-              <g fill="#fff7dc"><circle cx="70" cy="60" r="3"/><circle cx="145" cy="95" r="2"/><circle cx="220" cy="45" r="3"/><circle cx="355" cy="145" r="2"/><circle cx="95" cy="160" r="2"/><circle cx="260" cy="130" r="2"/></g>
-              <path d="m185 80 4 11 11 4-11 4-4 11-4-11-11-4 11-4Z" fill="#f3d58f"/>
-              <path d="M0 245c80-45 140-35 205 10 70-50 130-55 195-25v70H0Z" fill="#4b466b"/>
-            </svg>
-          </div>
-          <div class="memory-copy"><span>After dark</span><h3>Talking about everything</h3><p>One topic became ten, and suddenly it was morning again.</p></div>
-        </article>
-
-        <article class="memory-card">
-          <div class="memory-art">
-            <svg viewBox="0 0 400 300" role="img" aria-label="Two cups and a small bouquet">
-              <rect width="400" height="300" fill="#efe8f6"/>
-              <circle cx="85" cy="65" r="90" fill="#e0d6f0" opacity=".7"/>
-              <ellipse cx="205" cy="245" rx="140" ry="24" fill="#d8cde5" opacity=".55"/>
-              <g transform="translate(90 105)"><ellipse cx="55" cy="105" rx="58" ry="14" fill="#c8b9d8"/><path d="M15 30h80v70c0 25-80 25-80 0Z" fill="#fffaf1"/><path d="M95 48c35-8 35 48 0 42" fill="none" stroke="#fffaf1" stroke-width="14"/><ellipse cx="55" cy="31" rx="40" ry="10" fill="#98755e"/></g>
-              <g transform="translate(225 125) rotate(8)"><ellipse cx="40" cy="88" rx="46" ry="11" fill="#c8b9d8"/><path d="M8 22h64v60c0 20-64 20-64 0Z" fill="#f3c6d7"/><path d="M72 36c28-6 28 38 0 34" fill="none" stroke="#f3c6d7" stroke-width="12"/><ellipse cx="40" cy="23" rx="32" ry="8" fill="#98755e"/></g>
-            </svg>
-          </div>
-          <div class="memory-copy"><span>Slow mornings</span><h3>Our favorite little ritual</h3><p>Warm drinks, nowhere to be, and a few more minutes that never felt like enough.</p></div>
-        </article>
-      </div>
-    </section>
-
-    <section class="letter-section" id="letter">
-      <div class="envelope" aria-hidden="true"><span class="envelope-seal">L</span></div>
-      <div class="letter-copy">
-        <span class="eyebrow">Words for you</span>
-        <h2>Some things are worth writing down.</h2>
-        <p>Not every thought fits into a text message. This one needed paper, a little courage, and all the love I could gather.</p>
-        <button class="button button-soft" type="button" id="open-letter">Open the letter</button>
-      </div>
-    </section>
-
-    <section class="joy-section" id="joy">
-      <svg class="joy-slime" id="joy-slime" viewBox="0 0 240 190" role="img" aria-label="A small smiling mint slime">
-        <defs><linearGradient id="joy-gradient" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffffff" stop-opacity=".5"/><stop offset=".45" stop-color="#bce8d7"/><stop offset="1" stop-color="#9ed8c3"/></linearGradient></defs>
-        <ellipse cx="120" cy="163" rx="76" ry="13" fill="#29473c" opacity=".12"/>
-        <path d="M38 153c0-27 18-41 24-70 7-37 27-57 59-57s53 20 59 57c6 29 23 43 23 70 0 19-74 28-165 0Z" fill="url(#joy-gradient)"/>
-        <path d="M71 90c2-18 8-30 18-38" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" opacity=".42"/>
-        <ellipse cx="96" cy="114" rx="6" ry="8" fill="#26233e"/>
-        <ellipse cx="145" cy="114" rx="6" ry="8" fill="#26233e"/>
-        <path d="M109 132c7 7 16 7 23 0" fill="none" stroke="#26233e" stroke-width="4" stroke-linecap="round"/>
-        <ellipse cx="78" cy="130" rx="10" ry="5" fill="#f3c6d7" opacity=".6"/>
-        <ellipse cx="163" cy="130" rx="10" ry="5" fill="#f3c6d7" opacity=".6"/>
-        <path d="m193 45 3 8 8 3-8 3-3 8-3-8-8-3 8-3Z" fill="#f3d58f"/>
-      </svg>
-      <div class="joy-copy">
-        <span class="eyebrow">A tiny birthday friend</span>
-        <h2>Small joys, big feelings.</h2>
-        <p id="slime-message">This little slime is here to remind you that you make the world softer just by being in it.</p>
-        <div class="joy-actions">
-          <button class="button button-dark" type="button" id="pat-button">Give a little pat</button>
-          <span class="pat-count" id="pat-count" aria-live="polite">0 pats so far</span>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <span>Made with care, for one very special person.</span>
-    <a href="#home">Back to the stars</a>
-  </footer>
-
-  <div class="modal-backdrop" id="letter-modal" hidden>
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="letter-title" tabindex="-1">
-      <div class="modal-header"><h2 id="letter-title">A letter for you</h2><button class="close-button" type="button" id="close-letter" aria-label="Close letter">×</button></div>
-      <div class="letter-paper">Happy birthday to someone who makes ordinary days feel special.
-
-Thank you for the laughter, the patience, the adventures, and the quiet moments that somehow say the most. I hope this next year brings you the same warmth you give to everyone around you.
-
-You are loved more than this little page could ever hold.
-<div class="signature">Always in your corner.</div></div>
+  <div class="rotate-gate" id="rotate-gate">
+    <div class="rotate-card">
+      <svg class="icon rotate-icon"><use href="#i-rotate"></use></svg>
+      <h2 data-field="rotateTitle">Turn your phone sideways</h2>
+      <p data-field="rotateText">This little quest is made for landscape. Rotate your phone for the full game view.</p>
+      <button class="button button-ghost" type="button" id="continue-portrait" data-field="rotateButton">Continue in portrait</button>
     </div>
   </div>
 
-  <script>
-    const modal = document.getElementById('letter-modal');
-    const openButton = document.getElementById('open-letter');
-    const closeButton = document.getElementById('close-letter');
-    const dialog = modal.querySelector('.modal');
-    let lastFocusedElement = null;
+  <div class="game-app">
+    <header class="hud">
+      <button class="brand" type="button" data-go="home">
+        <span class="brand-mark"><svg class="icon"><use href="#i-slime"></use></svg></span>
+        <span data-field="appName">Birthday Quest</span>
+      </button>
+      <div class="hud-center">
+        <div class="player-chip"><span class="player-dot"></span><span data-field="playerName">Player One</span><span class="level-chip" id="level-chip">LV. 01</span></div>
+        <div class="xp-track" aria-label="Experience progress"><div class="xp-fill" id="xp-fill"></div></div>
+      </div>
+      <div class="hud-actions">
+        <span class="role-badge" id="role-badge" hidden></span>
+        <button class="hud-button" type="button" id="edit-button" hidden>Edit copy</button>
+        <button class="hud-button" type="button" id="access-button" hidden>Access</button>
+        <button class="hud-button primary" type="button" id="auth-button">Sign in</button>
+      </div>
+    </header>
 
-    function openLetter() {
-      lastFocusedElement = document.activeElement;
-      modal.hidden = false;
-      document.body.style.overflow = 'hidden';
-      dialog.focus();
+    <div class="editor-toolbar" id="editor-toolbar" hidden>
+      <span id="editor-label">Editing</span>
+      <button class="toolbar-button save" type="button" id="save-copy">Save</button>
+      <button class="toolbar-button" type="button" id="cancel-copy">Cancel</button>
+    </div>
+
+    <main class="page-viewport" id="page-viewport">
+      <section class="app-page home-page active" id="page-home" data-page="home">
+        <div class="home-layout">
+          <div class="home-copy">
+            <span class="eyebrow" data-field="homeEyebrow">A birthday side quest</span>
+            <h1 data-field="homeTitle">A little world made just for you.</h1>
+            <p class="home-text" data-field="homeText">Explore the slime lab, unwrap your present, and fill the gallery with our favorite moments.</p>
+            <div class="home-actions">
+              <button class="button button-mint" type="button" data-go="slime"><span data-field="homeButtonSlime">Enter slime lab</span><svg class="icon"><use href="#i-arrow"></use></svg></button>
+              <button class="button button-gold" type="button" data-go="gift"><span data-field="homeButtonGift">Open present</span></button>
+              <button class="button button-ghost" type="button" id="pet-home"><svg class="icon"><use href="#i-heart"></use></svg>Pet slime</button>
+            </div>
+            <p class="home-footer" data-field="homeFooter">Every page is a tiny celebration of you.</p>
+          </div>
+          <div class="hero-wrap">
+            <span class="hero-orbit"></span><span class="hero-orbit second"></span><span class="spark one"></span><span class="spark two"></span>
+            <svg class="hero-slime" id="hero-slime" viewBox="0 0 240 190" aria-label="A friendly birthday slime">
+              <defs><linearGradient id="hero-gradient" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffffff" stop-opacity=".55"/><stop offset=".45" stop-color="#bce8d7"/><stop offset="1" stop-color="#8fcdb6"/></linearGradient></defs>
+              <ellipse cx="120" cy="163" rx="76" ry="13" fill="#080713" opacity=".3"/>
+              <path d="M38 153c0-27 18-41 24-70 7-37 27-57 59-57s53 20 59 57c6 29 23 43 23 70 0 19-74 28-165 0Z" fill="url(#hero-gradient)"/>
+              <path d="M71 90c2-18 8-30 18-38" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" opacity=".42"/>
+              <ellipse cx="96" cy="114" rx="6" ry="8" fill="#26233e"/><ellipse cx="145" cy="114" rx="6" ry="8" fill="#26233e"/>
+              <path d="M109 132c7 7 16 7 23 0" fill="none" stroke="#26233e" stroke-width="4" stroke-linecap="round"/>
+              <ellipse cx="78" cy="130" rx="10" ry="5" fill="#f3c6d7" opacity=".6"/><ellipse cx="163" cy="130" rx="10" ry="5" fill="#f3c6d7" opacity=".6"/>
+              <path d="m191 39 3 8 8 3-8 3-3 8-3-8-8-3 8-3Z" fill="#f3d58f"/>
+            </svg>
+          </div>
+        </div>
+      </section>
+
+      <section class="app-page" id="page-slime" data-page="slime">
+        <div class="page-heading">
+          <span class="eyebrow" data-field="slimeEyebrow">Slime lab</span>
+          <h1 data-field="slimeTitle">Make a tiny new friend.</h1>
+          <p class="slime-intro" data-field="slimeText">Choose a color, give it a face, and send it into the birthday universe.</p>
+        </div>
+        <div class="slime-layout">
+          <div class="game-card slime-preview-card">
+            <svg class="slime-preview" id="slime-preview" viewBox="0 0 240 190" aria-label="Slime preview"></svg>
+            <span class="preview-name" id="preview-name">New slime</span>
+          </div>
+          <div class="game-card slime-controls">
+            <label><span class="control-label" data-field="slimeNameLabel">Slime name</span><input class="text-input" id="slime-name" maxlength="40" placeholder="Name your slime"></label>
+            <fieldset><legend class="control-label" data-field="slimeColorsLabel">100-color palette</legend><div class="color-grid" id="color-options" aria-label="Slime color palette"></div><div class="color-picker-footer"><span id="selected-color">#bce8d7</span><button class="random-color" type="button" id="random-color" data-field="randomColor">Surprise me</button></div></fieldset>
+            <fieldset><legend class="control-label" data-field="slimeEyesLabel">Face</legend><div class="option-row" id="eye-options">
+              <button class="option-button active" type="button" data-eyes="happy"><span data-field="eyesHappy">Happy</span></button>
+              <button class="option-button" type="button" data-eyes="sleepy"><span data-field="eyesSleepy">Sleepy</span></button>
+              <button class="option-button" type="button" data-eyes="star"><span data-field="eyesStar">Starry</span></button>
+            </div></fieldset>
+            <fieldset><legend class="control-label" data-field="slimeAccessoryLabel">Accessory</legend><div class="option-row" id="accessory-options">
+              <button class="option-button active" type="button" data-accessory="none"><span data-field="accessoryNone">None</span></button>
+              <button class="option-button" type="button" data-accessory="crown"><span data-field="accessoryCrown">Crown</span></button>
+              <button class="option-button" type="button" data-accessory="flower"><span data-field="accessoryFlower">Flower</span></button>
+              <button class="option-button" type="button" data-accessory="glasses"><span data-field="accessoryGlasses">Glasses</span></button>
+            </div></fieldset>
+            <button class="button button-mint" type="button" id="create-slime"><svg class="icon"><use href="#i-star"></use></svg><span data-field="slimeCreateButton">Create slime</span></button>
+          </div>
+        </div>
+        <div class="collection-head"><h3 data-field="slimeCollectionTitle">Slime collection</h3><span class="role-badge" id="slime-count">0 friends</span></div>
+        <div class="slime-grid" id="slime-grid"></div>
+      </section>
+
+      <section class="app-page gift-page" id="page-gift" data-page="gift">
+        <div class="gift-layout">
+          <div class="gift-stage">
+            <div class="gift-box" id="gift-box" aria-hidden="true">
+              <span class="bow"></span><span class="bow second"></span><span class="gift-base"></span><span class="gift-ribbon-v"></span><span class="gift-lid"></span><span class="gift-ribbon-h"></span>
+              <button class="button button-gold unwrap-button" type="button" id="unwrap-gift"><span data-field="giftButton">Unwrap present</span></button>
+            </div>
+          </div>
+          <div class="gift-copy" id="gift-copy">
+            <span class="eyebrow" data-field="giftEyebrow">Your birthday present</span>
+            <h2 data-field="giftTitle">Something made with love.</h2>
+            <p class="gift-intro" data-field="giftIntro">There is a little note waiting inside. Go on, open it.</p>
+          </div>
+          <div class="letter-reveal" id="letter-reveal" hidden>
+            <span class="eyebrow" data-field="giftLetterEyebrow">A note for you</span>
+            <h2 data-field="giftLetterTitle">Happy birthday.</h2>
+            <p class="letter-body" data-field="giftLetterBody">Thank you for being my favorite person.
+
+I hope this next year brings you soft mornings, brave adventures, and a hundred tiny reasons to smile.
+
+You are loved more than this little game could ever hold.</p>
+            <p class="letter-signature" data-field="giftSignature">Always in your corner.</p>
+            <button class="button button-ghost rewrap-button" type="button" id="rewrap-gift">Wrap it again</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="app-page" id="page-gallery" data-page="gallery">
+        <div class="page-heading">
+          <span class="eyebrow" data-field="galleryEyebrow">Memory gallery</span>
+          <h1 data-field="galleryTitle">Our little moments.</h1>
+          <p class="gallery-intro" data-field="galleryText">Each gallery page holds four photos and a note. Flip through the pages to revisit every little memory.</p>
+        </div>
+        <div class="gallery-toolbar">
+          <button class="button button-mint" type="button" id="new-gallery-page" hidden><svg class="icon"><use href="#i-photo"></use></svg><span data-field="galleryUploadButton">New gallery page</span></button>
+          <span class="upload-status" id="upload-status" aria-live="polite"></span>
+        </div>
+        <div class="gallery-stage">
+          <button class="gallery-flip-button" type="button" id="gallery-prev" aria-label="Previous gallery page">←</button>
+          <div class="gallery-flip-wrap">
+            <div class="gallery-sheet" id="gallery-sheet">
+              <div class="gallery-grid" id="gallery-grid"></div>
+              <div class="gallery-page-copy" id="gallery-page-copy"></div>
+              <div class="gallery-admin-actions" id="gallery-admin-actions"></div>
+            </div>
+          </div>
+          <button class="gallery-flip-button" type="button" id="gallery-next" aria-label="Next gallery page">→</button>
+        </div>
+        <div class="gallery-pager">
+          <span id="gallery-page-indicator">Page 1 of 1</span>
+          <span id="gallery-page-status"></span>
+        </div>
+        <input type="file" id="photo-input" accept="image/*" hidden>
+      </section>
+    </main>
+
+    <nav class="tab-bar" aria-label="Game pages">
+      <button class="tab-button active" type="button" data-page-link="home" aria-selected="true"><svg class="icon"><use href="#i-home"></use></svg><span data-field="navHome">Home</span></button>
+      <button class="tab-button" type="button" data-page-link="slime" aria-selected="false"><svg class="icon"><use href="#i-slime"></use></svg><span data-field="navSlime">Slime lab</span></button>
+      <button class="tab-button" type="button" data-page-link="gift" aria-selected="false"><svg class="icon"><use href="#i-gift"></use></svg><span data-field="navGift">Present</span></button>
+      <button class="tab-button" type="button" data-page-link="gallery" aria-selected="false"><svg class="icon"><use href="#i-photo"></use></svg><span data-field="navGallery">Gallery</span></button>
+    </nav>
+  </div>
+
+  <div class="modal-backdrop" id="auth-modal" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="auth-title">
+      <div class="modal-header"><h2 id="auth-title">Player sign in</h2><button class="modal-close" type="button" data-close="auth-modal" aria-label="Close">×</button></div>
+      <form class="modal-body" id="auth-form">
+        <p class="modal-note">Admins can edit every text and publish gallery pages. Viewers can make slimes, create four-photo pages, add page notes, and edit their own allowed birthday content.</p>
+        <p class="modal-note" id="auth-setup" hidden>Firebase is not configured yet. Paste your web config in the firebaseConfig block near the bottom of this file.</p>
+        <label><span class="control-label">Email</span><input class="text-input" id="auth-email" type="email" autocomplete="username" required></label>
+        <label><span class="control-label">Password</span><input class="text-input" id="auth-password" type="password" autocomplete="current-password" required></label>
+        <p class="form-error" id="auth-error" aria-live="polite"></p>
+        <div class="form-actions"><button class="button button-mint" type="submit" id="auth-submit">Sign in</button><button class="button button-ghost" type="button" data-close="auth-modal">Cancel</button></div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="access-modal" hidden>
+    <div class="modal wide" role="dialog" aria-modal="true" aria-labelledby="access-title">
+      <div class="modal-header"><h2 id="access-title">Player access</h2><button class="modal-close" type="button" data-close="access-modal" aria-label="Close">×</button></div>
+      <div class="modal-body">
+        <p class="modal-note">Create the login in Firebase Console → Authentication first. Then paste that user's UID here. The first admin must be added manually in Firestore.</p>
+        <div class="uid-box"><code id="current-uid"></code><button class="photo-action" type="button" id="copy-uid">Copy my UID</button></div>
+        <label><span class="control-label">Player UID</span><input class="text-input" id="role-uid" placeholder="Firebase user UID"></label>
+        <label><span class="control-label">Role</span><select class="select-input" id="role-select"><option value="viewer">Viewer</option><option value="admin">Admin</option></select></label>
+        <div class="form-actions"><button class="button button-mint" type="button" id="grant-role">Grant role</button><button class="button button-danger" type="button" id="revoke-role">Revoke selected role</button></div>
+        <p class="form-error" id="access-error" aria-live="polite"></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script type="module">
+    const firebaseConfig = {
+      apiKey: "",
+      authDomain: "",
+      projectId: "",
+      storageBucket: "",
+      messagingSenderId: "",
+      appId: "",
+    };
+
+    const pages = ["home", "slime", "gift", "gallery"];
+    const viewerFields = new Set(["homeText", "slimeText", "galleryText"]);
+    const eyeStyles = ["happy", "sleepy", "star"];
+    const accessories = ["none", "crown", "flower", "glasses"];
+
+    function hslToHex(h, s, l) {
+      const saturation = s / 100;
+      const lightness = l / 100;
+      const chroma = (1 - Math.abs(2 * lightness - 1)) * saturation;
+      const segment = h / 60;
+      const secondary = chroma * (1 - Math.abs((segment % 2) - 1));
+      const offset = lightness - chroma / 2;
+      let rgb;
+      if (segment < 1) rgb = [chroma, secondary, 0];
+      else if (segment < 2) rgb = [secondary, chroma, 0];
+      else if (segment < 3) rgb = [0, chroma, secondary];
+      else if (segment < 4) rgb = [0, secondary, chroma];
+      else if (segment < 5) rgb = [secondary, 0, chroma];
+      else rgb = [chroma, 0, secondary];
+      return `#${rgb.map((value) => Math.round((value + offset) * 255).toString(16).padStart(2, "0")).join("")}`;
     }
 
-    function closeLetter() {
-      modal.hidden = true;
-      document.body.style.overflow = '';
-      if (lastFocusedElement) lastFocusedElement.focus();
+    const SLIME_COLORS = Array.from({ length: 100 }, (_, index) =>
+      hslToHex((18 + index * 137.508) % 360, 58 + (index % 4) * 7, 56 + (index % 5) * 3)
+    );
+
+    const defaultContent = Object.fromEntries(
+      [...document.querySelectorAll("[data-field]")].map((element) => [element.dataset.field, element.textContent.trim()])
+    );
+
+    let content = { ...defaultContent };
+    let lastSavedContent = { ...defaultContent };
+    let contentExists = false;
+    let currentPage = "home";
+    let editMode = false;
+    let dirty = false;
+    let user = null;
+    let role = null;
+    let xp = 0;
+    let selectedColor = SLIME_COLORS[0];
+    let selectedEyes = "happy";
+    let selectedAccessory = "none";
+    let slimes = [];
+    let galleryPages = [];
+    let galleryIndex = 0;
+    let galleryFlipping = false;
+    let toastTimer = null;
+    let seedingContent = false;
+
+    let app = null;
+    let auth = null;
+    let db = null;
+    let storage = null;
+    let authApi = null;
+    let fs = null;
+    let storageApi = null;
+
+    const $ = (selector) => document.querySelector(selector);
+    const $$ = (selector) => [...document.querySelectorAll(selector)];
+    const viewport = $("#page-viewport");
+    const contentRef = () => fs.doc(db, "site", "content");
+
+    function showToast(message) {
+      const toast = $("#toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 3600);
     }
 
-    openButton.addEventListener('click', openLetter);
-    closeButton.addEventListener('click', closeLetter);
-    modal.addEventListener('click', (event) => {
-      if (event.target === modal) closeLetter();
-    });
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape' && !modal.hidden) closeLetter();
+    function openModal(id) {
+      $(`#${id}`).hidden = false;
+      const focusTarget = $(`#${id}`).querySelector("input, button");
+      if (focusTarget) setTimeout(() => focusTarget.focus(), 30);
+    }
+
+    function closeModal(id) {
+      $(`#${id}`).hidden = true;
+    }
+
+    function showPage(pageId, updateHash = true) {
+      if (!pages.includes(pageId)) pageId = "home";
+      currentPage = pageId;
+      const index = pages.indexOf(pageId);
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      viewport.scrollTo({ left: index * viewport.clientWidth, behavior: updateHash && !reduceMotion ? "smooth" : "auto" });
+      $$(".app-page").forEach((page) => page.classList.toggle("active", page.dataset.page === pageId));
+      $$("[data-page-link]").forEach((button) => {
+        const active = button.dataset.pageLink === pageId;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-selected", String(active));
+      });
+      if (updateHash) history.replaceState(null, "", `#${pageId}`);
+      document.title = `${content.appName || "Birthday Quest"} · ${pageId === "slime" ? "Slime Lab" : pageId[0].toUpperCase() + pageId.slice(1)}`;
+      if (pageId === "gallery") loadGalleryPages();
+    }
+
+    function renderContent() {
+      $$("[data-field]").forEach((element) => {
+        const value = content[element.dataset.field];
+        if (typeof value === "string") element.textContent = value;
+      });
+      document.title = `${content.appName || "Birthday Quest"} · ${currentPage === "slime" ? "Slime Lab" : currentPage[0].toUpperCase() + currentPage.slice(1)}`;
+    }
+
+    function gainXp(amount) {
+      xp += amount;
+      const level = Math.floor(xp / 100) + 1;
+      $("#level-chip").textContent = `LV. ${String(level).padStart(2, "0")}`;
+      $("#xp-fill").style.width = `${xp % 100}%`;
+    }
+
+    function canEditField(field) {
+      return role === "admin" || (role === "viewer" && viewerFields.has(field));
+    }
+
+    function applyEditableState() {
+      $$("[data-field]").forEach((element) => {
+        const editable = editMode && canEditField(element.dataset.field);
+        if (editable) {
+          element.setAttribute("contenteditable", "true");
+          element.setAttribute("spellcheck", "true");
+        } else {
+          element.removeAttribute("contenteditable");
+          element.removeAttribute("spellcheck");
+        }
+      });
+      $("#editor-toolbar").hidden = !editMode;
+      $("#editor-label").textContent = role === "admin" ? "Admin: all copy" : "Your notes";
+      $("#edit-button").textContent = editMode ? "Stop editing" : role === "admin" ? "Edit all copy" : "Edit my notes";
+    }
+
+    function startEditing() {
+      if (!user || !role) {
+        showToast("Sign in with an admin or viewer account first.");
+        openAuth();
+        return;
+      }
+      if (!db) {
+        showToast("Connect Firebase before saving edits.");
+        return;
+      }
+      editMode = !editMode;
+      dirty = false;
+      if (!editMode) {
+        content = { ...lastSavedContent };
+        renderContent();
+      }
+      applyEditableState();
+    }
+
+    async function saveContent() {
+      if (!db || !user || !role) return;
+      const saveButton = $("#save-copy");
+      saveButton.disabled = true;
+      try {
+        await fs.setDoc(contentRef(), content, { merge: true });
+        lastSavedContent = { ...content };
+        dirty = false;
+        editMode = false;
+        applyEditableState();
+        showToast("Birthday copy saved.");
+      } catch (error) {
+        showToast(error.message);
+      } finally {
+        saveButton.disabled = false;
+      }
+    }
+
+    function cancelEditing() {
+      content = { ...lastSavedContent };
+      dirty = false;
+      editMode = false;
+      renderContent();
+      applyEditableState();
+    }
+
+    function updateRoleUi() {
+      $("#auth-button").textContent = user ? "Sign out" : "Sign in";
+      $("#edit-button").hidden = !user || !role;
+      $("#access-button").hidden = role !== "admin";
+      $("#new-gallery-page").hidden = !user || !role;
+      $("#role-badge").hidden = !role;
+      $("#role-badge").textContent = role || "";
+      if (!editMode) applyEditableState();
+    }
+
+    function openAuth() {
+      $("#auth-error").textContent = "";
+      $("#auth-setup").hidden = Boolean(auth);
+      $("#auth-form").hidden = !auth;
+      openModal("auth-modal");
+    }
+
+    function slimeSvg(color, eyes = "happy", accessory = "none") {
+      const safeColor = SLIME_COLORS.includes(color) ? color : SLIME_COLORS[0];
+      const safeEyes = eyeStyles.includes(eyes) ? eyes : "happy";
+      const safeAccessory = accessories.includes(accessory) ? accessory : "none";
+      const face = safeEyes === "sleepy"
+        ? '<path d="M87 116c6 4 12 4 18 0M135 116c6 4 12 4 18 0" fill="none" stroke="#26233e" stroke-width="4" stroke-linecap="round"/>'
+        : safeEyes === "star"
+          ? '<path d="m96 105 3 6 6 1-4 5 1 6-6-3-6 3 1-6-4-5 6-1ZM145 105l3 6 6 1-4 5 1 6-6-3-6 3 1-6-4-5 6-1Z" fill="#26233e"/>'
+          : '<ellipse cx="96" cy="114" rx="6" ry="8" fill="#26233e"/><ellipse cx="145" cy="114" rx="6" ry="8" fill="#26233e"/>';
+      const extras = safeAccessory === "crown"
+        ? '<path d="m91 41 10-24 20 15 20-15 10 24Z" fill="#f3d58f" stroke="#fff0bd" stroke-width="2"/><circle cx="121" cy="31" r="4" fill="#f3c6d7"/>'
+        : safeAccessory === "flower"
+          ? '<g transform="translate(161 48)"><circle cx="0" cy="-10" r="8" fill="#f3c6d7"/><circle cx="10" cy="0" r="8" fill="#f3c6d7"/><circle cx="0" cy="10" r="8" fill="#f3c6d7"/><circle cx="-10" cy="0" r="8" fill="#f3c6d7"/><circle r="6" fill="#f3d58f"/></g>'
+          : safeAccessory === "glasses"
+            ? '<g fill="none" stroke="#26233e" stroke-width="4"><circle cx="96" cy="114" r="15"/><circle cx="145" cy="114" r="15"/><path d="M111 114h19M81 109l-12-4M160 109l12-4"/></g>'
+            : "";
+      return `<defs><linearGradient id="preview-gradient" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffffff" stop-opacity=".5"/><stop offset=".45" stop-color="${safeColor}"/><stop offset="1" stop-color="${safeColor}"/></linearGradient></defs><ellipse cx="120" cy="163" rx="76" ry="13" fill="#080713" opacity=".25"/><path d="M38 153c0-27 18-41 24-70 7-37 27-57 59-57s53 20 59 57c6 29 23 43 23 70 0 19-74 28-165 0Z" fill="url(#preview-gradient)"/><path d="M71 90c2-18 8-30 18-38" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" opacity=".4"/>${face}<path d="M109 132c7 7 16 7 23 0" fill="none" stroke="#26233e" stroke-width="4" stroke-linecap="round"/><ellipse cx="78" cy="130" rx="10" ry="5" fill="#f3c6d7" opacity=".55"/><ellipse cx="163" cy="130" rx="10" ry="5" fill="#f3c6d7" opacity=".55"/>${extras}`;
+    }
+
+    function renderColorOptions() {
+      const grid = $("#color-options");
+      grid.replaceChildren();
+      SLIME_COLORS.forEach((color) => {
+        const swatch = document.createElement("button");
+        swatch.className = "color-swatch";
+        swatch.type = "button";
+        swatch.dataset.color = color;
+        swatch.style.setProperty("--swatch", color);
+        swatch.title = color;
+        swatch.setAttribute("aria-label", `Choose color ${color}`);
+        grid.append(swatch);
+      });
+      selectOption("#color-options", "color", selectedColor);
+    }
+
+    function animateSlimePreview(className) {
+      const preview = $("#slime-preview");
+      preview.classList.remove("jelly", "pop");
+      void preview.offsetWidth;
+      preview.classList.add(className);
+    }
+
+    function updateSlimePreview(animate = false) {
+      $("#slime-preview").innerHTML = slimeSvg(selectedColor, selectedEyes, selectedAccessory);
+      $("#preview-name").textContent = $("#slime-name").value.trim() || "New slime";
+      $("#selected-color").textContent = selectedColor;
+      selectOption("#color-options", "color", selectedColor);
+      if (animate) animateSlimePreview("jelly");
+    }
+
+    function selectOption(selector, key, value) {
+      $$(`${selector} button`).forEach((button) => {
+        if (button.dataset[key] === value) button.classList.add("active");
+        else button.classList.remove("active");
+      });
+    }
+
+    function renderSlimes() {
+      const grid = $("#slime-grid");
+      grid.replaceChildren();
+      $("#slime-count").textContent = `${slimes.length} ${slimes.length === 1 ? "friend" : "friends"}`;
+      if (!slimes.length) {
+        const empty = document.createElement("div");
+        empty.className = "empty-state";
+        empty.textContent = content.slimeEmptyText || "No slimes yet. Make the first one above.";
+        grid.append(empty);
+        return;
+      }
+      slimes.forEach((slime, index) => {
+        const card = document.createElement("div");
+        card.className = "slime-card";
+        card.style.animationDelay = `${Math.min(index, 12) * 35}ms`;
+        card.tabIndex = 0;
+        card.setAttribute("role", "button");
+        card.innerHTML = slimeSvg(slime.color, slime.eyes, slime.accessory);
+        const name = document.createElement("span");
+        name.className = "slime-card-name";
+        name.textContent = slime.name || "Unnamed slime";
+        const owner = document.createElement("span");
+        owner.className = "slime-card-owner";
+        owner.textContent = slime.createdBy === user?.uid ? "Made by you" : "Birthday universe";
+        card.append(name, owner);
+        const load = () => {
+          selectedColor = SLIME_COLORS.includes(slime.color) ? slime.color : SLIME_COLORS[0];
+          selectedEyes = eyeStyles.includes(slime.eyes) ? slime.eyes : "happy";
+          selectedAccessory = accessories.includes(slime.accessory) ? slime.accessory : "none";
+          $("#slime-name").value = slime.name || "";
+          selectOption("#color-options", "color", selectedColor);
+          selectOption("#eye-options", "eyes", selectedEyes);
+          selectOption("#accessory-options", "accessory", selectedAccessory);
+          updateSlimePreview();
+          showToast(`${slime.name || "Slime"} loaded into the lab.`);
+        };
+        card.addEventListener("click", load);
+        card.addEventListener("keydown", (event) => { if (event.key === "Enter" || event.key === " ") load(); });
+        if (role === "admin" || slime.createdBy === user?.uid) {
+          const remove = document.createElement("button");
+          remove.className = "card-delete";
+          remove.type = "button";
+          remove.textContent = "×";
+          remove.setAttribute("aria-label", `Delete ${slime.name || "slime"}`);
+          remove.addEventListener("click", (event) => { event.stopPropagation(); deleteSlime(slime); });
+          card.append(remove);
+        }
+        grid.append(card);
+      });
+    }
+
+    async function createSlime() {
+      if (!user || !role) {
+        showToast("Sign in as a viewer or admin to save a slime.");
+        openAuth();
+        return;
+      }
+      const name = $("#slime-name").value.trim() || "New slime";
+      const newSlime = { name, color: selectedColor, eyes: selectedEyes, accessory: selectedAccessory, createdBy: user.uid, createdAt: fs?.serverTimestamp ? fs.serverTimestamp() : Date.now() };
+      const button = $("#create-slime");
+      button.disabled = true;
+      try {
+        if (db) {
+          await fs.addDoc(fs.collection(db, "slimes"), newSlime);
+        } else {
+          slimes.unshift({ ...newSlime, id: `local-${Date.now()}`, createdAt: Date.now() });
+          renderSlimes();
+        }
+        gainXp(20);
+        $("#slime-name").value = "";
+        updateSlimePreview();
+        animateSlimePreview("pop");
+        showToast(db ? `${name} joined the collection.` : `${name} created for this session. Connect Firebase to save permanently.`);
+      } catch (error) {
+        showToast(error.message);
+      } finally {
+        button.disabled = false;
+      }
+    }
+
+    async function deleteSlime(slime) {
+      if (!slime.id || !db) return;
+      try {
+        await fs.deleteDoc(fs.doc(db, "slimes", slime.id));
+        showToast("Slime returned to the wild.");
+      } catch (error) {
+        showToast(error.message);
+      }
+    }
+
+    function unwrapGift() {
+      $("#gift-box").classList.add("opened");
+      $("#gift-copy").hidden = true;
+      $("#letter-reveal").hidden = false;
+      gainXp(30);
+    }
+
+    function rewrapGift() {
+      $("#gift-box").classList.remove("opened");
+      $("#gift-copy").hidden = false;
+      $("#letter-reveal").hidden = true;
+    }
+
+    function mergeGalleryPages(...groups) {
+      const map = new Map();
+      groups.flat().forEach((page) => map.set(page.id, page));
+      return [...map.values()].sort((a, b) => (b.createdAt?.toMillis?.() || 0) - (a.createdAt?.toMillis?.() || 0));
+    }
+
+    function canManageGalleryPage(page) {
+      return Boolean(page) && (role === "admin" || page.createdBy === user?.uid);
+    }
+
+    function currentGalleryPage() {
+      return galleryPages[galleryIndex];
+    }
+
+    async function loadGalleryPages() {
+      if (!db) {
+        galleryPages = [];
+        galleryIndex = 0;
+        renderGalleryPages();
+        return;
+      }
+      try {
+        let docs = [];
+        if (role === "admin") {
+          docs = await fs.getDocs(fs.collection(db, "galleryPages"));
+        } else {
+          const published = await fs.getDocs(fs.query(fs.collection(db, "galleryPages"), fs.where("published", "==", true)));
+          docs = [...published.docs];
+          if (user?.uid && role === "viewer") {
+            const own = await fs.getDocs(fs.query(fs.collection(db, "galleryPages"), fs.where("createdBy", "==", user.uid)));
+            docs.push(...own.docs);
+          }
+        }
+        galleryPages = mergeGalleryPages(docs.map((snapshot) => ({ id: snapshot.id, ...snapshot.data() })));
+        if (galleryIndex >= galleryPages.length) galleryIndex = 0;
+        renderGalleryPages();
+      } catch (error) {
+        showToast(`Gallery: ${error.message}`);
+      }
+    }
+
+    function renderGalleryPages() {
+      const grid = $("#gallery-grid");
+      const copy = $("#gallery-page-copy");
+      const adminActions = $("#gallery-admin-actions");
+      const prev = $("#gallery-prev");
+      const next = $("#gallery-next");
+      grid.replaceChildren();
+      copy.replaceChildren();
+      adminActions.replaceChildren();
+      prev.disabled = galleryFlipping || galleryIndex <= 0;
+      next.disabled = galleryFlipping || galleryIndex >= galleryPages.length - 1;
+
+      if (!galleryPages.length) {
+        const empty = document.createElement("div");
+        empty.className = "empty-state";
+        empty.textContent = db
+          ? content.galleryEmptyText || (user && role ? "No gallery pages yet. Create the first four-photo memory." : "No gallery pages yet.")
+          : "Connect Firebase to enable the gallery.";
+        grid.append(empty);
+        copy.hidden = true;
+        adminActions.hidden = true;
+        $("#gallery-page-indicator").textContent = "No gallery pages";
+        $("#gallery-page-status").textContent = "";
+        $("#gallery-page-status").className = "gallery-page-status";
+        return;
+      }
+
+      const page = currentGalleryPage();
+      const pagePhotos = Array.isArray(page.photos) ? page.photos : [];
+      const manageable = canManageGalleryPage(page);
+      copy.hidden = false;
+      adminActions.hidden = false;
+
+      for (let index = 0; index < 4; index += 1) {
+        const photo = pagePhotos[index];
+        const slot = document.createElement("div");
+        slot.className = `photo-slot${photo ? "" : " empty"}`;
+        if (photo) {
+          const image = document.createElement("img");
+          image.src = photo.url;
+          image.alt = `Gallery memory ${index + 1}`;
+          image.loading = "lazy";
+          slot.append(image);
+          if (manageable) {
+            const remove = document.createElement("button");
+            remove.className = "photo-delete";
+            remove.type = "button";
+            remove.textContent = "×";
+            remove.setAttribute("aria-label", `Delete photo ${index + 1}`);
+            remove.addEventListener("click", () => deleteGalleryPhoto(photo));
+            slot.append(remove);
+          }
+        } else if (manageable) {
+          const add = document.createElement("button");
+          add.type = "button";
+          add.innerHTML = "<span>+</span>Add photo";
+          add.addEventListener("click", () => $("#photo-input").click());
+          slot.append(add);
+        } else {
+          const soon = document.createElement("span");
+          soon.textContent = "Memory coming soon";
+          slot.append(soon);
+        }
+        grid.append(slot);
+      }
+
+      if (manageable) {
+        const textarea = document.createElement("textarea");
+        textarea.maxLength = 5000;
+        textarea.value = page.text || "";
+        textarea.placeholder = "Write the note for this four-photo page...";
+        const actions = document.createElement("div");
+        actions.className = "gallery-page-actions";
+        const save = document.createElement("button");
+        save.className = "photo-action publish";
+        save.type = "button";
+        save.textContent = "Save page text";
+        save.addEventListener("click", () => saveGalleryText(textarea.value));
+        actions.append(save);
+        copy.append(textarea, actions);
+      } else {
+        const text = document.createElement("p");
+        text.className = "gallery-page-text";
+        text.textContent = page.text || "A little memory from this page.";
+        copy.append(text);
+      }
+
+      if (role === "admin" && !page.published) {
+        const publish = document.createElement("button");
+        publish.className = "photo-action publish";
+        publish.type = "button";
+        publish.textContent = "Publish page";
+        publish.addEventListener("click", () => publishGalleryPage(page));
+        adminActions.append(publish);
+      }
+      if (manageable && (role === "admin" || !page.published)) {
+        const removePage = document.createElement("button");
+        removePage.className = "photo-action delete";
+        removePage.type = "button";
+        removePage.textContent = "Delete page";
+        removePage.addEventListener("click", () => deleteGalleryPage(page));
+        adminActions.append(removePage);
+      }
+
+      $("#gallery-page-indicator").textContent = `Page ${galleryIndex + 1} of ${galleryPages.length}`;
+      const status = $("#gallery-page-status");
+      status.textContent = page.published ? "Published" : "Waiting for admin";
+      status.className = `gallery-page-status${page.published ? " published" : ""}`;
+    }
+
+    async function createGalleryPage() {
+      if (!user || !role) {
+        showToast("Sign in as a viewer or admin to create a gallery page.");
+        openAuth();
+        return;
+      }
+      if (!db) {
+        showToast("Connect Firebase to create gallery pages.");
+        return;
+      }
+      try {
+        const snapshot = await fs.addDoc(fs.collection(db, "galleryPages"), {
+          text: "",
+          photos: [],
+          createdBy: user.uid,
+          createdAt: fs.serverTimestamp(),
+          published: false,
+        });
+        await loadGalleryPages();
+        const index = galleryPages.findIndex((page) => page.id === snapshot.id);
+        galleryIndex = index >= 0 ? index : 0;
+        renderGalleryPages();
+        showToast("New four-photo page created.");
+      } catch (error) {
+        showToast(error.message);
+      }
+    }
+
+    async function saveGalleryText(text) {
+      const page = currentGalleryPage();
+      if (!page || !canManageGalleryPage(page)) return;
+      try {
+        await fs.updateDoc(fs.doc(db, "galleryPages", page.id), { text: text.slice(0, 5000) });
+        await loadGalleryPages();
+        showToast("Gallery page text saved.");
+      } catch (error) {
+        showToast(error.message);
+      }
+    }
+
+    async function uploadPhoto(file) {
+      if (!file) return;
+      const page = currentGalleryPage();
+      if (!user || !role) {
+        showToast("Sign in as a viewer or admin to add photos.");
+        $("#photo-input").value = "";
+        openAuth();
+        return;
+      }
+      if (!page || !canManageGalleryPage(page)) {
+        showToast("Create or open your own gallery page first.");
+        $("#photo-input").value = "";
+        return;
+      }
+      const pagePhotos = Array.isArray(page.photos) ? page.photos : [];
+      if (pagePhotos.length >= 4) {
+        showToast("This page already has four photos. Create another page.");
+        $("#photo-input").value = "";
+        return;
+      }
+      if (!file.type.startsWith("image/")) {
+        showToast("Choose an image file.");
+        $("#photo-input").value = "";
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        showToast("Photos must be smaller than 5 MB.");
+        $("#photo-input").value = "";
+        return;
+      }
+      if (!storage || !db) {
+        showToast("Connect Firebase Storage to upload photos.");
+        $("#photo-input").value = "";
+        return;
+      }
+      const status = $("#upload-status");
+      status.textContent = `Uploading photo ${pagePhotos.length + 1} of 4...`;
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 90);
+      const path = `gallery/${user.uid}/${Date.now()}_${safeName}`;
+      try {
+        const fileRef = storageApi.ref(storage, path);
+        await storageApi.uploadBytes(fileRef, file);
+        const url = await storageApi.getDownloadURL(fileRef);
+        try {
+          await fs.updateDoc(fs.doc(db, "galleryPages", page.id), {
+            photos: fs.arrayUnion({ url, path, addedAt: new Date() }),
+          });
+        } catch (error) {
+          await storageApi.deleteObject(fileRef).catch(() => {});
+          throw error;
+        }
+        $("#photo-input").value = "";
+        status.textContent = `${pagePhotos.length + 1} of 4 photos added.`;
+        gainXp(10);
+        await loadGalleryPages();
+        const index = galleryPages.findIndex((item) => item.id === page.id);
+        if (index >= 0) galleryIndex = index;
+        renderGalleryPages();
+        showToast("Photo added to the gallery page.");
+      } catch (error) {
+        status.textContent = "";
+        showToast(error.message);
+      }
+    }
+
+    async function deleteGalleryPhoto(photo) {
+      const page = currentGalleryPage();
+      if (!page || !canManageGalleryPage(page)) return;
+      try {
+        await fs.updateDoc(fs.doc(db, "galleryPages", page.id), { photos: fs.arrayRemove(photo) });
+        if (photo.path) await storageApi.deleteObject(storageApi.ref(storage, photo.path)).catch(() => {});
+        await loadGalleryPages();
+        showToast("Photo removed.");
+      } catch (error) {
+        showToast(error.message);
+      }
+    }
+
+    async function publishGalleryPage(page) {
+      if (role !== "admin") return;
+      try {
+        await fs.updateDoc(fs.doc(db, "galleryPages", page.id), { published: true });
+        await loadGalleryPages();
+        showToast("Gallery page published.");
+      } catch (error) {
+        showToast(error.message);
+      }
+    }
+
+    async function deleteGalleryPage(page) {
+      if (!canManageGalleryPage(page)) return;
+      if (!window.confirm("Delete this gallery page and its photos?")) return;
+      try {
+        const pagePhotos = Array.isArray(page.photos) ? page.photos : [];
+        await Promise.all(pagePhotos.map((photo) => photo.path ? storageApi.deleteObject(storageApi.ref(storage, photo.path)).catch(() => {}) : Promise.resolve()));
+        await fs.deleteDoc(fs.doc(db, "galleryPages", page.id));
+        await loadGalleryPages();
+        showToast("Gallery page deleted.");
+      } catch (error) {
+        showToast(error.message);
+      }
+    }
+
+    function flipGallery(direction) {
+      if (galleryFlipping || galleryPages.length < 2) return;
+      const nextIndex = galleryIndex + direction;
+      if (nextIndex < 0 || nextIndex >= galleryPages.length) return;
+      galleryFlipping = true;
+      const sheet = $("#gallery-sheet");
+      const outClass = direction > 0 ? "flip-out-next" : "flip-out-prev";
+      const inClass = direction > 0 ? "flip-in-next" : "flip-in-prev";
+      sheet.classList.remove("flip-out-next", "flip-out-prev", "flip-in-next", "flip-in-prev");
+      sheet.classList.add(outClass);
+      renderGalleryPages();
+      setTimeout(() => {
+        galleryIndex = nextIndex;
+        renderGalleryPages();
+        sheet.classList.remove(outClass);
+        sheet.classList.add(inClass);
+        setTimeout(() => {
+          sheet.classList.remove(inClass);
+          galleryFlipping = false;
+          renderGalleryPages();
+        }, 340);
+      }, 200);
+    }
+
+    async function resolveRole(uid) {
+      const admin = await fs.getDoc(fs.doc(db, "admins", uid));
+      if (admin.exists()) return "admin";
+      const viewer = await fs.getDoc(fs.doc(db, "viewers", uid));
+      if (viewer.exists()) return "viewer";
+      return null;
+    }
+
+    async function handleAuthState(account) {
+      user = account;
+      role = null;
+      editMode = false;
+      dirty = false;
+      applyEditableState();
+      if (account) {
+        try {
+          role = await resolveRole(account.uid);
+          if (!role) showToast("Signed in, but no admin or viewer role is assigned.");
+        } catch (error) {
+          showToast(error.message);
+        }
+      }
+      updateRoleUi();
+      await loadGalleryPages();
+      if (role === "admin" && !contentExists && !seedingContent) {
+        seedingContent = true;
+        try {
+          await fs.setDoc(contentRef(), defaultContent);
+          showToast("Default birthday copy added to Firestore.");
+        } catch (error) {
+          showToast(error.message);
+        } finally {
+          seedingContent = false;
+        }
+      }
+    }
+
+    async function grantRole() {
+      if (role !== "admin") return;
+      const uid = $("#role-uid").value.trim();
+      const selected = $("#role-select").value;
+      $("#access-error").textContent = "";
+      if (!uid) {
+        $("#access-error").textContent = "Paste a Firebase user UID.";
+        return;
+      }
+      try {
+        const target = selected === "admin" ? "admins" : "viewers";
+        const other = selected === "admin" ? "viewers" : "admins";
+        await fs.deleteDoc(fs.doc(db, other, uid));
+        await fs.setDoc(fs.doc(db, target, uid), { createdAt: fs.serverTimestamp() });
+        $("#role-uid").value = "";
+        showToast(`${selected === "admin" ? "Admin" : "Viewer"} role granted.`);
+      } catch (error) {
+        $("#access-error").textContent = error.message;
+      }
+    }
+
+    async function revokeRole() {
+      if (role !== "admin") return;
+      const uid = $("#role-uid").value.trim();
+      const selected = $("#role-select").value;
+      $("#access-error").textContent = "";
+      if (!uid) {
+        $("#access-error").textContent = "Paste a Firebase user UID.";
+        return;
+      }
+      if (uid === user.uid && selected === "admin") {
+        $("#access-error").textContent = "Ask another admin to revoke your own admin role.";
+        return;
+      }
+      try {
+        await fs.deleteDoc(fs.doc(db, selected === "admin" ? "admins" : "viewers", uid));
+        $("#role-uid").value = "";
+        showToast("Role revoked.");
+      } catch (error) {
+        $("#access-error").textContent = error.message;
+      }
+    }
+
+    async function initFirebase() {
+      const ready = Object.values(firebaseConfig).every((value) => typeof value === "string" && value.trim().length > 0);
+      if (!ready) {
+        $("#auth-setup").hidden = false;
+        return;
+      }
+      try {
+        const [appModule, authModule, firestoreModule, storageModule] = await Promise.all([
+          import("https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js"),
+          import("https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js"),
+          import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js"),
+          import("https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js"),
+        ]);
+        app = appModule.initializeApp(firebaseConfig);
+        authApi = authModule;
+        fs = firestoreModule;
+        storageApi = storageModule;
+        auth = authModule.getAuth(app);
+        db = firestoreModule.getFirestore(app);
+        storage = storageModule.getStorage(app);
+        $("#auth-setup").hidden = true;
+
+        authApi.onAuthStateChanged(auth, handleAuthState);
+        fs.onSnapshot(contentRef(), (snapshot) => {
+          contentExists = snapshot.exists();
+          if (snapshot.exists()) {
+            content = { ...defaultContent, ...snapshot.data() };
+            lastSavedContent = { ...content };
+            if (!editMode) renderContent();
+          }
+        }, (error) => showToast(`Content: ${error.message}`));
+        fs.onSnapshot(fs.collection(db, "slimes"), (snapshot) => {
+          slimes = snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
+          renderSlimes();
+        }, (error) => showToast(`Slimes: ${error.message}`));
+      } catch (error) {
+        showToast(`Firebase setup: ${error.message}`);
+      }
+    }
+
+    document.addEventListener("click", (event) => {
+      const go = event.target.closest("[data-go]");
+      if (go && !editMode) showPage(go.dataset.go);
+      const pageLink = event.target.closest("[data-page-link]");
+      if (pageLink && !editMode) showPage(pageLink.dataset.pageLink);
+      const close = event.target.closest("[data-close]");
+      if (close) closeModal(close.dataset.close);
+      const editable = event.target.closest("[data-field]");
+      if (editMode && editable && editable.isContentEditable) {
+        event.preventDefault();
+        event.stopPropagation();
+        editable.focus();
+      }
     });
 
-    let pats = 0;
-    const patButton = document.getElementById('pat-button');
-    const patCount = document.getElementById('pat-count');
-    const slime = document.getElementById('joy-slime');
-    const messages = [
-      'That little slime is smiling.',
-      'A very good pat, expertly delivered.',
-      'The slime has officially adopted you.',
-      'Tiny happiness successfully shared.',
-    ];
+    document.addEventListener("input", (event) => {
+      const field = event.target.closest("[data-field]");
+      if (editMode && field?.isContentEditable) {
+        content[field.dataset.field] = field.innerText;
+        dirty = true;
+      }
+    });
 
-    patButton.addEventListener('click', () => {
-      pats += 1;
-      patCount.textContent = `${pats} ${pats === 1 ? 'pat' : 'pats'} so far`;
-      document.getElementById('slime-message').textContent = messages[(pats - 1) % messages.length];
-      slime.classList.remove('patted');
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        $$(".modal-backdrop").forEach((modal) => { if (!modal.hidden) closeModal(modal.id); });
+      }
+      if (!editMode && !event.target.matches("input, textarea, select, [contenteditable='true']")) {
+        const index = pages.indexOf(currentPage);
+        if (event.key === "ArrowRight" && index < pages.length - 1) showPage(pages[index + 1]);
+        if (event.key === "ArrowLeft" && index > 0) showPage(pages[index - 1]);
+      }
+    });
+
+    let touchStart = null;
+    viewport.addEventListener("touchstart", (event) => {
+      if (event.touches.length === 1 && !event.target.closest("input, textarea, select, [contenteditable='true']")) {
+        touchStart = { x: event.touches[0].clientX, y: event.touches[0].clientY };
+      }
+    }, { passive: true });
+    viewport.addEventListener("touchend", (event) => {
+      if (!touchStart || editMode) return;
+      const touch = event.changedTouches[0];
+      const dx = touch.clientX - touchStart.x;
+      const dy = touch.clientY - touchStart.y;
+      touchStart = null;
+      if (Math.abs(dx) < 55 || Math.abs(dx) < Math.abs(dy)) return;
+      const index = pages.indexOf(currentPage);
+      if (dx < 0 && index < pages.length - 1) showPage(pages[index + 1]);
+      if (dx > 0 && index > 0) showPage(pages[index - 1]);
+    }, { passive: true });
+
+    window.addEventListener("beforeunload", (event) => {
+      if (dirty) {
+        event.preventDefault();
+        event.returnValue = "";
+      }
+    });
+    window.addEventListener("hashchange", () => showPage(location.hash.slice(1), false));
+    window.addEventListener("resize", () => {
+      const index = pages.indexOf(currentPage);
+      viewport.scrollTo({ left: index * viewport.clientWidth, behavior: "auto" });
+    });
+
+    $("#continue-portrait").addEventListener("click", () => document.body.classList.add("portrait-allowed"));
+    $("#edit-button").addEventListener("click", startEditing);
+    $("#save-copy").addEventListener("click", saveContent);
+    $("#cancel-copy").addEventListener("click", cancelEditing);
+    $("#auth-button").addEventListener("click", async () => {
+      if (!user) {
+        openAuth();
+        return;
+      }
+      try {
+        await authApi.signOut(auth);
+        showToast("Signed out.");
+      } catch (error) {
+        showToast(error.message);
+      }
+    });
+    $("#auth-form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (!auth) return;
+      $("#auth-error").textContent = "";
+      $("#auth-submit").disabled = true;
+      try {
+        await authApi.signInWithEmailAndPassword(auth, $("#auth-email").value.trim(), $("#auth-password").value);
+        closeModal("auth-modal");
+        $("#auth-password").value = "";
+      } catch (error) {
+        $("#auth-error").textContent = error.message;
+      } finally {
+        $("#auth-submit").disabled = false;
+      }
+    });
+    $("#access-button").addEventListener("click", () => {
+      $("#current-uid").textContent = user?.uid || "";
+      openModal("access-modal");
+    });
+    $("#copy-uid").addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(user.uid);
+        showToast("UID copied.");
+      } catch {
+        showToast("Select the UID and copy it manually.");
+      }
+    });
+    $("#grant-role").addEventListener("click", grantRole);
+    $("#revoke-role").addEventListener("click", revokeRole);
+
+    $("#slime-name").addEventListener("input", () => updateSlimePreview());
+    $("#color-options").addEventListener("click", (event) => {
+      const button = event.target.closest("button[data-color]");
+      if (!button) return;
+      selectedColor = button.dataset.color;
+      updateSlimePreview(true);
+    });
+    $$("#eye-options [data-eyes]").forEach((button) => button.addEventListener("click", () => {
+      selectedEyes = button.dataset.eyes;
+      selectOption("#eye-options", "eyes", selectedEyes);
+      updateSlimePreview(true);
+    }));
+    $$("#accessory-options [data-accessory]").forEach((button) => button.addEventListener("click", () => {
+      selectedAccessory = button.dataset.accessory;
+      selectOption("#accessory-options", "accessory", selectedAccessory);
+      updateSlimePreview(true);
+    }));
+    $("#random-color").addEventListener("click", () => {
+      const currentIndex = SLIME_COLORS.indexOf(selectedColor);
+      const nextIndex = (currentIndex + 1 + Math.floor(Math.random() * 99)) % SLIME_COLORS.length;
+      selectedColor = SLIME_COLORS[nextIndex];
+      updateSlimePreview(true);
+    });
+    $("#create-slime").addEventListener("click", createSlime);
+    $("#unwrap-gift").addEventListener("click", unwrapGift);
+    $("#rewrap-gift").addEventListener("click", rewrapGift);
+    $("#pet-home").addEventListener("click", () => {
+      gainXp(5);
+      const slime = $("#hero-slime");
+      slime.classList.remove("petted");
       void slime.offsetWidth;
-      slime.classList.add('patted');
+      slime.classList.add("petted");
+      showToast("The birthday slime likes you.");
     });
+    $("#photo-input").addEventListener("change", (event) => uploadPhoto(event.target.files[0]));
+    $("#new-gallery-page").addEventListener("click", createGalleryPage);
+    $("#gallery-prev").addEventListener("click", () => flipGallery(-1));
+    $("#gallery-next").addEventListener("click", () => flipGallery(1));
+
+    renderContent();
+    renderColorOptions();
+    updateSlimePreview();
+    renderSlimes();
+    renderGalleryPages();
+    showPage(location.hash.slice(1) || "home", false);
+    initFirebase();
   </script>
 </body>
 </html>
