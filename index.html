@@ -1368,6 +1368,7 @@ You are loved more than this little game could ever hold.</p>
       const position = validTarget ? normalizeNaturePosition(event.clientX, event.clientY, drag.kind, habitat) : null;
       cleanupNatureDrag();
       if (!validTarget || !position) {
+        showPage(drag.kind === "bunny" ? drag.item.habitat : "garden", true);
         showToast("Bunnies can move between the two cages and the garden.");
         return;
       }
@@ -1383,6 +1384,7 @@ You are loved more than this little game could ever hold.</p>
       } catch (error) {
         renderBunnies();
         renderTulips();
+        showPage(drag.kind === "bunny" ? drag.item.habitat : "garden", true);
         showToast(error.message);
       }
     }
@@ -2104,7 +2106,12 @@ You are loved more than this little game could ever hold.</p>
     document.addEventListener("pointerup", (event) => {
       if (activeNatureDrag && event.pointerId === activeNatureDrag.pointerId) finishNatureDrag(event);
     });
-    document.addEventListener("pointercancel", () => cleanupNatureDrag());
+    document.addEventListener("pointercancel", () => {
+      if (!activeNatureDrag) return;
+      const habitat = activeNatureDrag.kind === "bunny" ? activeNatureDrag.item.habitat : "garden";
+      cleanupNatureDrag();
+      showPage(habitat, true);
+    });
 
     renderContent();
     renderColorOptions();
