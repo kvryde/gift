@@ -404,6 +404,29 @@
     @keyframes tulipSway { 0%, 100% { transform: rotate(-2deg); } 50% { transform: rotate(3deg) translateX(2px); } }
     .drag-ghost { position: fixed; z-index: 150; pointer-events: none; opacity: .92; filter: drop-shadow(0 18px 15px rgba(0, 0, 0, .28)); transform: translate(-50%, -50%); }
     .drag-ghost svg { display: block; width: 100%; }
+    .trash-bin {
+      position: fixed;
+      right: max(1rem, env(safe-area-inset-right));
+      bottom: calc(80px + env(safe-area-inset-bottom));
+      z-index: 170;
+      width: 64px;
+      height: 72px;
+      visibility: hidden;
+      opacity: 0;
+      pointer-events: none;
+      filter: drop-shadow(0 12px 14px rgba(0, 0, 0, .3));
+    }
+    .trash-bin.active { visibility: visible; opacity: 1; }
+    .trash-lid { position: absolute; top: 2px; left: 4px; width: 56px; height: 12px; border: 2px solid #513e59; border-radius: 5px; background: #b8adc9; transform-origin: 8px 100%; }
+    .trash-lid::before { position: absolute; top: -6px; left: 18px; width: 20px; height: 5px; border: 2px solid #513e59; border-bottom: 0; border-radius: 4px 4px 0 0; background: #b8adc9; content: ""; }
+    .trash-body { position: absolute; top: 13px; left: 8px; width: 48px; height: 54px; border: 2px solid #513e59; border-top: 0; border-radius: 3px 3px 9px 9px; background: linear-gradient(90deg, #8f819f, #b8adc9 45%, #9689a7); clip-path: polygon(7% 0, 93% 0, 86% 100%, 14% 100%); transform-origin: 50% 100%; }
+    .trash-body::before, .trash-body::after { position: absolute; top: 13px; width: 4px; height: 29px; border-radius: 3px; background: rgba(81, 62, 89, .45); content: ""; }
+    .trash-body::before { left: 14px; }
+    .trash-body::after { right: 14px; }
+    .trash-label { position: absolute; right: 50%; bottom: -17px; padding: .15rem .4rem; border-radius: 999px; color: #fff; background: rgba(20, 19, 41, .8); font-size: .55rem; font-weight: 900; letter-spacing: .06em; text-transform: uppercase; transform: translateX(50%); white-space: nowrap; }
+    .trash-source { opacity: 0 !important; pointer-events: none !important; }
+    .trash-ghost { position: fixed !important; z-index: 180; max-width: none !important; max-height: none !important; margin: 0 !important; pointer-events: none; transform-origin: center; }
+    .trash-ghost, .trash-ghost * { animation: none !important; transition: none !important; }
     .page-viewport.dragging-nature { scroll-behavior: auto; scroll-snap-type: none; touch-action: none; user-select: none; cursor: grabbing; }
     .nature-delete { position: absolute; top: -5px; right: -7px; z-index: 9; display: grid; width: 25px; height: 25px; padding: 0; place-items: center; border: 1px solid rgba(255, 159, 174, .55); border-radius: 8px; color: #4c1f2a; background: #ffb4c0; box-shadow: 0 4px 12px rgba(30, 20, 40, .25); font-size: .9rem; font-weight: 900; }
     .bunny, .tulip { min-width: 48px; min-height: 48px; }
@@ -956,6 +979,11 @@ You are loved more than this little game could ever hold.</p>
   </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="trash-bin" id="trash-bin" aria-hidden="true">
+    <span class="trash-lid"></span>
+    <span class="trash-body"></span>
+    <span class="trash-label">Trash</span>
+  </div>
 
   <script type="module">
     const firebaseConfig = {
@@ -969,6 +997,7 @@ You are loved more than this little game could ever hold.</p>
 
     const pages = ["home", "slime", "gift", "gallery", "bunnyRose", "bunnyBlue", "garden", "house"];
     const naturePages = ["bunnyRose", "bunnyBlue", "garden"];
+    const FRAME_MS = 1000 / 30;
     const pageTitles = { slime: "Slime Lab", bunnyRose: "Rose Cage", bunnyBlue: "Blue Cage", house: "Our Little House" };
     const viewerFields = new Set(["homeText", "slimeText", "galleryText", "houseText"]);
     const eyeStyles = ["happy", "sleepy", "star"];
@@ -1095,6 +1124,8 @@ You are loved more than this little game could ever hold.</p>
     const houseWriteTimes = new Map();
     let toastTimer = null;
     let seedingContent = false;
+    let trashQueue = Promise.resolve();
+    const pendingTrashItems = new Set();
 
     let app = null;
     let auth = null;
@@ -1116,6 +1147,137 @@ You are loved more than this little game could ever hold.</p>
       toast.classList.add("show");
       clearTimeout(toastTimer);
       toastTimer = setTimeout(() => toast.classList.remove("show"), 3600);
+    }
+
+    function createFrameTicker(update) {
+      let frame = 0;
+      let lastTime = 0;
+      let stopped = false;
+      const tick = (time) => {
+        if (stopped) return;
+        if (time - lastTime >= FRAME_MS - .5) {
+          lastTime = time;
+          update(time);
+        }
+        if (!stopped) frame = requestAnimationFrame(tick);
+      };
+      frame = requestAnimationFrame(tick);
+      return () => {
+        stopped = true;
+        cancelAnimationFrame(frame);
+      };
+    }
+
+    function queueDragPosition(drag, clientX, clientY) {
+      drag.clientX = clientX;
+      drag.clientY = clientY;
+      if (drag.renderFrame) return;
+      const render = (time) => {
+        if (time - (drag.lastRender || 0) < FRAME_MS - .5) {
+          drag.renderFrame = requestAnimationFrame(render);
+          return;
+        }
+        drag.lastRender = time;
+        drag.renderFrame = 0;
+        drag.ghost.style.left = `${drag.clientX}px`;
+        drag.ghost.style.top = `${drag.clientY}px`;
+      };
+      drag.renderFrame = requestAnimationFrame(render);
+    }
+
+    function findTrashSource(key) {
+      return $$("[data-trash-key]").find((element) => element.dataset.trashKey === key) || null;
+    }
+
+    async function trashInteraction(key, source, remove) {
+      if (!key || pendingTrashItems.has(key)) return false;
+      pendingTrashItems.add(key);
+      const element = source || findTrashSource(key);
+      const task = trashQueue.then(async () => {
+        const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const rect = element?.getBoundingClientRect();
+        const visible = rect && rect.width > 0 && rect.height > 0 && rect.right > 0 && rect.bottom > 0 && rect.left < innerWidth && rect.top < innerHeight;
+        try {
+          if (element && !reducedMotion && visible) {
+            const ghost = element.cloneNode(true);
+            ghost.classList.add("trash-ghost");
+            ghost.classList.remove("trash-source", "dragging", "walking", "petted");
+            ghost.removeAttribute("id");
+            ghost.querySelectorAll("[id]").forEach((node) => node.removeAttribute("id"));
+            ghost.querySelectorAll("button, input, textarea, select, [contenteditable]").forEach((node) => node.remove());
+            ghost.setAttribute("aria-hidden", "true");
+            ghost.removeAttribute("tabindex");
+            ghost.removeAttribute("role");
+            ghost.style.left = `${rect.left}px`;
+            ghost.style.top = `${rect.top}px`;
+            ghost.style.width = `${rect.width}px`;
+            ghost.style.height = `${rect.height}px`;
+            ghost.style.transform = "none";
+            ghost.style.opacity = "1";
+            document.body.append(ghost);
+            element.classList.add("trash-source");
+
+            const bin = $("#trash-bin");
+            const lid = bin.querySelector(".trash-lid");
+            const body = bin.querySelector(".trash-body");
+            bin.classList.add("active");
+            const target = bin.getBoundingClientRect();
+            const startX = rect.left + rect.width / 2;
+            const startY = rect.top + rect.height / 2;
+            const endX = target.left + target.width / 2;
+            const endY = target.top + target.height * .24;
+            const direction = endX >= startX ? 1 : -1;
+            const lift = Math.min(190, Math.max(72, Math.abs(endX - startX) * .2));
+            const duration = 720;
+            const startedAt = performance.now();
+
+            try {
+              await new Promise((resolve) => {
+                const stop = createFrameTicker((time) => {
+                  const elapsed = time - startedAt;
+                  const progress = Math.min(1, elapsed / duration);
+                  const flight = Math.min(1, progress / .82);
+                  const eased = 1 - Math.pow(1 - flight, 2);
+                  const x = startX + (endX - startX) * eased;
+                  const y = startY + (endY - startY) * eased - Math.sin(flight * Math.PI) * lift;
+                  const scale = progress < .66 ? 1 : Math.max(.04, 1 - ((progress - .66) / .34) * .96);
+                  const rotation = direction * (progress * 250 + Math.sin(progress * Math.PI) * 16);
+                  ghost.style.left = `${x - rect.width / 2}px`;
+                  ghost.style.top = `${y - rect.height / 2}px`;
+                  ghost.style.transform = `rotate(${rotation}deg) scale(${scale})`;
+                  ghost.style.opacity = progress > .88 ? String(Math.max(0, (1 - progress) / .12)) : "1";
+                  const open = progress < .16 ? progress / .16 : progress < .72 ? 1 : Math.max(0, (1 - progress) / .28);
+                  lid.style.transform = `rotate(${-28 * open}deg) translateY(${-3 * open}px)`;
+                  if (progress > .78) {
+                    const bounce = Math.sin(((progress - .78) / .22) * Math.PI);
+                    body.style.transform = `scale(${1 + bounce * .1}, ${1 - bounce * .12})`;
+                  }
+                  if (progress >= 1) {
+                    stop();
+                    resolve();
+                  }
+                });
+              });
+            } finally {
+              ghost.remove();
+              lid.style.transform = "";
+              body.style.transform = "";
+              bin.classList.remove("active");
+            }
+          }
+          await remove();
+          return true;
+        } catch (error) {
+          element?.classList.remove("trash-source");
+          throw error;
+        }
+      });
+      trashQueue = task.catch(() => {});
+      try {
+        return await task;
+      } finally {
+        pendingTrashItems.delete(key);
+      }
     }
 
     function openModal(id) {
@@ -1320,6 +1482,7 @@ You are loved more than this little game could ever hold.</p>
       slimes.forEach((slime, index) => {
         const card = document.createElement("div");
         card.className = "slime-card";
+        card.dataset.trashKey = `slime:${slime.id}`;
         card.style.animationDelay = `${Math.min(index, 12) * 35}ms`;
         card.tabIndex = 0;
         card.setAttribute("role", "button");
@@ -1350,7 +1513,7 @@ You are loved more than this little game could ever hold.</p>
           remove.type = "button";
           remove.textContent = "×";
           remove.setAttribute("aria-label", `Delete ${slime.name || "slime"}`);
-          remove.addEventListener("click", (event) => { event.stopPropagation(); deleteSlime(slime); });
+          remove.addEventListener("click", (event) => { event.stopPropagation(); deleteSlime(slime, card); });
           card.append(remove);
         }
         grid.append(card);
@@ -1396,11 +1559,11 @@ You are loved more than this little game could ever hold.</p>
       }
     }
 
-    async function deleteSlime(slime) {
+    async function deleteSlime(slime, source) {
       if (!slime.id || !db) return;
       try {
-        await fs.deleteDoc(fs.doc(db, "slimes", slime.id));
-        showToast("Slime returned to the wild.");
+        const removed = await trashInteraction(`slime:${slime.id}`, source, () => fs.deleteDoc(fs.doc(db, "slimes", slime.id)));
+        if (removed) showToast("Slime returned to the wild.");
       } catch (error) {
         showToast(error.message);
       }
@@ -1459,13 +1622,13 @@ You are loved more than this little game could ever hold.</p>
       return Boolean(item && !String(item.id).startsWith("demo-") && (role === "admin" || item.createdBy === user?.uid));
     }
 
-    async function deleteNatureItem(kind, item) {
+    async function deleteNatureItem(kind, item, source) {
       if (!canManageNatureItem(item) || !db) return;
       const label = kind === "bunny" ? item.name || "this bunny" : "this tulip";
       if (!window.confirm(`Delete ${label}? This cannot be undone.`)) return;
       try {
-        await fs.deleteDoc(fs.doc(db, kind === "bunny" ? "bunnies" : "tulips", item.id));
-        showToast(`${kind === "bunny" ? "Bunny" : "Tulip"} deleted.`);
+        const removed = await trashInteraction(`${kind}:${item.id}`, source, () => fs.deleteDoc(fs.doc(db, kind === "bunny" ? "bunnies" : "tulips", item.id)));
+        if (removed) showToast(`${kind === "bunny" ? "Bunny" : "Tulip"} deleted.`);
       } catch (error) {
         showToast(error.message);
       }
@@ -1480,6 +1643,7 @@ You are loved more than this little game could ever hold.</p>
         if (!stage) return;
         const element = document.createElement("div");
         element.className = "bunny";
+        element.dataset.trashKey = `bunny:${bunny.id}`;
         element.tabIndex = 0;
         element.setAttribute("role", "button");
         element.style.left = `${Math.max(.07, Math.min(.93, Number(bunny.x) || .5)) * 100}%`;
@@ -1498,7 +1662,7 @@ You are loved more than this little game could ever hold.</p>
           remove.title = `Delete ${bunny.name || "bunny"}`;
           remove.setAttribute("aria-label", `Delete ${bunny.name || "bunny"}`);
           remove.addEventListener("pointerdown", (event) => event.stopPropagation());
-          remove.addEventListener("click", (event) => { event.stopPropagation(); deleteNatureItem("bunny", bunny); });
+          remove.addEventListener("click", (event) => { event.stopPropagation(); deleteNatureItem("bunny", bunny, element); });
           element.append(remove);
         }
         element.addEventListener("pointerdown", (event) => startNatureDrag("bunny", bunny, event));
@@ -1528,6 +1692,7 @@ You are loved more than this little game could ever hold.</p>
         const growth = Math.max(0, Math.min(4, Number(tulip.growth) || 0));
         const element = document.createElement("div");
         element.className = `tulip${growth === 4 ? " grown" : ""}`;
+        element.dataset.trashKey = `tulip:${tulip.id}`;
         element.style.left = `${Math.max(.06, Math.min(.94, Number(tulip.x) || .5)) * 100}%`;
         element.style.top = `${Math.max(.42, Math.min(.94, Number(tulip.y) || .82)) * 100}%`;
         element.tabIndex = 0;
@@ -1542,7 +1707,7 @@ You are loved more than this little game could ever hold.</p>
           remove.title = "Delete tulip";
           remove.setAttribute("aria-label", "Delete tulip");
           remove.addEventListener("pointerdown", (event) => event.stopPropagation());
-          remove.addEventListener("click", (event) => { event.stopPropagation(); deleteNatureItem("tulip", tulip); });
+          remove.addEventListener("click", (event) => { event.stopPropagation(); deleteNatureItem("tulip", tulip, element); });
           element.append(remove);
         }
         element.addEventListener("pointerdown", (event) => startNatureDrag("tulip", tulip, event));
@@ -1608,7 +1773,7 @@ You are loved more than this little game could ever hold.</p>
       element.classList.add("dragging");
       viewport.classList.add("dragging-nature");
       try { element.setPointerCapture(event.pointerId); } catch {}
-      activeNatureDrag.frame = requestAnimationFrame(autoScrollNature);
+      activeNatureDrag.stopFrame = createFrameTicker(autoScrollNature);
     }
 
     function autoScrollNature() {
@@ -1624,12 +1789,12 @@ You are loved more than this little game could ever hold.</p>
         const index = Math.round(viewport.scrollLeft / viewport.clientWidth);
         updateNaturePageVisual(pages[index]);
       }
-      drag.frame = requestAnimationFrame(autoScrollNature);
     }
 
     function cleanupNatureDrag() {
       if (!activeNatureDrag) return;
-      cancelAnimationFrame(activeNatureDrag.frame);
+      activeNatureDrag.stopFrame?.();
+      cancelAnimationFrame(activeNatureDrag.renderFrame);
       try { activeNatureDrag.element.releasePointerCapture(activeNatureDrag.pointerId); } catch {}
       activeNatureDrag.element.classList.remove("dragging");
       activeNatureDrag.ghost.remove();
@@ -1936,6 +2101,7 @@ You are loved more than this little game could ever hold.</p>
         const element = document.createElement("div");
         element.className = "house-item house-furniture";
         element.dataset.houseId = item.id;
+        element.dataset.trashKey = `furniture:${item.id}`;
         element.tabIndex = 0;
         element.setAttribute("role", "button");
         element.style.left = `${Number(item.x) * 100}%`;
@@ -1950,7 +2116,7 @@ You are loved more than this little game could ever hold.</p>
           remove.textContent = "×";
           remove.setAttribute("aria-label", `Delete ${item.type}`);
           remove.addEventListener("pointerdown", (event) => event.stopPropagation());
-          remove.addEventListener("click", (event) => { event.stopPropagation(); deleteHouseItem("furniture", item); });
+          remove.addEventListener("click", (event) => { event.stopPropagation(); deleteHouseItem("furniture", item, element); });
           element.append(remove);
         }
         element.addEventListener("pointerdown", (event) => startHouseDrag("furniture", item, event));
@@ -1965,6 +2131,7 @@ You are loved more than this little game could ever hold.</p>
         const element = document.createElement("div");
         element.className = "house-item house-cat";
         element.dataset.houseId = cat.id;
+        element.dataset.trashKey = `cats:${cat.id}`;
         element.tabIndex = 0;
         element.setAttribute("role", "button");
         element.style.left = `${Number(cat.x) * 100}%`;
@@ -1982,7 +2149,7 @@ You are loved more than this little game could ever hold.</p>
           remove.textContent = "×";
           remove.setAttribute("aria-label", `Delete ${cat.name || "cat"}`);
           remove.addEventListener("pointerdown", (event) => event.stopPropagation());
-          remove.addEventListener("click", (event) => { event.stopPropagation(); deleteHouseItem("cats", cat); });
+          remove.addEventListener("click", (event) => { event.stopPropagation(); deleteHouseItem("cats", cat, element); });
           element.append(remove);
         }
         element.addEventListener("pointerdown", (event) => startHouseDrag("cat", cat, event));
@@ -2003,6 +2170,7 @@ You are loved more than this little game could ever hold.</p>
       mixes.forEach((mix) => {
         const card = document.createElement("div");
         card.className = "mix-card";
+        card.dataset.trashKey = `mixes:${mix.id}`;
         card.innerHTML = slimeSvg(mix.resultColor, mix.eyes, mix.accessory);
         const name = document.createElement("span");
         name.textContent = mix.name || "Mixed slime";
@@ -2014,7 +2182,7 @@ You are loved more than this little game could ever hold.</p>
           remove.className = "nature-delete";
           remove.textContent = "×";
           remove.setAttribute("aria-label", `Delete ${mix.name || "mixed slime"}`);
-          remove.addEventListener("click", (event) => { event.stopPropagation(); deleteHouseItem("mixes", mix); });
+          remove.addEventListener("click", (event) => { event.stopPropagation(); deleteHouseItem("mixes", mix, card); });
           card.append(remove);
         }
         list.append(card);
@@ -2097,7 +2265,7 @@ You are loved more than this little game could ever hold.</p>
       ghost.style.top = `${event.clientY}px`;
       ghost.innerHTML = kind === "character" ? chibiSvg(item) : kind === "cat" ? catSvg(item.color) : furnitureSvg(item.type);
       document.body.append(ghost);
-      activeHouseDrag = { kind, item, element, ghost, pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, moved: false };
+      activeHouseDrag = { kind, item, element, ghost, pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, clientX: event.clientX, clientY: event.clientY, moved: false };
       element.classList.add("dragging");
       $("#house-stage").classList.add("dragging-house");
       try { element.setPointerCapture(event.pointerId); } catch {}
@@ -2105,6 +2273,7 @@ You are loved more than this little game could ever hold.</p>
 
     function cleanupHouseDrag() {
       if (!activeHouseDrag) return;
+      cancelAnimationFrame(activeHouseDrag.renderFrame);
       try { activeHouseDrag.element.releasePointerCapture(activeHouseDrag.pointerId); } catch {}
       activeHouseDrag.element.classList.remove("dragging");
       activeHouseDrag.ghost.remove();
@@ -2163,13 +2332,17 @@ You are loved more than this little game could ever hold.</p>
       showToast(`${cat.name || "The cat"} purrs.`);
     }
 
-    async function deleteHouseItem(kind, item) {
+    async function deleteHouseItem(kind, item, source) {
+      if (kind === "characters") {
+        showToast("The birthday pair stays with you.");
+        return;
+      }
       if (!canManageHouseItem(item) || !db) return;
       const label = kind === "cats" ? item.name || "this cat" : kind === "mixes" ? item.name || "this mixture" : `this ${item.type}`;
       if (!window.confirm(`Delete ${label}?`)) return;
       try {
-        await fs.deleteDoc(fs.doc(db, kind, item.id));
-        showToast("Removed from the house.");
+        const removed = await trashInteraction(`${kind}:${item.id}`, source, () => fs.deleteDoc(fs.doc(db, kind, item.id)));
+        if (removed) showToast("Removed from the house.");
       } catch (error) {
         showToast(error.message);
       }
@@ -2431,6 +2604,7 @@ You are loved more than this little game could ever hold.</p>
       const page = currentGalleryPage();
       const pagePhotos = Array.isArray(page.photos) ? page.photos : [];
       const manageable = canManageGalleryPage(page);
+      $("#gallery-sheet").dataset.trashKey = `gallery-page:${page.id}`;
       copy.hidden = false;
       adminActions.hidden = false;
 
@@ -2438,6 +2612,7 @@ You are loved more than this little game could ever hold.</p>
         const photo = pagePhotos[index];
         const slot = document.createElement("div");
         slot.className = `photo-slot${photo ? "" : " empty"}`;
+        if (photo) slot.dataset.trashKey = `gallery-photo:${page.id}:${photo.path || photo.url}`;
         if (photo) {
           const image = document.createElement("img");
           image.src = photo.url;
@@ -2450,7 +2625,7 @@ You are loved more than this little game could ever hold.</p>
             remove.type = "button";
             remove.textContent = "×";
             remove.setAttribute("aria-label", `Delete photo ${index + 1}`);
-            remove.addEventListener("click", () => deleteGalleryPhoto(photo));
+            remove.addEventListener("click", (event) => { event.stopPropagation(); deleteGalleryPhoto(photo, slot); });
             slot.append(remove);
           }
         } else if (manageable) {
@@ -2501,7 +2676,7 @@ You are loved more than this little game could ever hold.</p>
         removePage.className = "photo-action delete";
         removePage.type = "button";
         removePage.textContent = "Delete page";
-        removePage.addEventListener("click", () => deleteGalleryPage(page));
+        removePage.addEventListener("click", () => deleteGalleryPage(page, $("#gallery-sheet")));
         adminActions.append(removePage);
       }
 
@@ -2616,14 +2791,16 @@ You are loved more than this little game could ever hold.</p>
       }
     }
 
-    async function deleteGalleryPhoto(photo) {
+    async function deleteGalleryPhoto(photo, source) {
       const page = currentGalleryPage();
       if (!page || !canManageGalleryPage(page)) return;
       try {
-        await fs.updateDoc(fs.doc(db, "galleryPages", page.id), { photos: fs.arrayRemove(photo) });
-        if (photo.path) await storageApi.deleteObject(storageApi.ref(storage, photo.path)).catch(() => {});
-        await loadGalleryPages();
-        showToast("Photo removed.");
+        const removed = await trashInteraction(`gallery-photo:${page.id}:${photo.path || photo.url}`, source, async () => {
+          await fs.updateDoc(fs.doc(db, "galleryPages", page.id), { photos: fs.arrayRemove(photo) });
+          if (photo.path) await storageApi.deleteObject(storageApi.ref(storage, photo.path)).catch(() => {});
+          await loadGalleryPages();
+        });
+        if (removed) showToast("Photo removed.");
       } catch (error) {
         showToast(error.message);
       }
@@ -2640,15 +2817,17 @@ You are loved more than this little game could ever hold.</p>
       }
     }
 
-    async function deleteGalleryPage(page) {
+    async function deleteGalleryPage(page, source) {
       if (!canManageGalleryPage(page)) return;
       if (!window.confirm("Delete this gallery page and its photos?")) return;
       try {
-        const pagePhotos = Array.isArray(page.photos) ? page.photos : [];
-        await Promise.all(pagePhotos.map((photo) => photo.path ? storageApi.deleteObject(storageApi.ref(storage, photo.path)).catch(() => {}) : Promise.resolve()));
-        await fs.deleteDoc(fs.doc(db, "galleryPages", page.id));
-        await loadGalleryPages();
-        showToast("Gallery page deleted.");
+        const removed = await trashInteraction(`gallery-page:${page.id}`, source, async () => {
+          const pagePhotos = Array.isArray(page.photos) ? page.photos : [];
+          await Promise.all(pagePhotos.map((photo) => photo.path ? storageApi.deleteObject(storageApi.ref(storage, photo.path)).catch(() => {}) : Promise.resolve()));
+          await fs.deleteDoc(fs.doc(db, "galleryPages", page.id));
+          await loadGalleryPages();
+        });
+        if (removed) showToast("Gallery page deleted.");
       } catch (error) {
         showToast(error.message);
       }
@@ -3036,10 +3215,7 @@ You are loved more than this little game could ever hold.</p>
       if (!activeNatureDrag || event.pointerId !== activeNatureDrag.pointerId) return;
       event.preventDefault();
       const drag = activeNatureDrag;
-      drag.clientX = event.clientX;
-      drag.clientY = event.clientY;
-      drag.ghost.style.left = `${event.clientX}px`;
-      drag.ghost.style.top = `${event.clientY}px`;
+      queueDragPosition(drag, event.clientX, event.clientY);
       if (Math.hypot(event.clientX - drag.startX, event.clientY - drag.startY) > 6) drag.moved = true;
     }, { passive: false });
     document.addEventListener("pointerup", (event) => {
@@ -3055,8 +3231,7 @@ You are loved more than this little game could ever hold.</p>
       if (!activeHouseDrag || event.pointerId !== activeHouseDrag.pointerId) return;
       event.preventDefault();
       const drag = activeHouseDrag;
-      drag.ghost.style.left = `${event.clientX}px`;
-      drag.ghost.style.top = `${event.clientY}px`;
+      queueDragPosition(drag, event.clientX, event.clientY);
       if (Math.hypot(event.clientX - drag.startX, event.clientY - drag.startY) > 6) drag.moved = true;
     }, { passive: false });
     document.addEventListener("pointerup", (event) => {
