@@ -287,6 +287,13 @@
     .random-color { min-height: 30px; padding: .3rem .55rem; border: 1px solid var(--line); border-radius: 8px; color: var(--purple); background: rgba(185, 167, 238, .08); font-size: .62rem; font-weight: 900; }
     .slime-preview.jelly { animation: jelly .55s ease; }
     .slime-preview.pop { animation: pop .6s ease; }
+    .slime-preview.mixing { animation: slimeMixing .8s ease-in-out infinite; }
+    .slime-preview-card.mixing { overflow: hidden; }
+    .slime-preview-card.mixing::before, .slime-preview-card.mixing::after { position: absolute; width: 16px; height: 16px; border: 1px solid rgba(255, 255, 255, .65); border-radius: 50%; content: ""; animation: labBubble 1.2s ease-out infinite; }
+    .slime-preview-card.mixing::before { left: 32%; bottom: 28%; }
+    .slime-preview-card.mixing::after { right: 30%; bottom: 22%; animation-delay: .45s; }
+    @keyframes slimeMixing { 0%, 100% { transform: scale(.92, 1.05) rotate(-3deg); filter: hue-rotate(0); } 50% { transform: scale(1.06, .92) rotate(3deg); filter: hue-rotate(25deg); } }
+    @keyframes labBubble { from { opacity: .8; transform: translateY(0) scale(.5); } to { opacity: 0; transform: translateY(-75px) scale(1.4); } }
     .slime-card { animation: cardIn .4s ease both; }
     @keyframes jelly { 0%, 100% { transform: scale(1); } 30% { transform: scale(1.07, .93) rotate(-2deg); } 60% { transform: scale(.96, 1.04) rotate(2deg); } }
     @keyframes pop { 0% { transform: scale(.75); opacity: .3; } 55% { transform: scale(1.1, .9); } 100% { transform: scale(1); opacity: 1; } }
@@ -398,6 +405,107 @@
     .drag-ghost { position: fixed; z-index: 150; pointer-events: none; opacity: .92; filter: drop-shadow(0 18px 15px rgba(0, 0, 0, .28)); transform: translate(-50%, -50%); }
     .drag-ghost svg { display: block; width: 100%; }
     .page-viewport.dragging-nature { scroll-behavior: auto; scroll-snap-type: none; touch-action: none; user-select: none; cursor: grabbing; }
+    .nature-delete { position: absolute; top: -5px; right: -7px; z-index: 9; display: grid; width: 25px; height: 25px; padding: 0; place-items: center; border: 1px solid rgba(255, 159, 174, .55); border-radius: 8px; color: #4c1f2a; background: #ffb4c0; box-shadow: 0 4px 12px rgba(30, 20, 40, .25); font-size: .9rem; font-weight: 900; }
+    .bunny, .tulip { min-width: 48px; min-height: 48px; }
+    button.nature-delete { cursor: pointer; }
+
+    .house-page { background: radial-gradient(circle at 20% 15%, rgba(255, 224, 180, .12), transparent 24rem), #17172d; }
+    .house-page .page-heading { margin-bottom: .75rem; }
+    .house-page .page-heading h1 { margin-bottom: .3rem; font-size: clamp(1.8rem, 3.5vw, 3.2rem); }
+    .house-page .page-heading p { font-size: .76rem; }
+    .house-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(245px, 290px); gap: .85rem; align-items: start; }
+    .house-stage { position: relative; min-height: 440px; height: min(61vh, 580px); overflow: hidden; border: 1px solid rgba(255, 255, 255, .15); border-radius: 24px; background: linear-gradient(180deg, #6d81b4 0%, #b9b7d2 47%, #789967 48%, #527953 100%); box-shadow: var(--shadow); touch-action: pan-y; user-select: none; }
+    .house-stage.placing { cursor: crosshair; }
+    .house-stage.dragging-house { cursor: grabbing; touch-action: none; }
+    .house-cloud { position: absolute; width: 90px; height: 25px; border-radius: 999px; background: rgba(255, 255, 255, .32); }
+    .house-cloud::before, .house-cloud::after { position: absolute; bottom: 0; border-radius: 50%; background: inherit; content: ""; }
+    .house-cloud::before { left: 16px; width: 42px; height: 42px; }
+    .house-cloud::after { right: 12px; width: 32px; height: 32px; }
+    .house-cloud.one { top: 10%; left: 9%; }
+    .house-cloud.two { top: 17%; left: 37%; transform: scale(.65); opacity: .6; }
+    .house-tree { position: absolute; bottom: 23%; left: 5%; width: 85px; height: 145px; }
+    .house-tree::before { position: absolute; bottom: 0; left: 35px; width: 18px; height: 75px; border-radius: 8px; background: #765b4c; content: ""; }
+    .house-tree::after { position: absolute; top: 0; left: 0; width: 85px; height: 95px; border-radius: 48% 52% 45% 55%; background: radial-gradient(circle at 35% 28%, #8eb878, #4e7958 72%); box-shadow: -16px 25px 0 -10px #628c61, 18px 22px 0 -8px #456e51; content: ""; }
+    .house-path { position: absolute; bottom: -12%; left: 39%; width: 17%; height: 50%; border-radius: 50% 50% 0 0; background: rgba(224, 202, 172, .58); transform: rotate(-7deg); }
+    .house-building { position: absolute; top: 13%; right: 3%; width: 42%; height: 74%; border: 3px solid #72546d; border-radius: 16px 16px 7px 7px; background: linear-gradient(180deg, #f5d9d2 0 64%, #c9957e 65% 100%); box-shadow: 0 18px 30px rgba(35, 30, 55, .24); }
+    .house-roof { position: absolute; top: -24%; left: -8%; width: 116%; height: 32%; background: #b46f7e; clip-path: polygon(50% 0, 100% 100%, 0 100%); filter: drop-shadow(0 5px 0 #714b60); }
+    .house-window { position: absolute; top: 14%; right: 9%; width: 27%; aspect-ratio: 1.15; border: 5px solid #fff0d7; border-radius: 8px; background: linear-gradient(135deg, #9bc8dc, #e6f2ee); box-shadow: 0 0 25px rgba(255, 234, 177, .22); }
+    .house-window::before, .house-window::after { position: absolute; background: #fff0d7; content: ""; }
+    .house-window::before { top: 43%; left: 0; width: 100%; height: 5px; }
+    .house-window::after { top: 0; left: 45%; width: 5px; height: 100%; }
+    .house-door { position: absolute; bottom: 0; left: 5%; width: 25%; height: 48%; border: 4px solid #79566b; border-bottom: 0; border-radius: 10px 10px 0 0; background: linear-gradient(90deg, #98728c, #b78da4); }
+    .house-door::after { position: absolute; top: 52%; right: 12%; width: 7px; height: 7px; border-radius: 50%; background: #f5d58f; content: ""; }
+    .house-rug { position: absolute; right: 7%; bottom: 7%; width: 52%; height: 19%; border: 2px solid rgba(255, 255, 255, .3); border-radius: 50%; background: repeating-radial-gradient(ellipse, #d79aab 0 8px, #efbfca 9px 15px); opacity: .7; }
+    .house-interior { position: absolute; top: 13%; right: 3%; z-index: 2; width: 42%; height: 74%; border: 2px dashed transparent; border-radius: 14px; pointer-events: none; transition: border-color .2s, background .2s; }
+    .house-stage.dragging-house .house-interior { border-color: rgba(255, 240, 185, .8); background: rgba(255, 240, 185, .08); }
+    .house-label { position: absolute; z-index: 3; padding: .25rem .5rem; border: 1px solid rgba(255, 255, 255, .22); border-radius: 999px; color: white; background: rgba(30, 28, 53, .38); font-size: .55rem; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; pointer-events: none; backdrop-filter: blur(6px); }
+    .house-label.yard { bottom: 3%; left: 4%; }
+    .house-label.inside { top: 5%; right: 6%; }
+    .house-hint { position: absolute; bottom: .7rem; left: 50%; z-index: 12; max-width: 90%; padding: .35rem .65rem; border-radius: 999px; color: white; background: rgba(28, 25, 48, .62); font-size: .58rem; font-weight: 800; text-align: center; pointer-events: none; transform: translateX(-50%); backdrop-filter: blur(6px); }
+    .house-layer { position: absolute; inset: 0; pointer-events: none; }
+    .house-layer > .house-item { pointer-events: auto; }
+    .house-choice-row label { min-width: 72px; flex: 1; }
+    .house-choice-row .select-input { min-height: 32px; padding: .35rem .45rem; font-size: .6rem; }
+    .house-item { position: absolute; z-index: 5; transform: translate(-50%, -50%); cursor: grab; touch-action: none; filter: drop-shadow(0 7px 5px rgba(25, 24, 43, .22)); }
+    .house-item:active { cursor: grabbing; }
+    .house-item svg { display: block; width: 100%; overflow: visible; pointer-events: none; }
+    .house-item.dragging { opacity: .25; }
+    .house-character { z-index: 8; width: clamp(62px, 8vw, 88px); transform: translate(-50%, -100%); transition: left .9s ease-in-out, top .9s ease-in-out; }
+    .house-character svg { animation: chibiBreathe 2.8s ease-in-out infinite; transform-origin: 50% 100%; }
+    .house-character.walking svg { animation: chibiWalk .42s ease-in-out infinite; }
+    .house-character.dragging { transition: none; }
+    .house-cat { z-index: 7; width: clamp(48px, 6vw, 68px); transition: left 1.1s ease-in-out, top 1.1s ease-in-out; }
+    .house-cat svg { animation: catBreathe 2.2s ease-in-out infinite; transform-origin: 50% 100%; }
+    .house-cat.petted svg { animation: catHappy .45s ease; }
+    .house-item-label { position: absolute; bottom: -3px; left: 50%; padding: .12rem .35rem; border-radius: 999px; color: #392b43; background: rgba(255, 255, 255, .86); font-size: .48rem; font-weight: 900; pointer-events: none; transform: translateX(-50%); white-space: nowrap; }
+    .house-panel { display: grid; max-height: min(61vh, 580px); gap: .7rem; overflow-y: auto; padding: .8rem; border: 1px solid var(--line); border-radius: 20px; background: rgba(32, 29, 59, .9); scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, .18) transparent; }
+    .house-panel-section { display: grid; gap: .55rem; padding-bottom: .7rem; border-bottom: 1px solid var(--line); }
+    .house-panel-section:last-child { padding-bottom: 0; border-bottom: 0; }
+    .house-panel-title { margin: 0; color: var(--gold); font-family: Georgia, "Times New Roman", serif; font-size: 1rem; font-weight: 400; }
+    .house-panel-note { margin: 0; color: var(--muted); font-size: .62rem; line-height: 1.45; }
+    .house-choice-row { display: flex; flex-wrap: wrap; gap: .35rem; }
+    .house-choice { display: grid; min-width: 53px; gap: .2rem; padding: .35rem; place-items: center; border: 1px solid var(--line); border-radius: 9px; color: var(--muted); background: rgba(255, 255, 255, .035); font-size: .5rem; font-weight: 800; }
+    .house-choice.active { color: var(--ink); border-color: var(--gold); background: rgba(243, 213, 143, .12); }
+    .outfit-preview { display: flex; gap: 2px; }
+    .outfit-preview i { width: 10px; height: 17px; border-radius: 3px; background: var(--outfit); }
+    .house-small-button { min-height: 30px; padding: .35rem .5rem; border: 1px solid var(--line); border-radius: 8px; color: var(--muted); background: rgba(255, 255, 255, .04); font-size: .58rem; font-weight: 900; }
+    .house-small-button.active { color: var(--bg); border-color: var(--gold); background: var(--gold); }
+    .house-small-button.danger { color: var(--danger); }
+    .house-empty { padding: .5rem; border: 1px dashed var(--line); border-radius: 9px; color: var(--muted); font-size: .6rem; text-align: center; }
+    .mixer-station { position: relative; display: grid; min-height: 125px; place-items: center; overflow: hidden; border: 1px solid var(--line); border-radius: 14px; background: radial-gradient(circle at 50% 60%, rgba(188, 232, 215, .12), transparent 60%), rgba(9, 8, 23, .35); }
+    .mixer-cauldron { position: relative; width: 100px; height: 80px; margin-top: 27px; border: 3px solid #393346; border-radius: 12px 12px 45px 45px; background: linear-gradient(135deg, #555064, #282536); box-shadow: 0 10px 15px rgba(0, 0, 0, .25); }
+    .mixer-cauldron::before { position: absolute; top: -9px; left: -8px; width: 110px; height: 18px; border: 3px solid #393346; border-radius: 50%; background: var(--mix-color, #9c87c7); content: ""; transition: background .5s; }
+    .mixer-cauldron::after { position: absolute; right: -23px; bottom: 24px; width: 28px; height: 28px; border: 5px solid #393346; border-radius: 50%; content: ""; }
+    .mixer-stream { position: absolute; top: 5px; width: 8px; height: 55px; border-radius: 999px; opacity: 0; transform: rotate(12deg); }
+    .mixer-stream.a { left: 32%; background: var(--mix-a, #f39ab8); }
+    .mixer-stream.b { right: 32%; background: var(--mix-b, #8fc8e8); transform: rotate(-12deg); }
+    .mixer-station.pouring .mixer-stream { opacity: .9; animation: pour .55s ease-in-out infinite alternate; }
+    .mixer-station.swirling .mixer-cauldron::before { animation: liquidSwirl .7s linear infinite; }
+    .mixer-station.bubbling .mixer-cauldron::before { animation: liquidBubble .65s ease-in-out infinite; }
+    .mix-bubble { position: absolute; bottom: 38px; width: 12px; height: 12px; border: 1px solid rgba(255, 255, 255, .5); border-radius: 50%; opacity: 0; }
+    .mixer-station.bubbling .mix-bubble { animation: mixBubble 1.1s ease-out infinite; }
+    .mix-bubble.one { left: 32%; }
+    .mix-bubble.two { right: 35%; animation-delay: .35s !important; }
+    .mix-bubble.three { left: 51%; animation-delay: .65s !important; }
+    .mix-result { position: absolute; top: 6px; width: 74px; opacity: 0; transform: translateY(25px) scale(.5); pointer-events: none; }
+    .mixer-station.revealing .mix-result { animation: mixReveal .8s cubic-bezier(.2, .9, .25, 1.25) forwards; }
+    .mixer-station.revealing .mixer-cauldron { opacity: .25; }
+    .mix-status { position: absolute; bottom: 5px; color: var(--muted); font-size: .53rem; font-weight: 800; }
+    .mix-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .35rem; }
+    .mix-card { position: relative; display: grid; min-height: 80px; padding: .3rem; place-items: center; border: 1px solid var(--line); border-radius: 10px; background: rgba(255, 255, 255, .035); }
+    .mix-card svg { width: 58px; height: 48px; }
+    .mix-card span { max-width: 100%; overflow: hidden; font-size: .52rem; font-weight: 900; text-overflow: ellipsis; white-space: nowrap; }
+    .house-heart { position: absolute; z-index: 20; color: #ff9eb5; font-size: 1.2rem; pointer-events: none; animation: heartPop .8s ease-out forwards; }
+    @keyframes chibiBreathe { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(1.025) translateY(-2px); } }
+    @keyframes chibiWalk { 0%, 100% { transform: rotate(-2deg) translateY(0); } 50% { transform: rotate(2deg) translateY(-5px); } }
+    @keyframes catBreathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03, .97); } }
+    @keyframes catHappy { 0%, 100% { transform: rotate(0); } 30% { transform: rotate(-8deg) translateY(-4px); } 65% { transform: rotate(8deg) translateY(-4px); } }
+    @keyframes pour { from { transform: translateY(-3px) rotate(12deg) scaleY(.8); } to { transform: translateY(3px) rotate(12deg) scaleY(1); } }
+    @keyframes liquidSwirl { 0%, 100% { transform: scaleX(1); } 50% { transform: scaleX(.82) scaleY(1.18); } }
+    @keyframes liquidBubble { 0%, 100% { transform: scale(1); box-shadow: 0 0 0 rgba(255, 255, 255, 0); } 50% { transform: scale(1.06); box-shadow: 0 0 18px rgba(255, 255, 255, .3); } }
+    @keyframes mixBubble { from { opacity: .8; transform: translateY(0) scale(.5); } to { opacity: 0; transform: translateY(-58px) scale(1.4); } }
+    @keyframes mixReveal { 0% { opacity: 0; transform: translateY(25px) scale(.5); } 60% { opacity: 1; transform: translateY(-8px) scale(1.12, .9); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+    @keyframes heartPop { from { opacity: 1; transform: translate(-50%, 0) scale(.7); } to { opacity: 0; transform: translate(-50%, -55px) scale(1.25); } }
 
     .tab-bar {
       z-index: 20;
@@ -423,7 +531,8 @@
       font-size: .68rem;
       font-weight: 900;
     }
-    .tab-button .icon { width: 21px; height: 21px; }
+    .tab-button .icon { width: 21px; height: 21px; flex: 0 0 auto; }
+    .tab-button span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .tab-button.active { color: var(--mint); background: rgba(188, 232, 215, .08); }
     .tab-button.active::after { position: absolute; bottom: 2px; width: 18px; height: 3px; border-radius: 999px; background: var(--mint); content: ""; }
 
@@ -469,7 +578,9 @@
 
     @media (max-width: 800px) {
       .hud-center .xp-track { display: none; }
-      .home-layout, .slime-layout, .gift-layout { grid-template-columns: 1fr; }
+      .home-layout, .slime-layout, .gift-layout, .house-layout { grid-template-columns: 1fr; }
+      .house-stage { height: 430px; }
+      .house-panel { max-height: none; }
       .home-page, .gift-page { align-items: start; }
       .hero-wrap { min-height: 260px; }
       .slime-preview-card { min-height: 260px; }
@@ -532,6 +643,10 @@
     <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9Z"/></symbol>
     <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
     <symbol id="i-rotate" viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M3 8a9 9 0 0 1 14-3M3 3v5h5M21 16a9 9 0 0 1-14 3M21 21v-5h-5"/></symbol>
+    <symbol id="i-house" viewBox="0 0 24 24"><path d="m2 11 10-9 10 9M4 10v11h16V10M9 21v-7h6v7"/><path d="M17 5V2h3v6"/></symbol>
+    <symbol id="i-shirt" viewBox="0 0 24 24"><path d="m8 3-6 4 3 5 3-2v11h8V10l3 2 3-5-6-4a4 4 0 0 1-8 0Z"/></symbol>
+    <symbol id="i-paw" viewBox="0 0 24 24"><ellipse cx="12" cy="16" rx="6" ry="5"/><circle cx="5" cy="9" r="2"/><circle cx="10" cy="5" r="2"/><circle cx="16" cy="5" r="2"/><circle cx="21" cy="9" r="2"/></symbol>
+    <symbol id="i-mix" viewBox="0 0 24 24"><path d="M9 3h6M10 3v6L4 19a2 2 0 0 0 2 3h12a2 2 0 0 0 2-3L14 9V3"/><path d="M7 15h10M9 18h.01M14 17h.01"/></symbol>
   </svg>
 
   <div class="rotate-gate" id="rotate-gate">
@@ -738,16 +853,77 @@ You are loved more than this little game could ever hold.</p>
         <div class="nature-empty" id="garden-empty" hidden></div>
         <div class="nature-hint">Tap a tulip to water it · Drag to move it</div>
       </section>
+
+      <section class="app-page house-page" id="page-house" data-page="house">
+        <div class="page-heading">
+          <span class="eyebrow" data-field="houseEyebrow">Our cozy side quest</span>
+          <h1 data-field="houseTitle">Our Little House</h1>
+          <p data-field="houseText">Drag the pair inside to change outfits, decorate the rooms, mix slimes, and pet the cats.</p>
+        </div>
+        <div class="house-layout">
+          <div class="house-stage" id="house-stage" aria-label="Interactive house and garden">
+            <span class="house-cloud one"></span><span class="house-cloud two"></span><span class="house-tree"></span><span class="house-path"></span>
+            <div class="house-building" aria-hidden="true"><span class="house-roof"></span><span class="house-window"></span><span class="house-door"></span><span class="house-rug"></span></div>
+            <div class="house-interior" data-house-interior></div>
+            <span class="house-label yard">Garden</span><span class="house-label inside">Inside · wardrobe</span>
+            <div class="house-layer" id="house-furniture"></div>
+            <div class="house-layer" id="house-cats"></div>
+            <div class="house-layer" id="house-characters"></div>
+            <div class="house-hint" id="house-hint">Drag a character through the door · Tap cats to pet them</div>
+          </div>
+          <aside class="house-panel" aria-label="House activities">
+            <section class="house-panel-section">
+              <h2 class="house-panel-title">Wardrobe</h2>
+              <p class="house-panel-note" id="wardrobe-note">Drag a character inside the house to unlock their outfits.</p>
+              <div class="house-choice-row" id="wardrobe-characters">
+                <button class="house-choice active" type="button" data-wardrobe-character="girl">Girl</button>
+                <button class="house-choice" type="button" data-wardrobe-character="boy">Guy</button>
+              </div>
+              <div class="house-choice-row" id="wardrobe-options"></div>
+              <button class="house-small-button" type="button" id="send-character-out" data-house-write hidden>Go play outside</button>
+            </section>
+            <section class="house-panel-section">
+              <h2 class="house-panel-title">Furniture & friends</h2>
+              <p class="house-panel-note">Choose a piece, then tap where it should go. Drag anything to rearrange it.</p>
+              <div class="house-choice-row" id="furniture-options"></div>
+              <div class="house-choice-row">
+                <button class="house-small-button" type="button" id="add-house-cat" data-house-write hidden>+ Adopt a cat</button>
+                <button class="house-small-button" type="button" id="cancel-furniture" hidden>Cancel placement</button>
+              </div>
+            </section>
+            <section class="house-panel-section">
+              <h2 class="house-panel-title">Slime mixing</h2>
+              <div class="mixer-station" id="mixer-station">
+                <span class="mixer-stream a"></span><span class="mixer-stream b"></span>
+                <div class="mixer-cauldron"></div><span class="mix-bubble one"></span><span class="mix-bubble two"></span><span class="mix-bubble three"></span>
+                <svg class="mix-result" id="mix-result" viewBox="0 0 240 190" aria-label="Mixed slime"></svg>
+                <span class="mix-status" id="mix-status">Two colors make something new</span>
+              </div>
+              <div class="house-choice-row">
+                <label><span class="control-label">Color A</span><select class="select-input" id="mix-color-a"></select></label>
+                <label><span class="control-label">Color B</span><select class="select-input" id="mix-color-b"></select></label>
+              </div>
+              <label><span class="control-label">Mixture name</span><input class="text-input" id="mix-name" maxlength="40" placeholder="Name your new slime"></label>
+              <div class="house-choice-row">
+                <label><span class="control-label">Face</span><select class="select-input" id="mix-eyes"><option value="happy">Happy</option><option value="sleepy">Sleepy</option><option value="star">Starry</option></select></label>
+                <label><span class="control-label">Extra</span><select class="select-input" id="mix-accessory"><option value="none">None</option><option value="crown">Crown</option><option value="flower">Flower</option><option value="glasses">Glasses</option></select></label>
+              </div>
+              <button class="button button-mint" type="button" id="mix-slime" data-house-write hidden><svg class="icon"><use href="#i-mix"></use></svg>Mix a new slime</button>
+              <div class="mix-list" id="mix-list"></div>
+            </section>
+          </aside>
+        </div>
+      </section>
     </main>
 
     <nav class="tab-bar" aria-label="Game pages">
-      <button class="tab-button active" type="button" data-page-link="home" aria-selected="true"><svg class="icon"><use href="#i-home"></use></svg><span data-field="navHome">Home</span></button>
       <button class="tab-button" type="button" data-page-link="slime" aria-selected="false"><svg class="icon"><use href="#i-slime"></use></svg><span data-field="navSlime">Slime lab</span></button>
       <button class="tab-button" type="button" data-page-link="gift" aria-selected="false"><svg class="icon"><use href="#i-gift"></use></svg><span data-field="navGift">Present</span></button>
       <button class="tab-button" type="button" data-page-link="gallery" aria-selected="false"><svg class="icon"><use href="#i-photo"></use></svg><span data-field="navGallery">Gallery</span></button>
       <button class="tab-button" type="button" data-page-link="bunnyRose" aria-selected="false"><svg class="icon"><use href="#i-bunny"></use></svg><span data-field="navRose">Rose cage</span></button>
       <button class="tab-button" type="button" data-page-link="bunnyBlue" aria-selected="false"><svg class="icon"><use href="#i-bunny"></use></svg><span data-field="navBlue">Blue cage</span></button>
       <button class="tab-button" type="button" data-page-link="garden" aria-selected="false"><svg class="icon"><use href="#i-flower"></use></svg><span data-field="navGarden">Garden</span></button>
+      <button class="tab-button" type="button" data-page-link="house" aria-selected="false"><svg class="icon"><use href="#i-house"></use></svg><span data-field="navHouse">Our house</span></button>
     </nav>
   </div>
 
@@ -791,14 +967,34 @@ You are loved more than this little game could ever hold.</p>
       appId: "1:385782930980:web:8515fac32ce4c28a42c2b1",
     };
 
-    const pages = ["home", "slime", "gift", "gallery", "bunnyRose", "bunnyBlue", "garden"];
+    const pages = ["home", "slime", "gift", "gallery", "bunnyRose", "bunnyBlue", "garden", "house"];
     const naturePages = ["bunnyRose", "bunnyBlue", "garden"];
-    const pageTitles = { slime: "Slime Lab", bunnyRose: "Rose Cage", bunnyBlue: "Blue Cage" };
-    const viewerFields = new Set(["homeText", "slimeText", "galleryText"]);
+    const pageTitles = { slime: "Slime Lab", bunnyRose: "Rose Cage", bunnyBlue: "Blue Cage", house: "Our Little House" };
+    const viewerFields = new Set(["homeText", "slimeText", "galleryText", "houseText"]);
     const eyeStyles = ["happy", "sleepy", "star"];
     const accessories = ["none", "crown", "flower", "glasses"];
     const bunnyColors = ["#fff1f5", "#e8f3ff", "#eee5ff", "#ffe7c7", "#f4dfeb", "#dcefe4"];
     const tulipColors = ["#f39ab8", "#ffd36f", "#bd9bea", "#f7f1e5", "#ef8f8f"];
+    const outfits = [
+      { id: "rose", label: "Rose Pajamas", primary: "#df718d", secondary: "#f7b7c8", pattern: "hearts" },
+      { id: "sky", label: "Sky Pajamas", primary: "#6d9fd2", secondary: "#b8ddf2", pattern: "stars" },
+      { id: "mint", label: "Mint Stars", primary: "#74bfa6", secondary: "#d4f0df", pattern: "stars" },
+      { id: "lavender", label: "Lavender Moon", primary: "#a58acb", secondary: "#dfd0f2", pattern: "moons" },
+      { id: "peach", label: "Peach Hearts", primary: "#e99a86", secondary: "#ffe0cf", pattern: "hearts" },
+      { id: "cloud", label: "Cloud Stripes", primary: "#b7c9e2", secondary: "#f2f5fb", pattern: "stripes" },
+      { id: "sunshine", label: "Sunshine Dots", primary: "#e7bc62", secondary: "#fff0b8", pattern: "dots" },
+      { id: "berry", label: "Berry Checks", primary: "#ae628e", secondary: "#efc1dd", pattern: "checks" },
+      { id: "forest", label: "Forest Friends", primary: "#648f74", secondary: "#c8dfba", pattern: "stars" },
+      { id: "cocoa", label: "Cocoa Cozy", primary: "#9b7467", secondary: "#e8c9b5", pattern: "stripes" },
+      { id: "midnight", label: "Midnight Moons", primary: "#515b91", secondary: "#aab9e8", pattern: "moons" },
+      { id: "candy", label: "Candy Dots", primary: "#db83b2", secondary: "#ffd3e9", pattern: "dots" },
+      { id: "ocean", label: "Ocean Waves", primary: "#4e9da6", secondary: "#b7e5df", pattern: "stripes" },
+      { id: "lemon", label: "Lemon Buttons", primary: "#d8cf75", secondary: "#fff7c9", pattern: "buttons" },
+      { id: "violet", label: "Violet Hearts", primary: "#8b72bd", secondary: "#d9c7f3", pattern: "hearts" },
+      { id: "winter", label: "Winter Flakes", primary: "#8eb8cf", secondary: "#e7f5fb", pattern: "flakes" },
+    ];
+    const furnitureTypes = ["sofa", "bed", "table", "plant", "lamp", "shelf", "rug"];
+    const catColors = ["#f2c49d", "#8d8b9d", "#f1e5d4", "#c78962", "#69758f", "#d7a7b6"];
 
     function hslToHex(h, s, l) {
       const saturation = s / 100;
@@ -841,6 +1037,21 @@ You are loved more than this little game could ever hold.</p>
       bunnies: demoBunnies.map(({ id, ...bunny }) => bunny),
       tulips: demoTulips.map(({ id, ...tulip }) => ({ ...tulip, lastWateredAt: null, lastWateredBy: "" })),
     };
+    const mixColors = [SLIME_COLORS[0], SLIME_COLORS[12], SLIME_COLORS[24], SLIME_COLORS[36], SLIME_COLORS[48], SLIME_COLORS[60], SLIME_COLORS[72], SLIME_COLORS[84], SLIME_COLORS[96], "#f39ab8", "#8fc8e8", "#f3d58f"];
+    const demoCharacters = [
+      { id: "demo-girl", key: "girl", name: "Girl", gender: "girl", clothes: "rose", zone: "yard", x: .36, y: .84 },
+      { id: "demo-boy", key: "boy", name: "Guy", gender: "boy", clothes: "sky", zone: "house", x: .68, y: .84 },
+    ];
+    const demoFurniture = [
+      { id: "demo-sofa", type: "sofa", zone: "house", x: .75, y: .64 },
+      { id: "demo-rug", type: "rug", zone: "house", x: .75, y: .81 },
+      { id: "demo-table", type: "table", zone: "house", x: .88, y: .66 },
+      { id: "demo-plant", type: "plant", zone: "yard", x: .15, y: .7 },
+    ];
+    const demoCats = [
+      { id: "demo-cat-miso", name: "Miso", color: catColors[0], zone: "yard", x: .22, y: .87 },
+      { id: "demo-cat-pixel", name: "Pixel", color: catColors[1], zone: "house", x: .88, y: .84 },
+    ];
 
     const defaultContent = Object.fromEntries(
       [...document.querySelectorAll("[data-field]")].map((element) => [element.dataset.field, element.textContent.trim()])
@@ -864,9 +1075,24 @@ You are loved more than this little game could ever hold.</p>
     let galleryFlipping = false;
     let bunnies = [];
     let tulips = [];
+    let natureLoaded = false;
     let activeNatureDrag = null;
     let natureSeeded = false;
     let natureSeedPromise = null;
+    let characters = [];
+    let furniture = [];
+    let cats = [];
+    let mixes = [];
+    let charactersLoaded = false;
+    let furnitureLoaded = false;
+    let catsLoaded = false;
+    let houseSeeded = false;
+    let houseSeedPromise = null;
+    let selectedWardrobeCharacter = "girl";
+    let placementFurniture = null;
+    let activeHouseDrag = null;
+    let mixing = false;
+    const houseWriteTimes = new Map();
     let toastTimer = null;
     let seedingContent = false;
 
@@ -882,6 +1108,7 @@ You are loved more than this little game could ever hold.</p>
     const $$ = (selector) => [...document.querySelectorAll(selector)];
     const viewport = $("#page-viewport");
     const contentRef = () => fs.doc(db, "site", "content");
+    const seedStateRef = () => fs.doc(db, "meta", "seedState");
 
     function showToast(message) {
       const toast = $("#toast");
@@ -1005,8 +1232,13 @@ You are loved more than this little game could ever hold.</p>
       $("#new-gallery-page").hidden = !user || !role;
       $$("[data-add-bunny]").forEach((button) => { button.hidden = !user || !role; });
       $("#plant-tulip").hidden = !user || !role;
+      $$("[data-house-write]").forEach((button) => { button.hidden = !user || !role; });
       $("#role-badge").hidden = !role;
       $("#role-badge").textContent = role || "";
+      renderSlimes();
+      renderBunnies();
+      renderTulips();
+      renderHouse();
       if (!editMode) applyEditableState();
     }
 
@@ -1018,7 +1250,7 @@ You are loved more than this little game could ever hold.</p>
     }
 
     function slimeSvg(color, eyes = "happy", accessory = "none") {
-      const safeColor = SLIME_COLORS.includes(color) ? color : SLIME_COLORS[0];
+      const safeColor = /^#[0-9a-fA-F]{6}$/.test(color || "") ? color : SLIME_COLORS[0];
       const safeEyes = eyeStyles.includes(eyes) ? eyes : "happy";
       const safeAccessory = accessories.includes(accessory) ? accessory : "none";
       const face = safeEyes === "sleepy"
@@ -1134,8 +1366,15 @@ You are loved more than this little game could ever hold.</p>
       const name = $("#slime-name").value.trim() || "New slime";
       const newSlime = { name, color: selectedColor, eyes: selectedEyes, accessory: selectedAccessory, createdBy: user.uid, createdAt: fs?.serverTimestamp ? fs.serverTimestamp() : Date.now() };
       const button = $("#create-slime");
+      const preview = $("#slime-preview");
+      const previewCard = preview.closest(".slime-preview-card");
       button.disabled = true;
+      preview.classList.remove("pop", "jelly");
+      preview.classList.add("mixing");
+      previewCard.classList.add("mixing");
+      $("#preview-name").textContent = "Mixing your little friend...";
       try {
+        await new Promise((resolve) => setTimeout(resolve, 850));
         if (db) {
           await fs.addDoc(fs.collection(db, "slimes"), newSlime);
         } else {
@@ -1146,10 +1385,13 @@ You are loved more than this little game could ever hold.</p>
         $("#slime-name").value = "";
         updateSlimePreview();
         animateSlimePreview("pop");
-        showToast(db ? `${name} joined the collection.` : `${name} created for this session. Connect Firebase to save permanently.`);
+        showToast(db ? `${name} bubbled into the collection.` : `${name} created for this session. Connect Firebase to save permanently.`);
       } catch (error) {
+        updateSlimePreview();
         showToast(error.message);
       } finally {
+        preview.classList.remove("mixing");
+        previewCard.classList.remove("mixing");
         button.disabled = false;
       }
     }
@@ -1213,20 +1455,52 @@ You are loved more than this little game could ever hold.</p>
       return false;
     }
 
+    function canManageNatureItem(item) {
+      return Boolean(item && !String(item.id).startsWith("demo-") && (role === "admin" || item.createdBy === user?.uid));
+    }
+
+    async function deleteNatureItem(kind, item) {
+      if (!canManageNatureItem(item) || !db) return;
+      const label = kind === "bunny" ? item.name || "this bunny" : "this tulip";
+      if (!window.confirm(`Delete ${label}? This cannot be undone.`)) return;
+      try {
+        await fs.deleteDoc(fs.doc(db, kind === "bunny" ? "bunnies" : "tulips", item.id));
+        showToast(`${kind === "bunny" ? "Bunny" : "Tulip"} deleted.`);
+      } catch (error) {
+        showToast(error.message);
+      }
+    }
+
     function renderBunnies() {
-      const visibleBunnies = bunnies.length ? bunnies : demoBunnies;
+      const visibleBunnies = natureLoaded ? bunnies : demoBunnies;
       $$("[data-habitat-stage]").forEach((stage) => stage.querySelectorAll(".bunny").forEach((bunny) => bunny.remove()));
       visibleBunnies.forEach((bunny) => {
         if (!naturePages.includes(bunny.habitat)) return;
         const stage = $(`[data-habitat-stage="${bunny.habitat}"]`);
         if (!stage) return;
-        const element = document.createElement("button");
-        element.type = "button";
+        const element = document.createElement("div");
         element.className = "bunny";
+        element.tabIndex = 0;
+        element.setAttribute("role", "button");
         element.style.left = `${Math.max(.07, Math.min(.93, Number(bunny.x) || .5)) * 100}%`;
         element.style.top = `${Math.max(.28, Math.min(.86, Number(bunny.y) || .7)) * 100}%`;
         element.setAttribute("aria-label", `${bunny.name || "Bunny"}. Drag to move between habitats.`);
-        element.innerHTML = `${bunnySvg(bunny.color)}<span class="bunny-name">${bunny.name || "Bunny"}</span>`;
+        element.innerHTML = bunnySvg(bunny.color);
+        const name = document.createElement("span");
+        name.className = "bunny-name";
+        name.textContent = bunny.name || "Bunny";
+        element.append(name);
+        if (canManageNatureItem(bunny)) {
+          const remove = document.createElement("button");
+          remove.type = "button";
+          remove.className = "nature-delete";
+          remove.textContent = "×";
+          remove.title = `Delete ${bunny.name || "bunny"}`;
+          remove.setAttribute("aria-label", `Delete ${bunny.name || "bunny"}`);
+          remove.addEventListener("pointerdown", (event) => event.stopPropagation());
+          remove.addEventListener("click", (event) => { event.stopPropagation(); deleteNatureItem("bunny", bunny); });
+          element.append(remove);
+        }
         element.addEventListener("pointerdown", (event) => startNatureDrag("bunny", bunny, event));
         element.addEventListener("keydown", (event) => {
           if (event.key === "Enter" || event.key === " ") {
@@ -1248,7 +1522,7 @@ You are loved more than this little game could ever hold.</p>
     function renderTulips() {
       const stage = $('[data-habitat-stage="garden"]');
       stage.querySelectorAll(".tulip").forEach((tulip) => tulip.remove());
-      const visibleTulips = tulips.length ? tulips : demoTulips;
+      const visibleTulips = natureLoaded ? tulips : demoTulips;
       const stageNames = ["Seed", "Sprout", "Bud", "Blooming", "Full bloom"];
       visibleTulips.forEach((tulip) => {
         const growth = Math.max(0, Math.min(4, Number(tulip.growth) || 0));
@@ -1260,6 +1534,17 @@ You are loved more than this little game could ever hold.</p>
         element.setAttribute("role", "button");
         element.setAttribute("aria-label", `${stageNames[growth]} tulip. Tap to water, drag to move.`);
         element.innerHTML = `${tulipSvg(tulip.color, growth)}<span class="tulip-stage">${stageNames[growth]}</span>`;
+        if (canManageNatureItem(tulip)) {
+          const remove = document.createElement("button");
+          remove.type = "button";
+          remove.className = "nature-delete";
+          remove.textContent = "×";
+          remove.title = "Delete tulip";
+          remove.setAttribute("aria-label", "Delete tulip");
+          remove.addEventListener("pointerdown", (event) => event.stopPropagation());
+          remove.addEventListener("click", (event) => { event.stopPropagation(); deleteNatureItem("tulip", tulip); });
+          element.append(remove);
+        }
         element.addEventListener("pointerdown", (event) => startNatureDrag("tulip", tulip, event));
         element.addEventListener("keydown", (event) => {
           if (event.key === "Enter" || event.key === " ") {
@@ -1391,6 +1676,11 @@ You are loved more than this little game could ever hold.</p>
 
     async function waterTulip(tulip) {
       if (!tulip.id || !requireNatureAccess()) return;
+      if (String(tulip.id).startsWith("demo-")) {
+        showToast("Preparing your little garden...");
+        ensureNatureSeeds().catch((error) => showToast(error.message));
+        return;
+      }
       const growth = Number(tulip.growth) || 0;
       if (growth >= 4) {
         showToast("This tulip is already in full bloom.");
@@ -1455,29 +1745,606 @@ You are loved more than this little game could ever hold.</p>
       }
     }
 
+    async function commitSeedState(flag, entries) {
+      await fs.runTransaction(db, async (transaction) => {
+        const stateSnapshot = await transaction.get(seedStateRef());
+        const state = stateSnapshot.exists() ? stateSnapshot.data() : {};
+        if (state[flag] === true) return;
+        const refs = entries.map(([collection, id]) => fs.doc(db, collection, id));
+        const snapshots = await Promise.all(refs.map((ref) => transaction.get(ref)));
+        entries.forEach(([collection, id, data], index) => {
+          if (!snapshots[index].exists) transaction.set(fs.doc(db, collection, id), data);
+        });
+        transaction.set(seedStateRef(), {
+          natureSeeded: state.natureSeeded === true || flag === "natureSeeded",
+          houseSeeded: state.houseSeeded === true || flag === "houseSeeded",
+        }, { merge: true });
+      });
+    }
+
     function ensureNatureSeeds() {
       if (natureSeeded) return Promise.resolve();
       if (natureSeedPromise) return natureSeedPromise;
       natureSeedPromise = (async () => {
+        const seedState = await fs.getDoc(seedStateRef());
+        if (seedState.exists() && seedState.data().natureSeeded === true) {
+          natureSeeded = true;
+          return;
+        }
         const [bunnySnapshot, tulipSnapshot] = await Promise.all([
           fs.getDocs(fs.collection(db, "bunnies")),
           fs.getDocs(fs.collection(db, "tulips")),
         ]);
-        const writes = [];
+        const entries = [];
         if (bunnySnapshot.empty) {
-          natureSeeds.bunnies.forEach((bunny) => writes.push(fs.addDoc(fs.collection(db, "bunnies"), {
+          natureSeeds.bunnies.forEach((bunny, index) => entries.push(["bunnies", `seed-bunny-${index + 1}`, {
             ...bunny, createdBy: user.uid, createdAt: fs.serverTimestamp(),
-          })));
+          }]));
         }
         if (tulipSnapshot.empty) {
-          natureSeeds.tulips.forEach((tulip) => writes.push(fs.addDoc(fs.collection(db, "tulips"), {
+          natureSeeds.tulips.forEach((tulip, index) => entries.push(["tulips", `seed-tulip-${index + 1}`, {
             ...tulip, createdBy: user.uid, createdAt: fs.serverTimestamp(),
-          })));
+          }]));
         }
-        await Promise.all(writes);
+        await commitSeedState("natureSeeded", entries);
         natureSeeded = true;
       })().finally(() => { natureSeedPromise = null; });
       return natureSeedPromise;
+    }
+
+    function visibleCharacters() {
+      return charactersLoaded ? characters : demoCharacters;
+    }
+
+    function visibleFurniture() {
+      return furnitureLoaded ? furniture : demoFurniture;
+    }
+
+    function visibleCats() {
+      return catsLoaded ? cats : demoCats;
+    }
+
+    function outfitById(id) {
+      return outfits.find((outfit) => outfit.id === id) || outfits[0];
+    }
+
+    function chibiSvg(person) {
+      const outfit = outfitById(person.clothes);
+      const girl = person.gender === "girl";
+      const hair = girl ? "#654654" : "#40384d";
+      const skin = girl ? "#f4c9b6" : "#e8b99f";
+      const pattern = outfit.pattern === "hearts"
+        ? '<path d="M38 79c-7-8-15 2 0 11 15-9 7-19 0-11ZM62 94c-7-8-15 2 0 11 15-9 7-19 0-11Z" fill="' + outfit.secondary + '"/>'
+        : outfit.pattern === "stars"
+          ? '<path d="m38 82 2 4 5 1-4 3 1 5-4-2-4 2 1-5-4-3 5-1ZM62 96l2 4 5 1-4 3 1 5-4-2-4 2 1-5-4-3 5-1Z" fill="' + outfit.secondary + '"/>'
+          : outfit.pattern === "stripes"
+            ? '<path d="M31 77h38M31 91h38M31 105h38" stroke="' + outfit.secondary + '" stroke-width="5" opacity=".75"/>'
+            : outfit.pattern === "dots"
+              ? '<g fill="' + outfit.secondary + '"><circle cx="38" cy="82" r="4"/><circle cx="61" cy="96" r="4"/><circle cx="39" cy="103" r="3"/><circle cx="62" cy="78" r="3"/></g>'
+              : outfit.pattern === "moons"
+                ? '<path d="M42 76a8 8 0 1 0 7 11 9 9 0 0 1-7-11ZM61 98a7 7 0 1 0 6 9 8 8 0 0 1-6-9Z" fill="' + outfit.secondary + '"/>'
+                : outfit.pattern === "checks"
+                  ? '<path d="M34 76h8v8h-8ZM50 88h8v8h-8ZM34 100h8v8h-8ZM58 76h8v8h-8Z" fill="' + outfit.secondary + '" opacity=".8"/>'
+                  : outfit.pattern === "flakes"
+                    ? '<g stroke="' + outfit.secondary + '" stroke-width="2"><path d="M38 74v12m-5-9 10 6m-10 0 10-6M62 96v12m-5-9 10 6m-10 0 10-6"/></g>'
+                    : '<g fill="' + outfit.secondary + '"><circle cx="50" cy="80" r="3"/><circle cx="50" cy="94" r="3"/><circle cx="50" cy="108" r="3"/></g>';
+      return `<svg viewBox="0 0 100 145" aria-hidden="true">
+        <ellipse cx="50" cy="136" rx="29" ry="7" fill="#282139" opacity=".2"/>
+        ${girl ? '<path d="M27 48q-8 26 1 45l18-5 8-39Z" fill="' + hair + '"/><path d="M73 48q8 26-1 45L54 88l-8-39Z" fill="' + hair + '"/>' : ''}
+        <rect x="34" y="108" width="14" height="24" rx="7" fill="${outfit.secondary}" stroke="#5a465d" stroke-width="1.5"/>
+        <rect x="52" y="108" width="14" height="24" rx="7" fill="${outfit.secondary}" stroke="#5a465d" stroke-width="1.5"/>
+        <ellipse cx="41" cy="133" rx="11" ry="6" fill="#fff0df"/><ellipse cx="59" cy="133" rx="11" ry="6" fill="#fff0df"/>
+        <path d="M31 72q-9 4-8 22 1 13 10 12l5-24ZM69 72q9 4 8 22-1 13-10 12l-5-24Z" fill="${outfit.primary}" stroke="#5a465d" stroke-width="1.5"/>
+        <circle cx="26" cy="104" r="6" fill="${skin}"/><circle cx="74" cy="104" r="6" fill="${skin}"/>
+        <path d="M34 70q16-8 32 0l5 43q-21 10-42 0Z" fill="${outfit.primary}" stroke="#5a465d" stroke-width="1.8"/>
+        ${pattern}
+        <path d="m43 69 7 9 7-9" fill="none" stroke="${outfit.secondary}" stroke-width="3" stroke-linejoin="round"/>
+        <rect x="45" y="60" width="10" height="13" rx="5" fill="${skin}"/>
+        <circle cx="50" cy="48" r="28" fill="${skin}" stroke="#5a465d" stroke-width="1.5"/>
+        ${girl
+          ? '<path d="M23 45q1-31 27-31 27 0 28 31-10-4-15-16-10 11-25 12-5 0-15 4Z" fill="' + hair + '"/><circle cx="22" cy="50" r="9" fill="' + hair + '"/><circle cx="78" cy="50" r="9" fill="' + hair + '"/><path d="m19 43 7-2M74 41l7 2" stroke="#f3a9bd" stroke-width="4" stroke-linecap="round"/>'
+          : '<path d="M23 43q-2-27 25-30 9 9 11 14 7-7 18-4 7 15 2 24-10-8-17-13-7 9-23 10-6 0-16-1Z" fill="' + hair + '"/><path d="m35 22 8-7 5 7 9-5" fill="none" stroke="#56465e" stroke-width="3" stroke-linecap="round"/>'}
+        <ellipse cx="40" cy="50" rx="3" ry="4" fill="#382e43"/><ellipse cx="60" cy="50" rx="3" ry="4" fill="#382e43"/>
+        <circle cx="37" cy="57" r="2" fill="#fff" opacity=".8"/><circle cx="57" cy="57" r="2" fill="#fff" opacity=".8"/>
+        <ellipse cx="32" cy="59" rx="6" ry="3" fill="#ed9fa9" opacity=".45"/><ellipse cx="68" cy="59" rx="6" ry="3" fill="#ed9fa9" opacity=".45"/>
+        <path d="M45 61q5 6 10 0" fill="none" stroke="#8c5360" stroke-width="2" stroke-linecap="round"/>
+      </svg>`;
+    }
+
+    function furnitureSvg(type) {
+      const drawings = {
+        sofa: '<rect x="8" y="38" width="84" height="42" rx="13" fill="#c78da3" stroke="#684e67" stroke-width="3"/><rect x="16" y="25" width="68" height="35" rx="12" fill="#e5afc1" stroke="#684e67" stroke-width="3"/><path d="M50 28v31" stroke="#b97996" stroke-width="3"/><rect x="13" y="74" width="10" height="14" rx="3" fill="#684e67"/><rect x="77" y="74" width="10" height="14" rx="3" fill="#684e67"/><rect x="22" y="37" width="20" height="18" rx="5" fill="#f7d58f" transform="rotate(-8 32 46)"/>',
+        bed: '<rect x="10" y="30" width="80" height="58" rx="8" fill="#a981a7" stroke="#5e4b68" stroke-width="3"/><rect x="15" y="48" width="70" height="35" rx="7" fill="#ddd0ef"/><rect x="18" y="37" width="26" height="20" rx="7" fill="#fff7e8"/><path d="M15 75h70" stroke="#bda3d2" stroke-width="4"/><rect x="8" y="20" width="10" height="75" rx="4" fill="#806580"/>',
+        table: '<ellipse cx="50" cy="35" rx="39" ry="15" fill="#d6aa7e" stroke="#745446" stroke-width="3"/><path d="M23 40v48M77 40v48M50 45v45" stroke="#745446" stroke-width="8" stroke-linecap="round"/><ellipse cx="50" cy="28" rx="9" ry="5" fill="#f6e7cc"/><path d="M47 27v-12h6v12" fill="#8fb6a2"/>',
+        plant: '<path d="M50 75V33M50 58Q22 58 23 35q27 0 27 23ZM51 49q28 0 27-24-27 0-27 24Z" fill="#6d9e64" stroke="#456c48" stroke-width="3"/><path d="M31 68h38l-5 28H36Z" fill="#d58f7d" stroke="#754f50" stroke-width="3"/><path d="M29 68h42" stroke="#f3c1a6" stroke-width="6" stroke-linecap="round"/>',
+        lamp: '<path d="M50 43v49M31 94h38" stroke="#6d5870" stroke-width="7" stroke-linecap="round"/><path d="M27 12h46l-8 35H35Z" fill="#f3d58f" stroke="#806a58" stroke-width="3"/><path d="M39 49h22" stroke="#fff2bf" stroke-width="4" stroke-linecap="round"/>',
+        shelf: '<rect x="16" y="12" width="68" height="78" rx="5" fill="#b9876d" stroke="#684c45" stroke-width="3"/><path d="M19 42h62M19 71h62" stroke="#7d5a4f" stroke-width="5"/><rect x="25" y="23" width="10" height="17" rx="2" fill="#e5afc1"/><rect x="38" y="20" width="9" height="20" rx="2" fill="#a8c9dd"/><rect x="62" y="24" width="12" height="16" rx="2" fill="#f3d58f"/><circle cx="35" cy="59" r="10" fill="#9ac4a5"/><rect x="55" y="51" width="17" height="18" rx="3" fill="#c4a5d4"/>',
+        rug: '<ellipse cx="50" cy="50" rx="46" ry="34" fill="#dca4b8" stroke="#fff0dc" stroke-width="4"/><ellipse cx="50" cy="50" rx="32" ry="22" fill="none" stroke="#b8789b" stroke-width="4"/><path d="m50 34 4 9 10 1-8 7 2 10-8-5-9 5 2-10-7-7 10-1Z" fill="#f7dca4"/>',
+      };
+      return `<svg viewBox="0 0 100 100" aria-hidden="true">${drawings[type] || drawings.plant}</svg>`;
+    }
+
+    function catSvg(color) {
+      const safeColor = /^#[0-9a-fA-F]{6}$/.test(color || "") ? color : catColors[0];
+      return `<svg viewBox="0 0 110 90" aria-hidden="true">
+        <ellipse cx="55" cy="81" rx="37" ry="6" fill="#282139" opacity=".18"/>
+        <path d="M78 55q26-20 19 5-3 12-17 8" fill="none" stroke="${safeColor}" stroke-width="11" stroke-linecap="round"/>
+        <ellipse cx="51" cy="57" rx="32" ry="24" fill="${safeColor}" stroke="#5b4a5d" stroke-width="2"/>
+        <path d="M24 36 22 12l20 15M62 27l20-15-2 25" fill="${safeColor}" stroke="#5b4a5d" stroke-width="2" stroke-linejoin="round"/>
+        <path d="m27 20 3 13 9-7M79 20l-3 13-9-7" fill="#e8a7b5"/>
+        <circle cx="45" cy="35" r="25" fill="${safeColor}" stroke="#5b4a5d" stroke-width="2"/>
+        <ellipse cx="36" cy="34" rx="3" ry="4" fill="#382e43"/><ellipse cx="54" cy="34" rx="3" ry="4" fill="#382e43"/>
+        <path d="m41 42 4 4 4-4Z" fill="#c77e8d"/><path d="M45 46q-5 6-9 1M45 46q5 6 9 1" fill="none" stroke="#6b4b59" stroke-width="1.5"/>
+        <path d="M29 43 14 40M29 48 14 50M61 43l15-3M61 48l15 2" stroke="#6b4b59" stroke-width="1.5" stroke-linecap="round"/>
+        <ellipse cx="33" cy="76" rx="10" ry="6" fill="${safeColor}" stroke="#5b4a5d" stroke-width="2"/><ellipse cx="62" cy="76" rx="10" ry="6" fill="${safeColor}" stroke="#5b4a5d" stroke-width="2"/>
+      </svg>`;
+    }
+
+    function canManageHouseItem(item) {
+      return Boolean(item && !String(item.id).startsWith("demo-") && (role === "admin" || item.createdBy === user?.uid));
+    }
+
+    function requireHouseAccess() {
+      if (user && role && db && fs) return true;
+      showToast(user ? "Your account does not have house access." : "Sign in as a viewer or admin to arrange the house.");
+      if (!user) openAuth();
+      return false;
+    }
+
+    function renderHouse() {
+      renderCharacters();
+      renderFurniture();
+      renderCats();
+      renderMixes();
+      updateWardrobe();
+    }
+
+    function renderCharacters() {
+      const layer = $("#house-characters");
+      layer.replaceChildren();
+      visibleCharacters().forEach((person) => {
+        const element = document.createElement("div");
+        element.className = "house-item house-character";
+        element.dataset.houseId = person.id;
+        element.dataset.characterKey = person.key || person.gender;
+        element.tabIndex = 0;
+        element.setAttribute("role", "button");
+        element.style.left = `${Number(person.x) * 100}%`;
+        element.style.top = `${Number(person.y) * 100}%`;
+        element.setAttribute("aria-label", `${person.name || "Character"}, ${person.zone === "house" ? "inside the house" : "in the garden"}. Drag to move.`);
+        element.innerHTML = chibiSvg(person);
+        const label = document.createElement("span");
+        label.className = "house-item-label";
+        label.textContent = person.zone === "house" ? `${person.name} · inside` : person.name;
+        element.append(label);
+        element.addEventListener("pointerdown", (event) => startHouseDrag("character", person, event));
+        element.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            selectedWardrobeCharacter = person.key || person.gender;
+            updateWardrobe();
+          }
+        });
+        layer.append(element);
+      });
+    }
+
+    function renderFurniture() {
+      const layer = $("#house-furniture");
+      layer.replaceChildren();
+      visibleFurniture().forEach((item) => {
+        const element = document.createElement("div");
+        element.className = "house-item house-furniture";
+        element.dataset.houseId = item.id;
+        element.tabIndex = 0;
+        element.setAttribute("role", "button");
+        element.style.left = `${Number(item.x) * 100}%`;
+        element.style.top = `${Number(item.y) * 100}%`;
+        element.style.width = item.type === "rug" ? "120px" : item.type === "sofa" || item.type === "bed" ? "100px" : "72px";
+        element.setAttribute("aria-label", `${item.type}. Drag to move.`);
+        element.innerHTML = furnitureSvg(item.type);
+        if (canManageHouseItem(item)) {
+          const remove = document.createElement("button");
+          remove.type = "button";
+          remove.className = "nature-delete";
+          remove.textContent = "×";
+          remove.setAttribute("aria-label", `Delete ${item.type}`);
+          remove.addEventListener("pointerdown", (event) => event.stopPropagation());
+          remove.addEventListener("click", (event) => { event.stopPropagation(); deleteHouseItem("furniture", item); });
+          element.append(remove);
+        }
+        element.addEventListener("pointerdown", (event) => startHouseDrag("furniture", item, event));
+        layer.append(element);
+      });
+    }
+
+    function renderCats() {
+      const layer = $("#house-cats");
+      layer.replaceChildren();
+      visibleCats().forEach((cat) => {
+        const element = document.createElement("div");
+        element.className = "house-item house-cat";
+        element.dataset.houseId = cat.id;
+        element.tabIndex = 0;
+        element.setAttribute("role", "button");
+        element.style.left = `${Number(cat.x) * 100}%`;
+        element.style.top = `${Number(cat.y) * 100}%`;
+        element.setAttribute("aria-label", `${cat.name || "Cat"}. Tap to pet or drag to move.`);
+        element.innerHTML = catSvg(cat.color);
+        const label = document.createElement("span");
+        label.className = "house-item-label";
+        label.textContent = cat.name || "Cat";
+        element.append(label);
+        if (canManageHouseItem(cat)) {
+          const remove = document.createElement("button");
+          remove.type = "button";
+          remove.className = "nature-delete";
+          remove.textContent = "×";
+          remove.setAttribute("aria-label", `Delete ${cat.name || "cat"}`);
+          remove.addEventListener("pointerdown", (event) => event.stopPropagation());
+          remove.addEventListener("click", (event) => { event.stopPropagation(); deleteHouseItem("cats", cat); });
+          element.append(remove);
+        }
+        element.addEventListener("pointerdown", (event) => startHouseDrag("cat", cat, event));
+        layer.append(element);
+      });
+    }
+
+    function renderMixes() {
+      const list = $("#mix-list");
+      list.replaceChildren();
+      if (!mixes.length) {
+        const empty = document.createElement("span");
+        empty.className = "house-empty";
+        empty.textContent = "Your mixtures will appear here.";
+        list.append(empty);
+        return;
+      }
+      mixes.forEach((mix) => {
+        const card = document.createElement("div");
+        card.className = "mix-card";
+        card.innerHTML = slimeSvg(mix.resultColor, mix.eyes, mix.accessory);
+        const name = document.createElement("span");
+        name.textContent = mix.name || "Mixed slime";
+        card.append(name);
+        card.addEventListener("click", () => loadMixInLab(mix));
+        if (canManageHouseItem(mix)) {
+          const remove = document.createElement("button");
+          remove.type = "button";
+          remove.className = "nature-delete";
+          remove.textContent = "×";
+          remove.setAttribute("aria-label", `Delete ${mix.name || "mixed slime"}`);
+          remove.addEventListener("click", (event) => { event.stopPropagation(); deleteHouseItem("mixes", mix); });
+          card.append(remove);
+        }
+        list.append(card);
+      });
+    }
+
+    function updateWardrobe() {
+      const person = visibleCharacters().find((item) => (item.key || item.gender) === selectedWardrobeCharacter);
+      const inside = person?.zone === "house" && Number(person.x) >= .56 && Number(person.x) <= .94 && Number(person.y) >= .3 && Number(person.y) <= .88;
+      const canChange = Boolean(inside && user && role && db && !String(person?.id).startsWith("demo-"));
+      $$("[data-wardrobe-character]").forEach((button) => button.classList.toggle("active", button.dataset.wardrobeCharacter === selectedWardrobeCharacter));
+      const options = $("#wardrobe-options");
+      options.replaceChildren();
+      outfits.forEach((outfit) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `house-choice${person?.clothes === outfit.id ? " active" : ""}`;
+        button.disabled = !canChange;
+        button.setAttribute("aria-label", outfit.label);
+        button.innerHTML = `<span class="outfit-preview"><i style="--outfit:${outfit.primary}"></i><i style="--outfit:${outfit.secondary}"></i></span><span>${outfit.label}</span>`;
+        button.addEventListener("click", () => changeClothes(person, outfit.id));
+        options.append(button);
+      });
+      $("#wardrobe-note").textContent = !person
+        ? "The characters are getting ready."
+        : inside
+          ? canChange ? `${person.name} is inside. Choose any outfit!` : "Sign in to change this outfit."
+          : `Drag ${person.name} through the door into the house to change clothes.`;
+      $("#send-character-out").disabled = !canChange;
+      $("#send-character-out").textContent = inside ? "Go play outside" : "Already in the garden";
+    }
+
+    async function changeClothes(person, clothes) {
+      if (!person || !requireHouseAccess() || person.zone !== "house" || Number(person.x) < .56 || Number(person.x) > .94 || Number(person.y) < .3 || Number(person.y) > .88 || String(person.id).startsWith("demo-") || !outfits.some((outfit) => outfit.id === clothes)) return;
+      try {
+        await fs.updateDoc(fs.doc(db, "characters", person.id), { clothes });
+        gainXp(5);
+        showToast(`${person.name} changed into ${outfitById(clothes).label}.`);
+      } catch (error) {
+        showToast(error.message);
+      }
+    }
+
+    async function sendCharacterOut() {
+      const person = visibleCharacters().find((item) => (item.key || item.gender) === selectedWardrobeCharacter);
+      if (!person || !requireHouseAccess() || String(person.id).startsWith("demo-")) return;
+      if (person.zone !== "house") return;
+      try {
+        await fs.updateDoc(fs.doc(db, "characters", person.id), { zone: "yard", x: .34, y: .84 });
+        showToast(`${person.name} is off to play in the garden.`);
+      } catch (error) {
+        showToast(error.message);
+      }
+    }
+
+    function normalizeHousePosition(clientX, clientY) {
+      const rect = $("#house-stage").getBoundingClientRect();
+      const insideRect = $("[data-house-interior]").getBoundingClientRect();
+      const x = Math.round(Math.max(.07, Math.min(.93, (clientX - rect.left) / rect.width)) * 10000) / 10000;
+      const y = Math.round(Math.max(.26, Math.min(.9, (clientY - rect.top) / rect.height)) * 10000) / 10000;
+      const zone = clientX >= insideRect.left && clientX <= insideRect.right && clientY >= insideRect.top && clientY <= insideRect.bottom ? "house" : "yard";
+      return { x, y, zone };
+    }
+
+    function startHouseDrag(kind, item, event) {
+      if (!event.isPrimary || event.button !== 0) return;
+      if (!requireHouseAccess()) return;
+      if (String(item.id).startsWith("demo-")) {
+        showToast("Preparing your house...");
+        ensureHouseSeeds().catch((error) => showToast(error.message));
+        return;
+      }
+      event.preventDefault();
+      const element = event.currentTarget;
+      const rect = element.getBoundingClientRect();
+      const ghost = document.createElement("div");
+      ghost.className = "drag-ghost";
+      ghost.style.width = `${rect.width}px`;
+      ghost.style.left = `${event.clientX}px`;
+      ghost.style.top = `${event.clientY}px`;
+      ghost.innerHTML = kind === "character" ? chibiSvg(item) : kind === "cat" ? catSvg(item.color) : furnitureSvg(item.type);
+      document.body.append(ghost);
+      activeHouseDrag = { kind, item, element, ghost, pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, moved: false };
+      element.classList.add("dragging");
+      $("#house-stage").classList.add("dragging-house");
+      try { element.setPointerCapture(event.pointerId); } catch {}
+    }
+
+    function cleanupHouseDrag() {
+      if (!activeHouseDrag) return;
+      try { activeHouseDrag.element.releasePointerCapture(activeHouseDrag.pointerId); } catch {}
+      activeHouseDrag.element.classList.remove("dragging");
+      activeHouseDrag.ghost.remove();
+      $("#house-stage").classList.remove("dragging-house");
+      activeHouseDrag = null;
+    }
+
+    async function finishHouseDrag(event) {
+      if (!activeHouseDrag || event.pointerId !== activeHouseDrag.pointerId) return;
+      const drag = activeHouseDrag;
+      if (!drag.moved) {
+        cleanupHouseDrag();
+        if (drag.kind === "cat") petHouseCat(drag.item, drag.element, event.clientX, event.clientY);
+        if (drag.kind === "character") {
+          selectedWardrobeCharacter = drag.item.key || drag.item.gender;
+          updateWardrobe();
+        }
+        return;
+      }
+      const stageRect = $("#house-stage").getBoundingClientRect();
+      const validTarget = event.clientX >= stageRect.left && event.clientX <= stageRect.right && event.clientY >= stageRect.top && event.clientY <= stageRect.bottom;
+      const position = validTarget ? normalizeHousePosition(event.clientX, event.clientY) : null;
+      cleanupHouseDrag();
+      if (!position) {
+        renderHouse();
+        showToast("Drop inside the house scene to move it.");
+        return;
+      }
+      try {
+        const collection = drag.kind === "character" ? "characters" : drag.kind === "cat" ? "cats" : "furniture";
+        await fs.updateDoc(fs.doc(db, collection, drag.item.id), position);
+        if (drag.kind === "character") {
+          selectedWardrobeCharacter = drag.item.key || drag.item.gender;
+          showToast(position.zone === "house" ? `${drag.item.name} is inside. The wardrobe is unlocked!` : `${drag.item.name} is playing outside.`);
+        } else {
+          showToast(drag.kind === "cat" ? `${drag.item.name} found a cozy new spot.` : "Furniture moved.");
+        }
+      } catch (error) {
+        renderHouse();
+        showToast(error.message);
+      }
+    }
+
+    function petHouseCat(cat, element, clientX, clientY) {
+      element.classList.remove("petted");
+      void element.offsetWidth;
+      element.classList.add("petted");
+      const heart = document.createElement("span");
+      heart.className = "house-heart";
+      heart.textContent = "♥";
+      heart.style.left = `${clientX}px`;
+      heart.style.top = `${clientY}px`;
+      document.body.append(heart);
+      setTimeout(() => heart.remove(), 850);
+      gainXp(2);
+      showToast(`${cat.name || "The cat"} purrs.`);
+    }
+
+    async function deleteHouseItem(kind, item) {
+      if (!canManageHouseItem(item) || !db) return;
+      const label = kind === "cats" ? item.name || "this cat" : kind === "mixes" ? item.name || "this mixture" : `this ${item.type}`;
+      if (!window.confirm(`Delete ${label}?`)) return;
+      try {
+        await fs.deleteDoc(fs.doc(db, kind, item.id));
+        showToast("Removed from the house.");
+      } catch (error) {
+        showToast(error.message);
+      }
+    }
+
+    function setFurniturePlacement(type) {
+      if (!requireHouseAccess()) return;
+      placementFurniture = placementFurniture === type ? null : type;
+      $("#house-stage").classList.toggle("placing", Boolean(placementFurniture));
+      $("#cancel-furniture").hidden = !placementFurniture;
+      $$("#furniture-options [data-furniture-type]").forEach((button) => button.classList.toggle("active", button.dataset.furnitureType === placementFurniture));
+      $("#house-hint").textContent = placementFurniture ? `Tap a spot to place the ${placementFurniture}` : "Drag a character through the door · Tap cats to pet them";
+    }
+
+    async function placeFurniture(event) {
+      if (!placementFurniture || !requireHouseAccess() || event.target.closest(".house-item")) return;
+      const position = normalizeHousePosition(event.clientX, event.clientY);
+      try {
+        await fs.addDoc(fs.collection(db, "furniture"), { type: placementFurniture, ...position, createdBy: user.uid, createdAt: fs.serverTimestamp() });
+        gainXp(8);
+        showToast(`${placementFurniture[0].toUpperCase() + placementFurniture.slice(1)} placed.`);
+        setFurniturePlacement(null);
+      } catch (error) {
+        showToast(error.message);
+      }
+    }
+
+    async function addHouseCat() {
+      if (!requireHouseAccess()) return;
+      const names = ["Miso", "Pixel", "Mochi", "Bean", "Pepper", "Pudding", "Nori", "Cinnamon"];
+      try {
+        await fs.addDoc(fs.collection(db, "cats"), {
+          name: names[cats.length % names.length],
+          color: catColors[cats.length % catColors.length],
+          zone: "yard",
+          x: .18 + Math.random() * .28,
+          y: .74 + Math.random() * .12,
+          createdBy: user.uid,
+          createdAt: fs.serverTimestamp(),
+        });
+        showToast("A new cat moved into the house.");
+      } catch (error) {
+        showToast(error.message);
+      }
+    }
+
+    function blendHex(first, second) {
+      const a = first.match(/[a-f\d]{2}/gi).map((value) => parseInt(value, 16));
+      const b = second.match(/[a-f\d]{2}/gi).map((value) => parseInt(value, 16));
+      return `#${a.map((value, index) => Math.round((value + b[index]) / 2).toString(16).padStart(2, "0")).join("")}`;
+    }
+
+    function updateMixerPreview() {
+      const first = $("#mix-color-a").value;
+      const second = $("#mix-color-b").value;
+      const result = blendHex(first, second);
+      const station = $("#mixer-station");
+      station.style.setProperty("--mix-a", first);
+      station.style.setProperty("--mix-b", second);
+      station.style.setProperty("--mix-color", result);
+      $("#mix-result").innerHTML = slimeSvg(result, $("#mix-eyes").value, $("#mix-accessory").value);
+    }
+
+    async function mixSlime() {
+      if (mixing || !requireHouseAccess()) return;
+      mixing = true;
+      const button = $("#mix-slime");
+      const station = $("#mixer-station");
+      const status = $("#mix-status");
+      const first = $("#mix-color-a").value;
+      const second = $("#mix-color-b").value;
+      const resultColor = blendHex(first, second);
+      const name = $("#mix-name").value.trim() || "Bubble mix";
+      button.disabled = true;
+      station.classList.remove("pouring", "swirling", "bubbling", "revealing");
+      try {
+        station.classList.add("pouring");
+        status.textContent = "Pouring the first color...";
+        await new Promise((resolve) => setTimeout(resolve, 700));
+        station.classList.remove("pouring");
+        station.classList.add("swirling");
+        status.textContent = "Swirling the colors together...";
+        await new Promise((resolve) => setTimeout(resolve, 700));
+        station.classList.remove("swirling");
+        station.classList.add("bubbling");
+        status.textContent = "Bubble, bubble... something is forming!";
+        const mixture = { name, colorA: first, colorB: second, resultColor, eyes: $("#mix-eyes").value, accessory: $("#mix-accessory").value, createdBy: user.uid, createdAt: fs?.serverTimestamp ? fs.serverTimestamp() : Date.now() };
+        const save = db ? fs.addDoc(fs.collection(db, "mixes"), mixture) : Promise.resolve(null);
+        await Promise.all([save, new Promise((resolve) => setTimeout(resolve, 800))]);
+        station.classList.remove("bubbling");
+        station.classList.add("revealing");
+        $("#mix-result").innerHTML = slimeSvg(resultColor, mixture.eyes, mixture.accessory);
+        status.textContent = `${name} is alive!`;
+        if (!db) {
+          mixes.unshift({ ...mixture, id: `local-${Date.now()}` });
+          renderMixes();
+        }
+        $("#mix-name").value = "";
+        gainXp(25);
+        await new Promise((resolve) => setTimeout(resolve, 850));
+        showToast(db ? `${name} joined your mixture collection.` : `${name} was made for this session.`);
+      } catch (error) {
+        status.textContent = "The mixture fizzled. Try again.";
+        showToast(error.message);
+      } finally {
+        station.classList.remove("pouring", "swirling", "bubbling", "revealing");
+        button.disabled = false;
+        mixing = false;
+        setTimeout(() => { if (!mixing) status.textContent = "Two colors make something new"; }, 1400);
+      }
+    }
+
+    function loadMixInLab(mix) {
+      selectedColor = mix.resultColor;
+      selectedEyes = eyeStyles.includes(mix.eyes) ? mix.eyes : "happy";
+      selectedAccessory = accessories.includes(mix.accessory) ? mix.accessory : "none";
+      $("#slime-name").value = mix.name || "";
+      selectOption("#color-options", "color", selectedColor);
+      selectOption("#eye-options", "eyes", selectedEyes);
+      selectOption("#accessory-options", "accessory", selectedAccessory);
+      updateSlimePreview(true);
+      showPage("slime");
+      showToast("Mixture loaded into the slime lab.");
+    }
+
+    function moveHouseActor(kind, item, element) {
+      if (activeHouseDrag) return;
+      let zone = item.zone;
+      if (kind === "cat" && Math.random() < .18) zone = zone === "house" ? "yard" : "house";
+      const bounds = zone === "house" ? { minX: .6, maxX: .92, minY: .38, maxY: .86 } : { minX: .1, maxX: .53, minY: .5, maxY: .88 };
+      const x = Math.round(Math.max(bounds.minX, Math.min(bounds.maxX, Number(item.x) + (Math.random() - .5) * .12)) * 10000) / 10000;
+      const y = Math.round(Math.max(bounds.minY, Math.min(bounds.maxY, Number(item.y) + (Math.random() - .5) * .1)) * 10000) / 10000;
+      item.zone = zone;
+      item.x = x;
+      item.y = y;
+      element.style.left = `${x * 100}%`;
+      element.style.top = `${y * 100}%`;
+      if (kind === "character") {
+        element.classList.add("walking");
+        setTimeout(() => element.classList.remove("walking"), 900);
+      }
+      if (!user || !role || !db || String(item.id).startsWith("demo-")) return;
+      const key = `${kind}:${item.id}`;
+      const now = Date.now();
+      if (now - (houseWriteTimes.get(key) || 0) < 12000) return;
+      houseWriteTimes.set(key, now);
+      const collection = kind === "character" ? "characters" : "cats";
+      fs.updateDoc(fs.doc(db, collection, item.id), { zone, x, y }).catch((error) => showToast(error.message));
+    }
+
+    async function ensureHouseSeeds() {
+      if (houseSeeded) return;
+      if (houseSeedPromise) return houseSeedPromise;
+      houseSeedPromise = (async () => {
+        const seedState = await fs.getDoc(seedStateRef());
+        if (seedState.exists() && seedState.data().houseSeeded === true) {
+          houseSeeded = true;
+          return;
+        }
+        const [characterSnapshot, furnitureSnapshot, catSnapshot] = await Promise.all([
+          fs.getDocs(fs.collection(db, "characters")),
+          fs.getDocs(fs.collection(db, "furniture")),
+          fs.getDocs(fs.collection(db, "cats")),
+        ]);
+        const entries = [];
+        const existingKeys = new Set(characterSnapshot.docs.map((doc) => doc.data().key));
+        demoCharacters.forEach(({ id, ...person }) => {
+          if (!existingKeys.has(person.key)) entries.push(["characters", `seed-${person.key}`, { ...person, createdBy: user.uid, createdAt: fs.serverTimestamp() }]);
+        });
+        if (furnitureSnapshot.empty) demoFurniture.forEach(({ id, ...item }, index) => entries.push(["furniture", `seed-furniture-${index + 1}`, { ...item, createdBy: user.uid, createdAt: fs.serverTimestamp() }]));
+        if (catSnapshot.empty) demoCats.forEach(({ id, ...cat }, index) => entries.push(["cats", `seed-cat-${index + 1}`, { ...cat, createdBy: user.uid, createdAt: fs.serverTimestamp() }]));
+        await commitSeedState("houseSeeded", entries);
+        houseSeeded = true;
+      })().finally(() => { houseSeedPromise = null; });
+      return houseSeedPromise;
     }
 
     function unwrapGift() {
@@ -1517,7 +2384,7 @@ You are loved more than this little game could ever hold.</p>
       try {
         let docs = [];
         if (role === "admin") {
-          docs = await fs.getDocs(fs.collection(db, "galleryPages"));
+          docs = (await fs.getDocs(fs.collection(db, "galleryPages"))).docs;
         } else {
           const published = await fs.getDocs(fs.query(fs.collection(db, "galleryPages"), fs.where("published", "==", true)));
           docs = [...published.docs];
@@ -1836,6 +2703,7 @@ You are loved more than this little game could ever hold.</p>
       updateRoleUi();
       if (account && role) {
         try { await ensureNatureSeeds(); } catch (error) { showToast(`Bunny garden: ${error.message}`); }
+        try { await ensureHouseSeeds(); } catch (error) { showToast(`Little house: ${error.message}`); }
       }
       await loadGalleryPages();
       if (role === "admin" && !contentExists && !seedingContent) {
@@ -1894,6 +2762,56 @@ You are loved more than this little game could ever hold.</p>
       }
     }
 
+    function initHouseControls() {
+      const furnitureOptions = $("#furniture-options");
+      furnitureTypes.forEach((type) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "house-choice";
+        button.dataset.furnitureType = type;
+        button.innerHTML = `${furnitureSvg(type)}<span>${type[0].toUpperCase() + type.slice(1)}</span>`;
+        button.querySelector("svg").style.width = "34px";
+        button.querySelector("svg").style.height = "30px";
+        button.addEventListener("click", () => setFurniturePlacement(type));
+        furnitureOptions.append(button);
+      });
+      [$("#mix-color-a"), $("#mix-color-b")].forEach((select, index) => {
+        mixColors.forEach((color, colorIndex) => {
+          const option = document.createElement("option");
+          option.value = color;
+          option.textContent = `Color ${colorIndex + 1}`;
+          option.style.background = color;
+          select.append(option);
+        });
+        select.selectedIndex = index === 0 ? 0 : 1;
+      });
+      updateMixerPreview();
+      $$("[data-wardrobe-character]").forEach((button) => button.addEventListener("click", () => {
+        selectedWardrobeCharacter = button.dataset.wardrobeCharacter;
+        updateWardrobe();
+      }));
+      $("#send-character-out").addEventListener("click", sendCharacterOut);
+      $("#cancel-furniture").addEventListener("click", () => setFurniturePlacement(null));
+      $("#add-house-cat").addEventListener("click", addHouseCat);
+      $("#house-stage").addEventListener("click", placeFurniture);
+      $("#mix-color-a").addEventListener("change", updateMixerPreview);
+      $("#mix-color-b").addEventListener("change", updateMixerPreview);
+      $("#mix-eyes").addEventListener("change", updateMixerPreview);
+      $("#mix-accessory").addEventListener("change", updateMixerPreview);
+      $("#mix-slime").addEventListener("click", mixSlime);
+      setInterval(() => {
+        if (currentPage !== "house" || activeHouseDrag) return;
+        $$("#house-characters .house-character").forEach((element) => {
+          const item = visibleCharacters().find((person) => person.id === element.dataset.houseId);
+          if (item) moveHouseActor("character", item, element);
+        });
+        $$("#house-cats .house-cat").forEach((element) => {
+          const item = visibleCats().find((cat) => cat.id === element.dataset.houseId);
+          if (item) moveHouseActor("cat", item, element);
+        });
+      }, 3200);
+    }
+
     async function initFirebase() {
       const ready = Object.values(firebaseConfig).every((value) => typeof value === "string" && value.trim().length > 0);
       if (!ready) {
@@ -1931,12 +2849,33 @@ You are loved more than this little game could ever hold.</p>
         }, (error) => showToast(`Slimes: ${error.message}`));
         fs.onSnapshot(fs.collection(db, "bunnies"), (snapshot) => {
           bunnies = snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
+          natureLoaded = true;
           renderBunnies();
         }, (error) => showToast(`Bunnies: ${error.message}`));
         fs.onSnapshot(fs.collection(db, "tulips"), (snapshot) => {
           tulips = snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
+          natureLoaded = true;
           renderTulips();
         }, (error) => showToast(`Tulips: ${error.message}`));
+        fs.onSnapshot(fs.collection(db, "characters"), (snapshot) => {
+          characters = snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
+          charactersLoaded = true;
+          renderHouse();
+        }, (error) => showToast(`Characters: ${error.message}`));
+        fs.onSnapshot(fs.collection(db, "furniture"), (snapshot) => {
+          furniture = snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
+          furnitureLoaded = true;
+          renderHouse();
+        }, (error) => showToast(`Furniture: ${error.message}`));
+        fs.onSnapshot(fs.collection(db, "cats"), (snapshot) => {
+          cats = snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
+          catsLoaded = true;
+          renderHouse();
+        }, (error) => showToast(`Cats: ${error.message}`));
+        fs.onSnapshot(fs.collection(db, "mixes"), (snapshot) => {
+          mixes = snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
+          renderMixes();
+        }, (error) => showToast(`Mixtures: ${error.message}`));
       } catch (error) {
         showToast(`Firebase setup: ${error.message}`);
       }
@@ -1978,12 +2917,12 @@ You are loved more than this little game could ever hold.</p>
 
     let touchStart = null;
     viewport.addEventListener("touchstart", (event) => {
-      if (event.touches.length === 1 && !event.target.closest("input, textarea, select, [contenteditable='true'], .bunny, .tulip")) {
+      if (event.touches.length === 1 && !event.target.closest("input, textarea, select, [contenteditable='true'], .bunny, .tulip, .house-item")) {
         touchStart = { x: event.touches[0].clientX, y: event.touches[0].clientY };
       }
     }, { passive: true });
     viewport.addEventListener("touchend", (event) => {
-      if (!touchStart || editMode || event.target.closest(".bunny, .tulip")) return;
+      if (!touchStart || editMode || event.target.closest(".bunny, .tulip, .house-item")) return;
       const touch = event.changedTouches[0];
       const dx = touch.clientX - touchStart.x;
       const dy = touch.clientY - touchStart.y;
@@ -2112,7 +3051,24 @@ You are loved more than this little game could ever hold.</p>
       cleanupNatureDrag();
       showPage(habitat, true);
     });
+    document.addEventListener("pointermove", (event) => {
+      if (!activeHouseDrag || event.pointerId !== activeHouseDrag.pointerId) return;
+      event.preventDefault();
+      const drag = activeHouseDrag;
+      drag.ghost.style.left = `${event.clientX}px`;
+      drag.ghost.style.top = `${event.clientY}px`;
+      if (Math.hypot(event.clientX - drag.startX, event.clientY - drag.startY) > 6) drag.moved = true;
+    }, { passive: false });
+    document.addEventListener("pointerup", (event) => {
+      if (activeHouseDrag && event.pointerId === activeHouseDrag.pointerId) finishHouseDrag(event);
+    });
+    document.addEventListener("pointercancel", () => {
+      if (!activeHouseDrag) return;
+      cleanupHouseDrag();
+      renderHouse();
+    });
 
+    initHouseControls();
     renderContent();
     renderColorOptions();
     updateSlimePreview();
@@ -2120,6 +3076,7 @@ You are loved more than this little game could ever hold.</p>
     renderGalleryPages();
     renderBunnies();
     renderTulips();
+    renderHouse();
     showPage(location.hash.slice(1) || "home", false);
     initFirebase();
   </script>
