@@ -2446,7 +2446,17 @@ You are loved more than this little game could ever hold.</p>
       { id: "demo-blue-armchair", type: "armchair", zone: "bunnyBlue", x: .69, y: .87 },
     ];
     const demoGardenFurniture = demoFurniture.filter((item) => item.zone === "garden");
-    const demoBlueFurniture = demoFurniture.filter((item) => item.zone === "bunnyBlue");
+    const demoBlueFurniture = [
+      { id: "demo-blue-park-arch", type: "arch", zone: "bunnyBlue", x: .88, y: .56 },
+      { id: "demo-blue-park-swing", type: "swing", zone: "bunnyBlue", x: .5, y: .64 },
+      { id: "demo-blue-park-bench", type: "bench", zone: "bunnyBlue", x: .23, y: .83 },
+      { id: "demo-blue-park-parasol", type: "parasol", zone: "bunnyBlue", x: .35, y: .74 },
+      { id: "demo-blue-park-fountain", type: "fountain", zone: "bunnyBlue", x: .72, y: .82 },
+      { id: "demo-blue-park-mailbox", type: "mailbox", zone: "bunnyBlue", x: .9, y: .73 },
+      { id: "demo-blue-park-lantern", type: "lantern", zone: "bunnyBlue", x: .16, y: .89 },
+      { id: "demo-blue-park-sandbox", type: "sandbox", zone: "bunnyBlue", x: .58, y: .89 },
+    ];
+    const legacyBlueFurnitureIds = ["bed", "shelf", "plant", "lamp", "rug", "armchair"].map((type) => `seed-blue-${type}`);
     const demoCats = [
       { id: "demo-cat-miso", color: catColors[0], zone: "yard", x: .22, y: .87 },
       { id: "demo-cat-pixel", color: catColors[1], zone: "house", x: .88, y: .84 },
@@ -2521,6 +2531,7 @@ You are loved more than this little game could ever hold.</p>
     let gardenDecorSeedPromise = null;
     let blueDecorSeeded = false;
     let blueDecorSeedPromise = null;
+    let blueParkSeeded = false;
     const houseMotion = new Map();
     const catMotion = new Map();
     const bunnyMotion = new Map();
@@ -3940,6 +3951,22 @@ You are loved more than this little game could ever hold.</p>
           nextHop: performance.now() + 1200 + Math.random() * 4200,
         });
       }
+      if (
+        !Number.isFinite(motion.x) || !Number.isFinite(motion.y)
+        || !Number.isFinite(motion.baseX) || !Number.isFinite(motion.baseY)
+        || !Number.isFinite(motion.vx) || !Number.isFinite(motion.vy)
+        || motion.x < .09 || motion.x > .91
+        || motion.baseX < .09 || motion.baseX > .91
+        || motion.y < .28 || motion.y > .86
+        || motion.baseY < .28 || motion.baseY > .86
+        || Math.abs(motion.vx) > .5 || Math.abs(motion.vy) > 2
+        || (motion.onGround && Math.abs(motion.y - motion.baseY) > .002)
+      ) {
+        Object.assign(motion, {
+          baseX, baseY, x: baseX, y: baseY, vx: 0, vy: 0, onGround: true,
+          nextHop: performance.now() + 1600 + Math.random() * 5200,
+        });
+      }
       motion.savedX = Number(bunny.x);
       motion.savedY = Number(bunny.y);
       motion.savedHabitat = habitat;
@@ -3975,6 +4002,15 @@ You are loved more than this little game could ever hold.</p>
       bunnyMotion.forEach((motion, id) => {
         if (motion.habitat !== currentPage || !motion.element) return;
         if (activeNatureDrag?.kind === "bunny" && activeNatureDrag.item.id === id) return;
+        if (
+          !Number.isFinite(motion.x) || !Number.isFinite(motion.y)
+          || !Number.isFinite(motion.baseY) || !Number.isFinite(motion.vx) || !Number.isFinite(motion.vy)
+          || motion.x < .09 || motion.x > .91 || motion.y < .28 || motion.y > .86
+          || motion.baseY < .28 || motion.baseY > .86
+          || Math.abs(motion.vx) > .5 || Math.abs(motion.vy) > 2
+        ) {
+          Object.assign(motion, { x: motion.baseX, y: motion.baseY, vx: 0, vy: 0, onGround: true });
+        }
         if (motion.onGround && time >= motion.nextHop) {
           motion.vy = -(.27 + Math.random() * .12);
           motion.vx = (Math.random() - .5) * .17;
@@ -4199,7 +4235,10 @@ You are loved more than this little game could ever hold.</p>
       const rect = element.getBoundingClientRect();
       if (kind === "bunny") {
         const motion = bunnyMotion.get(item.id);
-        if (motion) Object.assign(motion, { vx: 0, vy: 0, onGround: true, nextHop: performance.now() + 1000000000 });
+        if (motion) Object.assign(motion, {
+          y: motion.baseY, baseX: motion.x, vx: 0, vy: 0, onGround: true,
+          nextHop: performance.now() + 1000000000,
+        });
       }
       const ghost = document.createElement("div");
       ghost.className = "drag-ghost";
@@ -4406,7 +4445,8 @@ You are loved more than this little game could ever hold.</p>
         natureSeeded: state.natureSeeded === true || flag === "natureSeeded",
         houseSeeded: state.houseSeeded === true || flag === "houseSeeded",
         gardenDecorSeeded: state.gardenDecorSeeded === true || flag === "gardenDecorSeeded",
-        blueDecorSeeded: state.blueDecorSeeded === true || flag === "blueDecorSeeded",
+        blueDecorSeeded: state.blueDecorSeeded === true || flag === "blueDecorSeeded" || flag === "blueParkSeeded",
+        blueParkSeeded: state.blueParkSeeded === true || flag === "blueParkSeeded",
       }, { merge: true });
     }
 
@@ -4461,20 +4501,26 @@ You are loved more than this little game could ever hold.</p>
     }
 
     function ensureBlueDecorSeeds() {
-      if (blueDecorSeeded) return Promise.resolve();
+      if (blueDecorSeeded && blueParkSeeded) return Promise.resolve();
       if (blueDecorSeedPromise) return blueDecorSeedPromise;
       blueDecorSeedPromise = (async () => {
         const seedState = await fs.getDoc(seedStateRef());
-        if (seedState.exists() && seedState.data().blueDecorSeeded === true) {
-          blueDecorSeeded = true;
+        const state = seedState.exists() ? seedState.data() : {};
+        blueDecorSeeded = state.blueDecorSeeded === true || state.blueParkSeeded === true;
+        if (state.blueParkSeeded === true) {
+          blueParkSeeded = true;
           renderGardenFurniture();
           return;
         }
+        if (role === "admin") {
+          await Promise.all(legacyBlueFurnitureIds.map((id) => fs.deleteDoc(fs.doc(db, "furniture", id))));
+        }
         const entries = demoBlueFurniture.map(({ id, ...item }) => [
-          "furniture", `seed-blue-${item.type}`, { ...item, createdBy: user.uid, createdAt: fs.serverTimestamp() },
+          "furniture", `seed-blue-park-${item.type}`, { ...item, createdBy: user.uid, createdAt: fs.serverTimestamp() },
         ]);
-        await commitSeedState("blueDecorSeeded", entries);
+        await commitSeedState("blueParkSeeded", entries);
         blueDecorSeeded = true;
+        blueParkSeeded = true;
         renderGardenFurniture();
       })().finally(() => { blueDecorSeedPromise = null; });
       return blueDecorSeedPromise;
@@ -4767,6 +4813,11 @@ You are loved more than this little game could ever hold.</p>
         motion.savedWorldPage = worldPage;
         motion.savedWorldX = localX;
       }
+      if (!Number.isFinite(motion.jumpY) || !Number.isFinite(motion.jumpV) || motion.jumpY < 0 || motion.jumpY > 28 || Math.abs(motion.jumpV) > 180) {
+        motion.jumpY = 0;
+        motion.jumpV = 0;
+        motion.onGround = true;
+      }
       return motion;
     }
 
@@ -4862,8 +4913,12 @@ You are loved more than this little game could ever hold.</p>
           motion.onGround = false;
           motion.nextHop = time + 4800 + Math.random() * 7200;
         }
-        if (!motion.onGround) {
-          motion.jumpV += 330 * delta;
+        if (!Number.isFinite(motion.jumpY) || !Number.isFinite(motion.jumpV) || motion.jumpY < 0 || motion.jumpY > 28 || Math.abs(motion.jumpV) > 180) {
+          motion.jumpY = 0;
+          motion.jumpV = 0;
+          motion.onGround = true;
+        } else if (!motion.onGround) {
+          motion.jumpV = Math.max(-180, motion.jumpV - 330 * delta);
           motion.jumpY += motion.jumpV * delta;
           if (motion.jumpY <= 0) {
             motion.jumpY = 0;

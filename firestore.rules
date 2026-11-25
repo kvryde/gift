@@ -461,14 +461,16 @@ service cloud.firestore {
         && request.resource.data.natureSeeded is bool
         && request.resource.data.houseSeeded is bool
         && request.resource.data.gardenDecorSeeded is bool
-        && request.resource.data.blueDecorSeeded is bool;
+        && request.resource.data.blueDecorSeeded is bool
+        && request.resource.data.blueParkSeeded is bool;
       allow update: if (isAdmin() || isViewer())
         && request.resource.data.natureSeeded is bool
         && request.resource.data.houseSeeded is bool
         && request.resource.data.gardenDecorSeeded is bool
         && request.resource.data.blueDecorSeeded is bool
+        && request.resource.data.blueParkSeeded is bool
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
-          'natureSeeded', 'houseSeeded', 'gardenDecorSeeded', 'blueDecorSeeded'
+          'natureSeeded', 'houseSeeded', 'gardenDecorSeeded', 'blueDecorSeeded', 'blueParkSeeded'
         ]);
     }
 
