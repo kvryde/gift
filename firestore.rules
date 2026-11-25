@@ -466,6 +466,31 @@ service cloud.firestore {
       );
     }
 
+    function validPicturePopup(data) {
+      return data.keys().hasOnly([
+        'popupId', 'imageUrl', 'senderId', 'senderName', 'senderRole', 'createdAt'
+      ])
+        && data.popupId is string
+        && data.popupId.size() >= 1
+        && data.popupId.size() <= 80
+        && data.imageUrl is string
+        && data.imageUrl.size() <= 180000
+        && data.imageUrl.matches('^data:image/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$')
+        && data.senderId == request.auth.uid
+        && data.senderName is string
+        && data.senderName.size() >= 1
+        && data.senderName.size() <= 24
+        && data.senderRole == 'admin'
+        && isAdmin()
+        && data.createdAt == request.time;
+    }
+
+    match /picturePopups/current {
+      allow read: if isAdmin() || isViewer();
+      allow create, update: if isAdmin() && validPicturePopup(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
     function validRadioTrack(data) {
       return data.keys().hasOnly(['trackId', 'title', 'mime', 'size', 'chunkCount', 'createdBy', 'createdAt'])
         && data.trackId is string

@@ -613,6 +613,7 @@
     .chat-note { margin: 0; padding: 0 .8rem .7rem; color: #c0ccb1; background: #223728; font-size: .74rem; line-height: 1.4; }
     .chat-notify-row { display: flex; align-items: center; justify-content: space-between; gap: .5rem; padding-right: .8rem; background: #223728; }
     .chat-notify-row .photo-action { flex: 0 0 auto; margin-bottom: .7rem; padding: .3rem .5rem; font-size: .62rem; }
+    .chat-utility-actions { display: flex; flex: 0 0 auto; gap: .35rem; }
     .slime-arcade { margin-top: 1.1rem; padding: 1rem; }
     .arcade-header { display: flex; align-items: center; justify-content: space-between; gap: .8rem; margin-bottom: .8rem; }
     .arcade-header h2 { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: 1.5rem; font-weight: 400; }
@@ -743,6 +744,14 @@
     .photo-viewer-footer { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .65rem .8rem; border-top: 3px solid #40573c; color: #dce6cf; background: #223728; }
     .photo-viewer-count { flex: 0 0 auto; color: var(--gold); font-family: "Silkscreen", monospace; font-size: .68rem; }
     .photo-viewer-caption { max-height: 3.2em; margin: 0; overflow-y: auto; font-family: Georgia, "Times New Roman", serif; font-size: .82rem; line-height: 1.5; text-align: right; white-space: pre-line; }
+    .picture-popup { animation: picturePopupBackdrop .2s ease-out; }
+    .picture-popup-card { width: min(620px, 78vw); max-height: 78dvh; overflow: hidden; border: 3px solid #93cf75; border-radius: 2px; background: #17251d; box-shadow: inset 0 3px #314a34, 0 8px #0b150f, 0 18px 50px rgba(0, 0, 0, .45); opacity: 0; transform: translateY(18px) scale(.72); }
+    .picture-popup.visible .picture-popup-card { animation: picturePopupZoom .36s cubic-bezier(.2, .9, .25, 1.2) forwards; }
+    .picture-popup-header { display: flex; align-items: center; justify-content: space-between; gap: .8rem; padding: .6rem .75rem; border-bottom: 3px solid #40573c; background: #263c2b; }
+    .picture-popup-header h2 { margin: 0; color: #f4ecd5; font-family: "Silkscreen", monospace; font-size: .82rem; }
+    .picture-popup-image { display: block; width: 100%; max-height: 58dvh; object-fit: contain; background: #0d1711; }
+    @keyframes picturePopupBackdrop { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes picturePopupZoom { from { opacity: 0; transform: translateY(18px) scale(.72); } to { opacity: 1; transform: translateY(0) scale(1); } }
 
     .nature-page { padding: 0; overflow: hidden; background: #19172e; }
     .habitat-scene { position: absolute; inset: 0; overflow: hidden; }
@@ -1044,15 +1053,17 @@
     .cafe-chair .chair-legs { right: 12%; bottom: 0; left: 12%; height: 28%; border-right: 5px solid #493126; border-left: 5px solid #493126; background: #765438; box-shadow: none; }
     .cafe-chair:hover .chair-back, .cafe-chair[aria-pressed="true"] .chair-back { background: #9b6844; box-shadow: inset 0 4px #c3915c, 3px 3px rgba(48, 31, 23, .3); }
     .cafe-sit { width: 100%; margin-top: .4rem; }
-    .world-character.cafe-seated { bottom: 15%; width: clamp(44px, 5.4vw, 66px); }
-    .world-character-shadow.cafe-seated { bottom: 14%; width: clamp(30px, 4vw, 46px); }
+    .world-character.cafe-seated { bottom: 6%; width: clamp(44px, 5.4vw, 66px); transition: none !important; }
+    .world-character-shadow.cafe-seated { bottom: 14%; width: clamp(30px, 4vw, 46px); transition: none !important; }
     .cafe-character-mug { position: absolute; right: 4%; bottom: 27%; display: none; width: 19px; height: 19px; pointer-events: none; }
     .cafe-character-mug svg { width: 100%; height: 100%; animation: none; }
     .world-character.cafe-seated .cafe-character-mug { display: block; }
-    .world-character.cafe-seated.drinking svg { animation: cafeSip 1.7s ease-in-out; transform-origin: 50% 100%; }
+    .world-character.cafe-seated.drinking > svg { animation: cafeSip 1.7s ease-in-out; transform-origin: 50% 100%; }
+    .world-character.cafe-seated.drinking .cafe-sip-arm { animation: cafeArmSip 1.7s ease-in-out; transform-box: fill-box; transform-origin: 50% 0; }
     .world-character.cafe-seated.drinking .cafe-character-mug { animation: cafeMugSip 1.7s ease-in-out; }
-    @keyframes cafeSip { 0%, 100% { transform: translateY(0) rotate(0); } 35%, 62% { transform: translateY(3px) rotate(2deg); } }
-    @keyframes cafeMugSip { 0%, 100% { transform: translate(0, 0); } 35%, 62% { transform: translate(-13px, -15px) rotate(-8deg); } }
+    @keyframes cafeSip { 0%, 100% { transform: translateY(0) rotate(0); } 22% { transform: translateY(2px) rotate(4deg); } 40%, 64% { transform: translateY(5px) rotate(9deg); } 84% { transform: translateY(2px) rotate(3deg); } }
+    @keyframes cafeArmSip { 0%, 100% { transform: rotate(0); } 28%, 68% { transform: rotate(52deg); } }
+    @keyframes cafeMugSip { 0%, 100% { transform: translate(0, 0) rotate(0); } 24% { transform: translate(-8px, -9px) rotate(-5deg); } 40%, 64% { transform: translate(-16px, -20px) rotate(-12deg) scale(.92); } 86% { transform: translate(-5px, -6px) rotate(-3deg); } }
     .cafe-cats { position: absolute; z-index: 5; inset: 0; pointer-events: none; }
     .cafe-cat { position: absolute; width: 62px; height: 52px; transform: translate(-50%, -100%); cursor: pointer; pointer-events: auto; filter: drop-shadow(0 4px rgba(42, 27, 20, .25)); }
     .cafe-cat svg { width: 100%; height: 100%; shape-rendering: crispEdges; }
@@ -2225,7 +2236,8 @@ You are loved more than this little game could ever hold.</p>
       <input class="chat-input" id="chat-input" type="text" maxlength="500" placeholder="Message your favorite player..." autocomplete="off" required data-copy-placeholder="chatPlaceholderReady">
       <button class="button button-mint chat-send" type="submit" id="chat-send" data-field="chatSend">Send</button>
     </form>
-    <div class="chat-notify-row"><p class="chat-note" id="chat-note" data-field="chatNoteSignedOut">Sign in as an admin or viewer to chat.</p><button class="photo-action" type="button" id="chat-notify-button" data-field="chatEnableNotifications" hidden>Enable notifications</button></div>
+    <div class="chat-notify-row"><p class="chat-note" id="chat-note" data-field="chatNoteSignedOut">Sign in as an admin or viewer to chat.</p><div class="chat-utility-actions"><button class="photo-action" type="button" id="chat-picture-button" data-field="chatSendPicture" hidden>Send picture</button><button class="photo-action" type="button" id="chat-notify-button" data-field="chatEnableNotifications" hidden>Enable notifications</button></div></div>
+    <input id="chat-picture-input" type="file" accept="image/png,image/jpeg,image/webp" hidden>
   </aside>
 
   <div class="slime-achievement" id="slime-achievement" role="status" aria-live="assertive" hidden>
@@ -2247,6 +2259,13 @@ You are loved more than this little game could ever hold.</p>
       </div>
       <div class="photo-viewer-footer"><span class="photo-viewer-count" id="photo-viewer-count"></span><p class="photo-viewer-caption" id="photo-viewer-caption"></p></div>
     </div>
+  </div>
+
+  <div class="modal-backdrop picture-popup" id="picture-popup" hidden>
+    <section class="picture-popup-card" role="dialog" aria-modal="true" aria-labelledby="picture-popup-title">
+      <div class="picture-popup-header"><h2 id="picture-popup-title">Picture from Zyrel</h2><button class="modal-close" type="button" data-close="picture-popup" aria-label="Close picture" data-copy-aria="picturePopupCloseAria">×</button></div>
+      <img class="picture-popup-image" id="picture-popup-image" alt="Picture from Zyrel" data-copy-alt="picturePopupImageAlt">
+    </section>
   </div>
 
   <div class="modal-backdrop" id="text-modal" hidden>
@@ -2356,8 +2375,8 @@ You are loved more than this little game could ever hold.</p>
       levelLabel: "LV. {level}",
       roleAdminLabel: "Admin",
       roleViewerLabel: "Viewer",
-      chatAdminName: "Admin",
-      chatViewerName: "Player Two",
+      chatAdminName: "Zyrel",
+      chatViewerName: "Shane",
       chatEmptySignedIn: "No messages yet. Say hello to your favorite player.",
       chatEmptySignedOut: "Sign in to open the couple chat.",
       chatPlaceholderReady: "Message your favorite player...",
@@ -2369,6 +2388,16 @@ You are loved more than this little game could ever hold.</p>
       chatNotificationsDenied: "Notifications are blocked in browser settings.",
       chatNotificationsOn: "Message notifications are on.",
       chatNewMessage: "New message from {name}",
+      chatSendPicture: "Send picture",
+      chatPictureSending: "Sending...",
+      picturePopupTitle: "Picture from {name}",
+      picturePopupCloseAria: "Close picture",
+      picturePopupImageAlt: "Picture from {name}",
+      pictureNeedAdmin: "Only the admin can send picture popups.",
+      pictureTypeInvalid: "Choose a JPG, PNG, or WebP picture.",
+      pictureSizeLimit: "Choose a picture smaller than 20 MB.",
+      pictureSendSuccess: "Picture sent. It will pop up for Shane right away.",
+      pictureSendError: "Could not send picture",
       weddingVowsActive: "Our forever starts now",
       weddingDanceActive: "Take a little bow",
       weddingBrideRole: "{name}, the bride",
@@ -3275,6 +3304,8 @@ You are loved more than this little game could ever hold.</p>
     let chatLastReadAt = 0;
     let chatInitialSnapshot = true;
     const chatSeenMessageIds = new Set();
+    let picturePopupUnsubscribe = null;
+    let picturePopupSending = false;
     let galleryChatMessages = [];
     let galleryChatUnsubscribe = null;
     let galleryChatPageId = "";
@@ -3538,6 +3569,10 @@ You are loved more than this little game could ever hold.</p>
     }
 
     function closeModal(id) {
+      if (id === "picture-popup") {
+        closePicturePopup();
+        return;
+      }
       $(`#${id}`).hidden = true;
       if (id === "radio-modal") $("#radio-button").setAttribute("aria-expanded", "false");
       if (id === "photo-viewer") $("#photo-viewer-image").removeAttribute("src");
@@ -4001,8 +4036,16 @@ You are loved more than this little game could ever hold.</p>
       else window.addEventListener("load", register, { once: true });
     }
 
-    function chatDisplayName() {
-      return copyText(role === "admin" ? "chatAdminName" : "chatViewerName", role === "admin" ? "Admin" : "Player Two");
+    function chatDisplayName(senderRole = role) {
+      const admin = senderRole === "admin";
+      return copyText(admin ? "chatAdminName" : "chatViewerName", admin ? "Zyrel" : "Shane");
+    }
+
+    function chatMessageDisplayName(message) {
+      const senderRole = message.senderRole === "admin" || message.senderRole === "viewer"
+        ? message.senderRole
+        : /admin/i.test(String(message.senderName || "")) ? "admin" : "viewer";
+      return chatDisplayName(senderRole);
     }
 
     function chatMessageTime(message) {
@@ -4039,7 +4082,7 @@ You are loved more than this little game could ever hold.</p>
     }
 
     async function notifyIncomingChat(message) {
-      const name = message.senderName || copyText(message.senderRole === "admin" ? "chatAdminName" : "chatViewerName", message.senderRole === "admin" ? "Admin" : "Player Two");
+      const name = chatMessageDisplayName(message);
       showToast(`${name}: ${String(message.text || "").slice(0, 120)}`);
       if (!("Notification" in window) || Notification.permission !== "granted" || !("serviceWorker" in navigator)) return;
       try {
@@ -4079,9 +4122,10 @@ You are loved more than this little game could ever hold.</p>
         updateChatUi();
         return;
       }
-      const query = fs.query(fs.collection(db, "chatMessages"), fs.orderBy("createdAt", "desc"), fs.limit(100));
-      chatUnsubscribe = fs.onSnapshot(query, (snapshot) => {
-        chatMessages = snapshot.docs.map((item) => ({ id: item.id, ...item.data() })).reverse();
+      chatUnsubscribe = fs.onSnapshot(fs.collection(db, "chatMessages"), (snapshot) => {
+        chatMessages = snapshot.docs.map((item) => ({ id: item.id, ...item.data() }))
+          .sort((a, b) => chatMessageTime(a) - chatMessageTime(b) || a.id.localeCompare(b.id))
+          .slice(-100);
         if (chatInitialSnapshot) {
           chatInitialSnapshot = false;
           chatMessages.forEach((message) => chatSeenMessageIds.add(message.id));
@@ -4109,7 +4153,8 @@ You are loved more than this little game could ever hold.</p>
     }
 
     function formatChatTime(value) {
-      const date = value?.toDate?.() || (value ? new Date(value) : new Date());
+      if (!value) return "";
+      const date = value?.toDate?.() || new Date(value);
       return Number.isNaN(date.getTime()) ? "" : date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
     }
 
@@ -4132,7 +4177,7 @@ You are loved more than this little game could ever hold.</p>
         meta.className = "chat-meta";
         const name = document.createElement("span");
         name.className = "chat-name";
-        name.textContent = message.senderName || copyText(message.senderRole === "admin" ? "chatAdminName" : "chatViewerName", message.senderRole === "admin" ? "Admin" : "Player Two");
+        name.textContent = chatMessageDisplayName(message);
         const time = document.createElement("time");
         time.className = "chat-time";
         time.dateTime = message.createdAt?.toDate?.().toISOString?.() || "";
@@ -4160,6 +4205,11 @@ You are loved more than this little game could ever hold.</p>
           ? copyText("chatNoteNoRole", "Your account needs an admin or viewer role to chat.")
           : copyText("chatNoteReady", "Private to the two players · Press T to toggle chat");
       $("#chat-notify-button").hidden = !enabled || !("Notification" in window) || Notification.permission !== "default";
+      $("#chat-picture-button").hidden = role !== "admin";
+      $("#chat-picture-button").disabled = !enabled || picturePopupSending;
+      $("#chat-picture-button").textContent = picturePopupSending
+        ? copyText("chatPictureSending", "Sending...")
+        : copyText("chatSendPicture", "Send picture");
       updateChatUnreadBadges();
     }
 
@@ -4215,6 +4265,110 @@ You are loved more than this little game could ever hold.</p>
       }
     }
 
+    function picturePopupSeenKey() {
+      return user ? `birthday-quest-picture-seen-${user.uid}` : "";
+    }
+
+    function markPicturePopupSeen(popupId) {
+      if (!user || !popupId) return;
+      try {
+        localStorage.setItem(picturePopupSeenKey(), popupId);
+      } catch {}
+    }
+
+    function showPicturePopup(data) {
+      const popupId = String(data?.popupId || "");
+      const imageUrl = String(data?.imageUrl || "");
+      if (!popupId || !/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(imageUrl) || imageUrl.length > 180000) return;
+      const popup = $("#picture-popup");
+      if (!popup.hidden && popup.dataset.popupId === popupId) return;
+      const name = chatDisplayName("admin");
+      $("#picture-popup-title").textContent = formatCopy("picturePopupTitle", { name });
+      $("#picture-popup-image").src = imageUrl;
+      $("#picture-popup-image").alt = formatCopy("picturePopupImageAlt", { name });
+      popup.dataset.popupId = popupId;
+      markPicturePopupSeen(popupId);
+      popup.hidden = false;
+      popup.classList.remove("visible");
+      void popup.offsetWidth;
+      requestAnimationFrame(() => popup.classList.add("visible"));
+      $("#picture-popup-image").focus?.();
+    }
+
+    function closePicturePopup() {
+      const popup = $("#picture-popup");
+      popup.classList.remove("visible");
+      popup.hidden = true;
+      $("#picture-popup-image").removeAttribute("src");
+      delete popup.dataset.popupId;
+    }
+
+    function syncPicturePopupListener() {
+      picturePopupUnsubscribe?.();
+      picturePopupUnsubscribe = null;
+      closePicturePopup();
+      if (!user || !role || !db || !fs) return;
+      let initialSnapshot = true;
+      picturePopupUnsubscribe = fs.onSnapshot(fs.doc(db, "picturePopups", "current"), (snapshot) => {
+        const firstSnapshot = initialSnapshot;
+        initialSnapshot = false;
+        if (!snapshot.exists()) return;
+        const data = snapshot.data();
+        const popupId = String(data.popupId || "");
+        if (!popupId || data.senderId === user.uid) return;
+        let seen = "";
+        try {
+          seen = localStorage.getItem(picturePopupSeenKey()) || "";
+        } catch {}
+        if (seen === popupId || (firstSnapshot && seen !== popupId)) return;
+        showPicturePopup({ ...data, popupId });
+      }, (error) => {
+        console.warn("Picture popup listener:", error.code || "unavailable");
+      });
+    }
+
+    async function sendPicturePopup(file) {
+      if (!file) return;
+      if (role !== "admin") {
+        showToast(copyText("pictureNeedAdmin", "Only the admin can send picture popups."));
+        return;
+      }
+      if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+        showToast(copyText("pictureTypeInvalid", "Choose a JPG, PNG, or WebP picture."));
+        return;
+      }
+      if (file.size > 20 * 1024 * 1024) {
+        showToast(copyText("pictureSizeLimit", "Choose a picture smaller than 20 MB."));
+        return;
+      }
+      if (!db || !fs || picturePopupSending) return;
+      picturePopupSending = true;
+      updateChatUi();
+      try {
+        const imageUrl = await compressGalleryPhoto(file, 180000);
+        if (!/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(imageUrl) || imageUrl.length > 180000) {
+          throw new Error("The compressed picture is too large.");
+        }
+        const popupId = crypto.randomUUID();
+        const data = {
+          popupId,
+          imageUrl,
+          senderId: user.uid,
+          senderName: chatDisplayName("admin"),
+          senderRole: "admin",
+          createdAt: fs.serverTimestamp(),
+        };
+        showPicturePopup(data);
+        await fs.setDoc(fs.doc(db, "picturePopups", "current"), data);
+        showToast(copyText("pictureSendSuccess", "Picture sent. It will pop up for Shane right away."));
+      } catch (error) {
+        showAppError("pictureSendError", "Could not send picture", error);
+      } finally {
+        picturePopupSending = false;
+        updateChatUi();
+      }
+    }
+
     function updateRoleUi() {
       $("#auth-button").textContent = copyText(user ? "authSignOut" : "authSignIn", user ? "Sign out" : "Sign in");
       $("#edit-button").hidden = !user || !role;
@@ -4227,6 +4381,7 @@ You are loved more than this little game could ever hold.</p>
       $("#role-badge").hidden = !role;
       $("#role-badge").textContent = role ? copyText(role === "admin" ? "roleAdminLabel" : "roleViewerLabel", role === "admin" ? "Admin" : "Viewer") : "";
       syncChatListener();
+      syncPicturePopupListener();
       updateChatUi();
       renderSlimes();
       renderBunnies();
@@ -5600,8 +5755,9 @@ You are loved more than this little game could ever hold.</p>
         ${seated
           ? '<path d="M28 108h22v14H28ZM50 108h22v14H50Z" fill="' + outfit.secondary + '" stroke="#493d32" stroke-width="3"/><path d="M22 120h30v8H22ZM50 120h28v8H50Z" fill="#eee3c6" stroke="#493d32" stroke-width="3"/>'
           : '<path d="M34 108h14v24H34ZM52 108h14v24H52Z" fill="' + outfit.secondary + '" stroke="#493d32" stroke-width="3"/><path d="M28 130h22v8H28ZM50 130h22v8H50Z" fill="#eee3c6" stroke="#493d32" stroke-width="3"/>'}
-        <path d="M22 80h10v30H22ZM68 80h10v30H68Z" fill="${outfit.primary}" stroke="#493d32" stroke-width="3"/>
-        <path d="M22 104h10v8H22ZM68 104h10v8H68Z" fill="${skin}" stroke="#493d32" stroke-width="3"/>
+        <path d="M22 80h10v30H22Z" fill="${outfit.primary}" stroke="#493d32" stroke-width="3"/>
+        <g class="cafe-sip-arm"><path d="M68 80h10v30H68Z" fill="${outfit.primary}" stroke="#493d32" stroke-width="3"/><path d="M68 104h10v8H68Z" fill="${skin}" stroke="#493d32" stroke-width="3"/></g>
+        <path d="M22 104h10v8H22Z" fill="${skin}" stroke="#493d32" stroke-width="3"/>
         <path d="M30 74h40v44H30Z" fill="${outfit.primary}" stroke="#493d32" stroke-width="3"/>
         ${pattern}
         <path d="M44 74h6v6h-6ZM50 74h6v6h-6Z" fill="${outfit.secondary}"/>
@@ -5900,18 +6056,55 @@ You are loved more than this little game could ever hold.</p>
       return motion;
     }
 
+    function syncCafeSeatPositions() {
+      if (!cafeSeated) return;
+      const cafeIndex = pages.indexOf("cafe");
+      const layer = $("#world-characters");
+      const chairs = $$("[data-cafe-seat]");
+      if (cafeIndex < 0 || !layer || chairs.length < 2) return;
+      const layerRect = layer.getBoundingClientRect();
+      visibleCharacters().forEach((person) => {
+        const motion = roamMotion.get(person.id);
+        const chair = chairs[person.key === "girl" || person.gender === "girl" ? 0 : 1];
+        const seat = chair?.querySelector(".chair-seat");
+        if (!motion || !chair || !seat) return;
+        const chairRect = chair.getBoundingClientRect();
+        const seatRect = seat.getBoundingClientRect();
+        motion.cafeLeft = chairRect.left + chairRect.width / 2 - layerRect.left;
+        motion.x = motion.cafeLeft / Math.max(1, layerRect.width) * pages.length;
+        motion.targetX = motion.x;
+        motion.targetPage = "cafe";
+        motion.vx = 0;
+        motion.jumpY = 0;
+        motion.jumpV = 0;
+        motion.onGround = true;
+        const characterHeight = motion.element?.getBoundingClientRect().height || 58;
+        const seatBottom = layerRect.bottom - seatRect.bottom - 3 - characterHeight;
+        const shadowHeight = motion.shadow?.offsetHeight || 10;
+        const shadowBottom = layerRect.bottom - chairRect.bottom - shadowHeight / 2;
+        applyRoamMotion(motion);
+        if (motion.element) motion.element.style.bottom = `${seatBottom}px`;
+        if (motion.shadow) motion.shadow.style.bottom = `${shadowBottom}px`;
+      });
+    }
+
     function applyRoamMotion(motion) {
       if (!motion.element) return;
       const pageCount = pages.length;
-      const left = `${motion.x / pageCount * 100}%`;
+      const seated = cafeSeated && pages[Math.floor(motion.x)] === "cafe";
+      const left = seated && Number.isFinite(motion.cafeLeft) ? `${motion.cafeLeft}px` : `${motion.x / pageCount * 100}%`;
       const jump = Math.max(0, motion.jumpY);
       const transform = `translate(-50%, calc(-100% - ${jump}px))`;
-      const seated = cafeSeated && pages[Math.floor(motion.x)] === "cafe";
       const walking = !seated && (Math.abs(motion.vx) > .01 || activeRoamDrag?.item.id === motion.element.dataset.roamId);
       if (motion.element.style.left !== left) motion.element.style.left = left;
       if (motion.element.style.transform !== transform) motion.element.style.transform = transform;
       if (motion.element.classList.contains("walking") !== walking) motion.element.classList.toggle("walking", walking);
       if (motion.element.classList.contains("cafe-seated") !== seated) motion.element.classList.toggle("cafe-seated", seated);
+      if (!seated) {
+        delete motion.cafeLeft;
+        motion.element.style.removeProperty("bottom");
+        motion.shadow?.style.removeProperty("bottom");
+      }
       if (motion.shadow) {
         motion.shadow.classList.toggle("cafe-seated", seated);
         const scale = Math.max(.55, 1 - jump / 70);
@@ -5947,7 +6140,7 @@ You are loved more than this little game could ever hold.</p>
         const mug = document.createElement("span");
         mug.className = "cafe-character-mug";
         mug.setAttribute("aria-hidden", "true");
-        mug.innerHTML = coffeeSvg(cafeDrinks[1]);
+        mug.innerHTML = coffeeSvg(readyCoffee || cafeDrinks[1]);
         element.append(label, mug);
         element.addEventListener("pointerdown", (event) => startRoamDrag(person, event));
         element.addEventListener("click", () => {
@@ -7143,7 +7336,10 @@ You are loved more than this little game could ever hold.</p>
         motion.nextHop = performance.now() + 3200;
         if (!rebuild) applyRoamMotion(motion);
       });
-      if (rebuild) renderRoamingCharacters();
+      if (rebuild) {
+        renderRoamingCharacters();
+        syncCafeSeatPositions();
+      }
       updateCafeUi();
       if (seated) $("#cafe-status").textContent = copyText("cafeSeated", "Shane and Zyrell are seated. Drink coffee to see them take a sip.");
     }
@@ -7202,6 +7398,7 @@ You are loved more than this little game could ever hold.</p>
       coffeeBoostUntil = performance.now() + 30000;
       coffeeBoostMultiplier = drink.strength;
       if (!cafeSeated) setCafeSeated(true);
+      $$(".world-character.cafe-seated .cafe-character-mug").forEach((mug) => { mug.innerHTML = coffeeSvg(drink); });
       cafeDrinkAnimationUntil = performance.now() + 1700;
       clearTimeout(cafeDrinkTimer);
       cafeDrinkTimer = setTimeout(() => {
@@ -7939,7 +8136,7 @@ You are loved more than this little game could ever hold.</p>
             const meta = document.createElement("div");
             meta.className = "photo-chat-meta";
             const name = document.createElement("span");
-            name.textContent = message.senderName || copyText(message.senderRole === "admin" ? "chatAdminName" : "chatViewerName", message.senderRole === "admin" ? "Admin" : "Player Two");
+            name.textContent = chatMessageDisplayName(message);
             const time = document.createElement("time");
             time.dateTime = message.createdAt?.toDate?.().toISOString?.() || "";
             time.textContent = formatChatTime(message.createdAt);
@@ -8991,6 +9188,7 @@ You are loved more than this little game could ever hold.</p>
     window.addEventListener("resize", () => {
       const index = pages.indexOf(currentPage);
       viewport.scrollTo({ left: index * viewport.clientWidth, behavior: "auto" });
+      if (cafeSeated) syncCafeSeatPositions();
       syncPersistentTrash();
     });
 
@@ -9011,6 +9209,16 @@ You are loved more than this little game could ever hold.</p>
     $("#chat-nav-button").addEventListener("click", () => setChatOpen(!chatOpen));
     $("#chat-close").addEventListener("click", () => setChatOpen(false));
     $("#chat-notify-button").addEventListener("click", requestChatNotifications);
+    $("#chat-picture-button").addEventListener("click", () => $("#chat-picture-input").click());
+    $("#chat-picture-input").addEventListener("change", async (event) => {
+      const input = event.target;
+      const file = input.files?.[0];
+      input.value = "";
+      await sendPicturePopup(file);
+    });
+    $("#picture-popup").addEventListener("click", (event) => {
+      if (event.target === $("#picture-popup")) closePicturePopup();
+    });
     $("#chat-form").addEventListener("submit", sendChatMessage);
     window.addEventListener("beforeinstallprompt", (event) => {
       event.preventDefault();
