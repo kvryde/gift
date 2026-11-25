@@ -1,4 +1,4 @@
-const CACHE_NAME = "birthday-quest-shell-v4";
+const CACHE_NAME = "birthday-quest-shell-v5";
 const BASE_URL = new URL("./", self.location.href);
 const SHELL_URLS = [
   "./",
