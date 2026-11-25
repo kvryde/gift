@@ -953,6 +953,8 @@
     .tab-button span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .tab-button.active { color: var(--mint); background: rgba(188, 232, 215, .08); }
     .tab-button.active::after { position: absolute; bottom: 2px; width: 18px; height: 3px; border-radius: 999px; background: var(--mint); content: ""; }
+    body.character-dragging [data-page-link] { cursor: pointer; box-shadow: inset 0 0 0 2px rgba(240, 207, 118, .38); }
+    body.character-dragging [data-page-link].character-nav-target { color: #fff2bd; background: rgba(240, 207, 118, .2); box-shadow: inset 0 0 0 3px #f0cf76, 0 0 18px rgba(240, 207, 118, .35); transform: translateY(-3px); }
 
     .rotate-gate {
       position: fixed;
@@ -1709,7 +1711,7 @@ You are loved more than this little game could ever hold.</p>
             <div class="house-layer" id="house-furniture"></div>
             <div class="house-layer" id="house-cats"></div>
             <div class="house-layer" id="house-characters"></div>
-            <div class="house-hint" id="house-hint" data-field="houseHintDefault">Drag a character across the tabs or through the door · Tap cats to pet them</div>
+            <div class="house-hint" id="house-hint" data-field="houseHintDefault">Drag a character onto a page tab or through the door · Tap cats to pet them</div>
           </div>
           <aside class="house-panel" aria-label="House activities" data-copy-aria="houseActivitiesAria">
             <section class="house-panel-section">
@@ -2253,7 +2255,7 @@ You are loved more than this little game could ever hold.</p>
       houseCharacterOutsideError: "Could not send character outside: {error}",
       housePreparing: "Preparing your house...",
       houseSeedError: "Could not prepare the house: {error}",
-      houseDropHint: "Drop inside the house scene to move it.",
+      houseDropHint: "Drop inside the house scene or on a page tab to move it.",
       houseCharacterInside: "{name} is inside. The wardrobe is unlocked!",
       houseCharacterPlaying: "{name} is playing outside.",
       houseCatMoved: "{name} found a cozy new spot.",
@@ -4882,6 +4884,29 @@ You are loved more than this little game could ever hold.</p>
       });
     }
 
+    function characterNavDropPage(event) {
+      const link = document.elementFromPoint(event.clientX, event.clientY)?.closest("[data-page-link]");
+      return pages.includes(link?.dataset.pageLink) ? link.dataset.pageLink : null;
+    }
+
+    function updateCharacterNavTarget(event) {
+      const page = characterNavDropPage(event);
+      $$("[data-page-link]").forEach((link) => {
+        link.classList.toggle("character-nav-target", link.dataset.pageLink === page);
+      });
+      return page;
+    }
+
+    function clearCharacterNavTarget() {
+      document.body.classList.remove("character-dragging");
+      $$("[data-page-link]").forEach((link) => link.classList.remove("character-nav-target"));
+    }
+
+    function characterNavDropPosition(page, event) {
+      const localX = event.clientX / Math.max(1, viewport.clientWidth);
+      return characterDropPosition(page, localX, page === "house" ? null : event);
+    }
+
     function characterDropPosition(page, localX, event) {
       if (page !== "house") {
         return { zone: "yard", x: .34, y: houseGroundY("yard", .34), worldPage: page, worldX: Math.max(.08, Math.min(.92, localX)) };
@@ -4940,12 +4965,13 @@ You are loved more than this little game could ever hold.</p>
       activeRoamDrag = {
         item: person, motion, element: event.currentTarget, pointerId: event.pointerId,
         startClientX: event.clientX, startClientY: event.clientY, startX: motion.x,
-        startPage: pages[Math.floor(motion.x)], moved: false,
+        startPage: pages[Math.floor(motion.x)], moved: false, dropPage: null,
       };
       motion.vx = 0;
       motion.targetX = motion.x;
       motion.targetPage = pages[Math.floor(motion.x)];
       motion.element.classList.add("dragging");
+      document.body.classList.add("character-dragging");
       try { motion.element.setPointerCapture(event.pointerId); } catch {}
     }
 
@@ -4954,6 +4980,8 @@ You are loved more than this little game could ever hold.</p>
       event.preventDefault();
       const drag = activeRoamDrag;
       if (Math.hypot(event.clientX - drag.startClientX, event.clientY - drag.startClientY) > 5) drag.moved = true;
+      drag.dropPage = updateCharacterNavTarget(event);
+      if (drag.dropPage) return;
       drag.motion.x = Math.max(.08, Math.min(pages.length - .08, drag.startX + (event.clientX - drag.startClientX) / Math.max(1, viewport.clientWidth)));
       const pageIndex = Math.max(0, Math.min(pages.length - 1, Math.floor(drag.motion.x)));
       if (pages[pageIndex] !== currentPage) showPage(pages[pageIndex]);
@@ -4965,6 +4993,7 @@ You are loved more than this little game could ever hold.</p>
       const drag = activeRoamDrag;
       try { drag.element.releasePointerCapture(drag.pointerId); } catch {}
       drag.element.classList.remove("dragging");
+      clearCharacterNavTarget();
       activeRoamDrag = null;
     }
 
@@ -4974,12 +5003,20 @@ You are loved more than this little game could ever hold.</p>
       drag.element.dataset.draggedAt = String(performance.now());
       const worldX = drag.motion.x;
       const pageIndex = Math.max(0, Math.min(pages.length - 1, Math.floor(worldX)));
-      const position = drag.moved ? characterDropPosition(pages[pageIndex], worldX - pageIndex) : null;
+      const dropPage = drag.dropPage || characterNavDropPage(event);
+      const position = drag.moved
+        ? dropPage
+          ? characterNavDropPosition(dropPage, event)
+          : characterDropPosition(pages[pageIndex], worldX - pageIndex)
+        : null;
       drag.motion.targetX = worldX;
       drag.motion.targetPage = pages[pageIndex];
       drag.motion.nextPlan = performance.now() + 1800 + Math.random() * 2800;
       cleanupRoamDrag();
-      if (position) await persistCharacterPlacement(drag.item, position);
+      if (position) {
+        if (dropPage) showPage(dropPage);
+        await persistCharacterPlacement(drag.item, position);
+      }
     }
 
     function cancelRoamDrag() {
@@ -5251,6 +5288,8 @@ You are loved more than this little game could ever hold.</p>
     }
 
     function moveHouseCharacterDrag(drag, event) {
+      drag.dropPage = updateCharacterNavTarget(event);
+      if (drag.dropPage) return;
       const worldX = Math.max(.08, Math.min(pages.length - .08, drag.startWorldX + (event.clientX - drag.startX) / Math.max(1, viewport.clientWidth)));
       const pageIndex = Math.max(0, Math.min(pages.length - 1, Math.floor(worldX)));
       drag.worldX = worldX;
@@ -5282,7 +5321,7 @@ You are loved more than this little game could ever hold.</p>
       ghost.innerHTML = kind === "character" ? chibiSvg(item) : kind === "cat" ? catSvg(item.color) : furnitureSvg(item.type);
       document.body.append(ghost);
       const houseX = houseMotion.get(item.id)?.x ?? Number(item.x) ?? .5;
-      activeHouseDrag = { kind, item, element, ghost, pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, clientX: event.clientX, clientY: event.clientY, moved: false, worldX: null, startWorldX: pages.indexOf("house") + Math.max(.08, Math.min(.92, houseX)), canTrash: kind !== "character" && canManageHouseItem(item), trashVisible: false };
+      activeHouseDrag = { kind, item, element, ghost, pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, clientX: event.clientX, clientY: event.clientY, moved: false, worldX: null, dropPage: null, startWorldX: pages.indexOf("house") + Math.max(.08, Math.min(.92, houseX)), canTrash: kind !== "character" && canManageHouseItem(item), trashVisible: false };
       if (activeHouseDrag.canTrash) {
         $("#trash-bin").classList.add("active");
         activeHouseDrag.trashVisible = true;
@@ -5292,6 +5331,7 @@ You are loved more than this little game could ever hold.</p>
         if (motion?.shadow) motion.shadow.style.opacity = "0";
         roamMotion.get(item.id)?.element.classList.add("dragging");
         viewport.classList.add("dragging-house");
+        document.body.classList.add("character-dragging");
       }
       element.classList.add("dragging");
       $("#house-stage").classList.add("dragging-house");
@@ -5308,6 +5348,7 @@ You are loved more than this little game could ever hold.</p>
         if (motion) applyHouseMotion(motion);
         roamMotion.get(activeHouseDrag.item.id)?.element.classList.remove("dragging");
         viewport.classList.remove("dragging-house");
+        clearCharacterNavTarget();
       }
       activeHouseDrag.ghost.remove();
       $("#house-stage").classList.remove("dragging-house");
@@ -5334,15 +5375,21 @@ You are loved more than this little game could ever hold.</p>
         await deleteHouseItem(drag.kind === "cat" ? "cats" : "furniture", drag.item, drag.element);
         return;
       }
-      if (drag.kind === "character" && drag.worldX !== null) {
-        const pageIndex = Math.max(0, Math.min(pages.length - 1, Math.floor(drag.worldX)));
-        const position = characterDropPosition(pages[pageIndex], drag.worldX - pageIndex, event);
+      if (drag.kind === "character") {
+        const dropPage = drag.dropPage || characterNavDropPage(event);
+        const pageIndex = drag.worldX === null ? null : Math.max(0, Math.min(pages.length - 1, Math.floor(drag.worldX)));
+        const position = dropPage
+          ? characterNavDropPosition(dropPage, event)
+          : pageIndex === null
+            ? null
+            : characterDropPosition(pages[pageIndex], drag.worldX - pageIndex, event);
         cleanupHouseDrag();
         if (!position) {
           renderHouse();
-          showToast(copyText("houseDropHint", "Drop inside the house scene to move it."));
+          showToast(copyText("houseDropHint", "Drop inside the house scene or on a page tab to move it."));
           return;
         }
+        if (dropPage) showPage(dropPage);
         await persistCharacterPlacement(drag.item, position);
         return;
       }
@@ -5352,7 +5399,7 @@ You are loved more than this little game could ever hold.</p>
       cleanupHouseDrag();
       if (!dropped) {
         renderHouse();
-        showToast(copyText("houseDropHint", "Drop inside the house scene to move it."));
+        showToast(copyText("houseDropHint", "Drop inside the house scene or on a page tab to move it."));
         return;
       }
       const bounds = houseBounds(dropped.zone);
@@ -5488,7 +5535,7 @@ You are loved more than this little game could ever hold.</p>
       $$("#furniture-options [data-furniture-type]").forEach((button) => button.classList.toggle("active", button.dataset.furnitureType === placementFurniture));
       $("#house-hint").textContent = placementFurniture
         ? formatCopy("housePlacementHint", { item: furnitureTypeLabel(placementFurniture) }, `Tap a spot to place the ${furnitureTypeLabel(placementFurniture)}`)
-        : copyText("houseHintDefault", "Drag a character across the tabs or through the door · Tap cats to pet them");
+        : copyText("houseHintDefault", "Drag a character onto a page tab or through the door · Tap cats to pet them");
     }
 
     async function placeFurniture(event) {

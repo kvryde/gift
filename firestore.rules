@@ -318,7 +318,11 @@ service cloud.firestore {
           || (resource.data.zone == 'house' && validInsideHouse(resource.data) && validInsideHouse(request.resource.data))
         );
       allow update: if isViewer()
-        && (resource.data.createdBy == request.auth.uid || characterId in ['seed-girl', 'seed-boy'])
+        && (
+          resource.data.createdBy == request.auth.uid
+          || characterId in ['seed-girl', 'seed-boy']
+          || resource.data.key in ['girl', 'boy']
+        )
         && request.resource.data.createdBy == resource.data.createdBy
         && request.resource.data.createdAt == resource.data.createdAt
         && request.resource.data.key == resource.data.key
