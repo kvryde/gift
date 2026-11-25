@@ -1,4 +1,4 @@
-const CACHE_NAME = "birthday-quest-shell-v8";
+const CACHE_NAME = "birthday-quest-shell-v9";
 const BASE_URL = new URL("./", self.location.href);
 const FIREBASE_SDK_URLS = [
   "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js",
