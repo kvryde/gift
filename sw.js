@@ -1,4 +1,4 @@
-const CACHE_NAME = "birthday-quest-shell-v15";
+const CACHE_NAME = "birthday-quest-shell-v17";
 const BASE_URL = new URL("./", self.location.href);
 const FIREBASE_SDK_URLS = [
   "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js",
@@ -37,6 +37,17 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("message", (event) => {
   if (event.data?.type === "SKIP_WAITING") self.skipWaiting();
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const target = event.notification.data?.url || BASE_URL.href;
+  event.waitUntil(self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(async (clients) => {
+    const existing = clients[0];
+    if (!existing) return self.clients.openWindow(target);
+    if (existing.url !== target) await existing.navigate(target);
+    return existing.focus();
+  }));
 });
 
 self.addEventListener("fetch", (event) => {

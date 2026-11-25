@@ -22,7 +22,7 @@
       --panel: #201d3b;
       --panel-2: #292545;
       --ink: #f7f3ff;
-      --muted: #b7afc9;
+      --muted: #d1c9df;
       --line: rgba(255, 255, 255, .1);
       --mint: #bce8d7;
       --pink: #f3c6d7;
@@ -44,6 +44,7 @@
         var(--bg);
       font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
     }
     button, input, select, textarea { font: inherit; }
     button { color: inherit; cursor: pointer; }
@@ -115,6 +116,8 @@
     .xp-track { width: 90px; height: 5px; overflow: hidden; border-radius: 999px; background: rgba(255, 255, 255, .08); }
     .xp-fill { width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--mint), var(--gold)); transition: width .3s ease; }
     .hud-actions { display: flex; align-items: center; gap: .45rem; }
+    .chat-button, .chat-tab { position: relative; }
+    .unread-badge { position: absolute; top: -7px; right: -7px; z-index: 3; display: grid; min-width: 19px; height: 19px; place-items: center; padding: 0 4px; border: 2px solid #182a1e; border-radius: 10px; color: #fff; background: #c95f54; font-family: "Silkscreen", monospace; font-size: .55rem; line-height: 1; pointer-events: none; }
     .hud-button {
       min-height: 36px;
       padding: .5rem .75rem;
@@ -576,6 +579,20 @@
     .install-preview strong { color: var(--gold); font-family: "Silkscreen", monospace; font-size: .72rem; }
     .install-preview div span { color: var(--muted); font-size: .65rem; }
 
+    .radio-modal { width: min(430px, calc(100vw - 2rem)); }
+    .radio-body { display: grid; justify-items: center; gap: .75rem; padding: 1rem; }
+    .radio-power { position: relative; width: min(270px, 100%); padding: 0; border: 0; color: #f4ecd5; background: transparent; cursor: pointer; }
+    .radio-power svg { display: block; width: 100%; filter: drop-shadow(0 8px 0 #101b14); }
+    .radio-power.playing .radio-speaker { animation: radioPulse .7s steps(2) infinite; transform-origin: center; }
+    .radio-power:focus-visible { outline: 3px solid #f0cf76; outline-offset: 5px; }
+    .radio-track { width: 100%; min-height: 52px; padding: .55rem .65rem; border: 2px solid #526747; background: #182a1e; text-align: center; }
+    .radio-track strong { display: block; overflow: hidden; color: #f0cf76; font-family: "Silkscreen", monospace; font-size: .76rem; text-overflow: ellipsis; white-space: nowrap; }
+    .radio-track span { display: block; margin-top: .25rem; color: #c7d3b7; font-size: .72rem; line-height: 1.35; }
+    .radio-actions { display: flex; width: 100%; flex-wrap: wrap; justify-content: center; gap: .45rem; }
+    .radio-actions .button { min-height: 40px; }
+    .radio-progress { width: 100%; height: 12px; accent-color: #8fb36b; }
+    .radio-status { min-height: 1.2em; margin: 0; color: #d7dfc8; font-size: .76rem; line-height: 1.35; text-align: center; }
+    @keyframes radioPulse { 50% { opacity: .62; } }
     .chat-panel { position: fixed; left: max(1rem, env(safe-area-inset-left)); bottom: calc(80px + env(safe-area-inset-bottom)); z-index: 75; display: flex; width: min(620px, calc(100vw - 2rem)); max-height: min(70dvh, 620px); flex-direction: column; border: 3px solid #78985d; border-radius: 2px; color: #f4ecd5; background: #1d3022; box-shadow: inset 0 3px #314a34, 0 6px #0b150f; font-family: "Pixelify Sans", monospace; }
     .chat-header { display: flex; align-items: center; justify-content: space-between; gap: .8rem; padding: .8rem .9rem; border-bottom: 3px solid #40573c; background: #263c2b; box-shadow: inset 0 3px #314a34; }
     .chat-header h2 { margin: .15rem 0 0; font-family: "Silkscreen", monospace; font-size: 1.1rem; letter-spacing: -.04em; }
@@ -594,6 +611,8 @@
     .chat-input:disabled { opacity: .6; }
     .chat-send { min-height: 46px; padding: .55rem .9rem; font-size: .85rem; }
     .chat-note { margin: 0; padding: 0 .8rem .7rem; color: #c0ccb1; background: #223728; font-size: .74rem; line-height: 1.4; }
+    .chat-notify-row { display: flex; align-items: center; justify-content: space-between; gap: .5rem; padding-right: .8rem; background: #223728; }
+    .chat-notify-row .photo-action { flex: 0 0 auto; margin-bottom: .7rem; padding: .3rem .5rem; font-size: .62rem; }
     .slime-arcade { margin-top: 1.1rem; padding: 1rem; }
     .arcade-header { display: flex; align-items: center; justify-content: space-between; gap: .8rem; margin-bottom: .8rem; }
     .arcade-header h2 { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: 1.5rem; font-weight: 400; }
@@ -682,11 +701,28 @@
     .gallery-flip-button { display: grid; width: 42px; height: 54px; padding: 0; place-items: center; border: 1px solid var(--line); border-radius: 13px; color: var(--mint); background: rgba(188, 232, 215, .07); font-size: 1.35rem; }
     .gallery-flip-button:disabled { opacity: .3; cursor: not-allowed; }
     .gallery-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .7rem; }
+    .photo-memory-card { display: flex; min-width: 0; flex-direction: column; gap: .35rem; }
     .photo-slot { position: relative; min-height: 150px; overflow: hidden; border: 1px solid var(--line); border-radius: 15px; background: #100e22; }
     .photo-slot img { width: 100%; height: 100%; min-height: 150px; aspect-ratio: 4 / 3; object-fit: cover; }
     .photo-slot.empty { display: grid; place-items: center; border-style: dashed; color: var(--muted); background: rgba(255, 255, 255, .02); text-align: center; }
     .photo-slot.empty button { display: grid; width: 100%; height: 100%; min-height: 150px; padding: 1rem; place-items: center; border: 0; color: inherit; background: transparent; font-size: .72rem; font-weight: 800; cursor: pointer; }
     .photo-slot.empty span { display: block; margin-top: .35rem; font-size: 1.4rem; }
+    .photo-memory-chat { display: grid; min-width: 0; gap: .3rem; padding: .45rem; border: 2px solid #725838; color: #34422e; background: #f4ecd7; box-shadow: inset 0 0 0 2px #cbbb92; }
+    .photo-chat-heading { display: flex; align-items: center; justify-content: space-between; gap: .4rem; }
+    .photo-chat-heading strong { font-family: "Silkscreen", monospace; font-size: .62rem; line-height: 1.3; }
+    .photo-chat-heading span { color: #64705a; font-size: .58rem; }
+    .photo-chat-messages { display: flex; height: 88px; flex-direction: column; gap: .3rem; overflow-y: auto; padding: .35rem; border: 1px solid #b8a77f; background: rgba(255, 255, 255, .48); overscroll-behavior: contain; }
+    .photo-chat-empty { margin: auto; color: #64705a; font-family: "Pixelify Sans", monospace; font-size: .68rem; line-height: 1.3; text-align: center; }
+    .photo-chat-message { max-width: 94%; padding: .3rem .38rem; border: 1px solid #b8a77f; background: #fffaf0; box-shadow: 2px 2px rgba(80, 65, 40, .12); }
+    .photo-chat-message.own { align-self: flex-end; background: #dcebd1; }
+    .photo-chat-meta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .2rem .4rem; color: #59654f; font-size: .54rem; line-height: 1.2; }
+    .photo-chat-message p { margin: .16rem 0 0; font-family: "Pixelify Sans", monospace; font-size: .76rem; line-height: 1.25; overflow-wrap: anywhere; white-space: pre-wrap; }
+    .photo-chat-form { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .3rem; }
+    .photo-chat-input { min-width: 0; min-height: 34px; padding: .35rem .4rem; resize: none; border: 1px solid #8d7b57; border-radius: 0; color: #26362d; background: #fffaf0; font-family: "Pixelify Sans", monospace; font-size: .74rem; line-height: 1.25; }
+    .photo-chat-input:focus { outline: 2px solid #6a9157; outline-offset: 1px; }
+    .photo-chat-input:disabled { color: #69705f; background: #e2d8bf; }
+    .photo-chat-send { min-height: 34px; padding: .3rem .5rem; font-size: .6rem; }
+    .photo-chat-send:disabled { opacity: .55; cursor: not-allowed; }
     .gallery-page-copy { margin-top: .9rem; }
     .gallery-page-copy textarea { width: 100%; min-height: 86px; padding: .75rem; resize: vertical; border: 1px solid var(--line); border-radius: 12px; color: var(--ink); background: rgba(8, 7, 20, .4); font-family: Georgia, "Times New Roman", serif; font-size: .95rem; line-height: 1.65; }
     .gallery-page-text { margin: 0; color: #ddd6e8; font-family: Georgia, "Times New Roman", serif; font-size: .98rem; line-height: 1.7; white-space: pre-line; }
@@ -731,6 +767,10 @@
     .habitat-fence::before, .habitat-fence::after { position: absolute; left: -5%; width: 110%; height: 10%; border-radius: 4px; background: #f9e9d5; content: ""; }
     .habitat-fence::before { top: 28%; }
     .habitat-fence::after { top: 68%; }
+    .blue-enclosure-art { position: absolute; z-index: 1; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+    .blue-butterfly { animation: blueFlutter 3.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+    .blue-butterfly.two { animation-delay: -1.6s; animation-duration: 4.1s; }
+    @keyframes blueFlutter { 0%, 100% { transform: translate(0, 0) rotate(-4deg); } 50% { transform: translate(10px, -12px) rotate(5deg); } }
     .nature-heading { position: absolute; top: clamp(.8rem, 2.5vw, 1.6rem); left: clamp(1rem, 3vw, 2.2rem); z-index: 4; max-width: min(620px, 75%); }
     .nature-heading h1 { margin-bottom: .35rem; font-family: Georgia, "Times New Roman", serif; font-size: clamp(1.8rem, 4vw, 3.5rem); font-weight: 400; letter-spacing: -.04em; }
     .nature-heading p { margin: 0; color: rgba(255, 255, 255, .82); font-size: clamp(.68rem, 1.5vw, .85rem); line-height: 1.5; text-shadow: 0 1px 8px rgba(20, 19, 41, .4); }
@@ -807,6 +847,7 @@
       opacity: 0;
       pointer-events: none;
       filter: drop-shadow(0 12px 14px rgba(0, 0, 0, .3));
+      transition: none;
     }
     .trash-bin.active { visibility: visible; opacity: 1; }
     .trash-bin.over { filter: drop-shadow(0 0 10px rgba(255, 231, 160, .8)); transform: scale(1.08); }
@@ -957,11 +998,11 @@
     .ingredient-slot svg { width: 23px; height: 23px; shape-rendering: crispEdges; }
     .ingredient-slot span { font-size: .47rem; }
     .kitchen-actions { display: grid; grid-template-columns: auto 1fr; gap: .4rem; align-items: stretch; }
-    .pixel-button { min-height: 40px; border: 3px solid #1d271c; background: #67804d; color: #fff5cf; font: 700 .62rem "Silkscreen", monospace; box-shadow: inset 0 -5px #405432, inset 0 3px #8ba567; cursor: pointer; }
+    .pixel-button { min-height: 40px; border: 3px solid #1d271c; background: #67804d; color: #fff5cf; font: 700 .78rem "Pixelify Sans", "Courier New", monospace; box-shadow: inset 0 -5px #405432, inset 0 3px #8ba567; cursor: pointer; }
     .pixel-button:hover:not(:disabled), .pixel-button:focus-visible { filter: brightness(1.12); outline: 2px solid #f0d895; outline-offset: 1px; }
     .pixel-button:disabled { cursor: not-allowed; filter: grayscale(.65); opacity: .6; }
     .pixel-button.secondary { background: #9b6d45; box-shadow: inset 0 -5px #66452d, inset 0 3px #bd9162; }
-    .kitchen-progress { display: flex; align-items: center; justify-content: center; padding: .25rem; border: 2px solid #60694d; background: #293225; color: #d9d1b6; font: 700 .58rem "Silkscreen", monospace; }
+    .kitchen-progress { display: flex; align-items: center; justify-content: center; padding: .25rem; border: 2px solid #60694d; background: #293225; color: #e6dfcd; font: 700 .72rem "Pixelify Sans", "Courier New", monospace; }
     .kitchen-status { min-height: 2.3em; margin: .5rem 0; color: #d8cba9; font-size: .62rem; line-height: 1.35; }
     .kitchen-result { display: none; grid-template-columns: 58px 1fr; align-items: center; gap: .5rem; margin: .45rem 0; padding: .4rem; border: 2px solid #b39459; background: #3f462f; }
     .kitchen-result.visible { display: grid; }
@@ -969,7 +1010,7 @@
     .kitchen-result strong { display: block; color: #ffe7a8; font-family: "Silkscreen", monospace; font-size: .72rem; }
     .kitchen-result small { color: #d7cdaa; font-size: .55rem; }
     .kitchen-cookbook { margin-top: .55rem; border: 2px solid #656b50; background: rgba(34, 41, 30, .8); }
-    .kitchen-cookbook summary { padding: .45rem .55rem; color: #e6d6ab; font: 700 .62rem "Silkscreen", monospace; cursor: pointer; }
+    .kitchen-cookbook summary { padding: .45rem .55rem; color: #f3e6c5; font: 700 .78rem "Pixelify Sans", "Courier New", monospace; cursor: pointer; }
     .cookbook-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .25rem; max-height: 210px; overflow-y: auto; padding: .35rem; }
     .cookbook-dish { padding: .32rem; border: 1px solid #555e46; background: #30392b; color: #c9c3a5; font-size: .52rem; line-height: 1.25; }
     .cookbook-dish.cooked { border-color: #9eae69; background: #3d4b31; color: #e1e7bb; }
@@ -991,9 +1032,27 @@
     .coffee-cup.ready { opacity: 1; transform: translateY(-4px); }
     .coffee-cup.brewing::before { animation: kitchenSteam .8s ease-in-out infinite; }
     .cafe-table { position: absolute; z-index: 2; bottom: 24%; width: 24%; height: 10%; border: 6px solid #56392a; background: #b68254; box-shadow: 0 7px #493126; }
-    .cafe-table.one { left: 8%; }
+    .cafe-table.one { left: 10%; bottom: 12%; width: 25%; }
     .cafe-table.two { right: 7%; bottom: 12%; width: 19%; }
     .cafe-table::after { position: absolute; top: 100%; left: 42%; width: 16%; height: 28px; background: #54382b; content: ""; }
+    .cafe-chair { position: absolute; z-index: 2; bottom: 11%; width: 13%; height: 23%; padding: 0; border: 0; background: transparent; cursor: pointer; }
+    .cafe-chair.one { left: 6%; }
+    .cafe-chair.two { left: 27%; }
+    .cafe-chair span { position: absolute; display: block; background: #765438; box-shadow: inset 0 4px #a7794e, 3px 3px rgba(48, 31, 23, .3); }
+    .cafe-chair .chair-back { inset: 0 10% 34%; border: 4px solid #493126; }
+    .cafe-chair .chair-seat { right: 4%; bottom: 25%; left: 4%; height: 22%; border: 4px solid #493126; }
+    .cafe-chair .chair-legs { right: 12%; bottom: 0; left: 12%; height: 28%; border-right: 5px solid #493126; border-left: 5px solid #493126; background: #765438; box-shadow: none; }
+    .cafe-chair:hover .chair-back, .cafe-chair[aria-pressed="true"] .chair-back { background: #9b6844; box-shadow: inset 0 4px #c3915c, 3px 3px rgba(48, 31, 23, .3); }
+    .cafe-sit { width: 100%; margin-top: .4rem; }
+    .world-character.cafe-seated { bottom: 15%; width: clamp(44px, 5.4vw, 66px); }
+    .world-character-shadow.cafe-seated { bottom: 14%; width: clamp(30px, 4vw, 46px); }
+    .cafe-character-mug { position: absolute; right: 4%; bottom: 27%; display: none; width: 19px; height: 19px; pointer-events: none; }
+    .cafe-character-mug svg { width: 100%; height: 100%; animation: none; }
+    .world-character.cafe-seated .cafe-character-mug { display: block; }
+    .world-character.cafe-seated.drinking svg { animation: cafeSip 1.7s ease-in-out; transform-origin: 50% 100%; }
+    .world-character.cafe-seated.drinking .cafe-character-mug { animation: cafeMugSip 1.7s ease-in-out; }
+    @keyframes cafeSip { 0%, 100% { transform: translateY(0) rotate(0); } 35%, 62% { transform: translateY(3px) rotate(2deg); } }
+    @keyframes cafeMugSip { 0%, 100% { transform: translate(0, 0); } 35%, 62% { transform: translate(-13px, -15px) rotate(-8deg); } }
     .cafe-cats { position: absolute; z-index: 5; inset: 0; pointer-events: none; }
     .cafe-cat { position: absolute; width: 62px; height: 52px; transform: translate(-50%, -100%); cursor: pointer; pointer-events: auto; filter: drop-shadow(0 4px rgba(42, 27, 20, .25)); }
     .cafe-cat svg { width: 100%; height: 100%; shape-rendering: crispEdges; }
@@ -1011,13 +1070,13 @@
     .cafe-actions { display: grid; grid-template-columns: 1fr 1fr; gap: .4rem; }
     .cafe-status { min-height: 2.5em; margin: .6rem 0; color: #d8cba9; font-size: .62rem; line-height: 1.4; }
     .cafe-stats { display: flex; gap: .35rem; margin-bottom: .65rem; }
-    .cafe-stat { flex: 1; padding: .4rem; border: 2px solid #625f47; background: #2d3528; color: #d8d1af; font: 700 .54rem "Silkscreen", monospace; text-align: center; }
-    .cafe-residents { border-top: 2px solid #5e6048; padding-top: .55rem; color: #c8c2a4; font-size: .58rem; line-height: 1.5; }
+    .cafe-stat { flex: 1; padding: .4rem; border: 2px solid #625f47; background: #2d3528; color: #ece4c5; font: 700 .7rem "Pixelify Sans", "Courier New", monospace; text-align: center; }
+    .cafe-residents { border-top: 2px solid #5e6048; padding-top: .55rem; color: #ddd4b7; font-size: .7rem; line-height: 1.5; }
     .cafe-residents strong { color: #ebd8a7; }
     @media (max-width: 900px) {
       .kitchen-layout, .cafe-layout { grid-template-columns: minmax(0, 1fr) minmax(250px, .86fr); }
       .ingredient-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
-      .cafe-table.two { display: none; }
+      .cafe-table.two, .cafe-page .game-panel-note { display: none; }
     }
     @media (max-height: 520px) {
       .scene-heading { top: .35rem; left: .4rem; padding: .3rem .4rem; }
@@ -1051,6 +1110,20 @@
       .kitchen-page .ingredient-button, .kitchen-page .ingredient-slot { min-height: 26px; }
       .kitchen-page .ingredient-button svg, .kitchen-page .ingredient-slot svg { width: 15px; height: 15px; }
       .kitchen-page .kitchen-actions .pixel-button { min-height: 26px; }
+      .cafe-page { padding: .3rem; }
+      .cafe-layout { gap: .35rem; }
+      .cafe-page .game-panel { padding: .3rem; }
+      .cafe-page .game-panel-title { margin-bottom: .2rem; font-size: .68rem; }
+      .coffee-options { gap: .2rem; margin-bottom: .25rem; }
+      .coffee-option { min-height: 44px; padding: .15rem; border-width: 2px; }
+      .coffee-option svg { width: 20px; height: 20px; }
+      .cafe-actions { gap: .25rem; }
+      .cafe-actions .pixel-button, .cafe-sit { min-height: 28px; padding: .2rem .3rem; font-size: .58rem; }
+      .cafe-sit { margin-top: .25rem; }
+      .cafe-status { min-height: 0; margin: .25rem 0; font-size: .58rem; line-height: 1.25; }
+      .cafe-stats { gap: .2rem; margin-bottom: .25rem; }
+      .cafe-stat { padding: .2rem; font-size: .58rem; }
+      .cafe-residents { padding-top: .25rem; font-size: .58rem; line-height: 1.25; }
     }
     .mixer-station { position: relative; display: grid; min-height: 125px; place-items: center; overflow: hidden; border: 1px solid var(--line); border-radius: 14px; background: radial-gradient(circle at 50% 60%, rgba(188, 232, 215, .12), transparent 60%), rgba(9, 8, 23, .35); }
     .mixer-cauldron { position: relative; width: 100px; height: 80px; margin-top: 27px; border: 3px solid #393346; border-radius: 12px 12px 45px 45px; background: linear-gradient(135deg, #555064, #282536); box-shadow: 0 10px 15px rgba(0, 0, 0, .25); }
@@ -1197,6 +1270,22 @@
       font-family: "Pixelify Sans", "Courier New", monospace;
     }
     button, input, select, textarea { font-family: "Pixelify Sans", "Courier New", monospace; }
+.pixel-button, .icon-button, .tab-button, .chat-send, .chat-composer input,
+.chat-composer textarea, .radio-option, .coffee-option, .select-control,
+.photo-chat-form input, .photo-chat-send {
+  font-family: "Pixelify Sans", "Courier New", monospace;
+  font-size: .85rem;
+  letter-spacing: .01em;
+  line-height: 1.25;
+}
+.panel-heading h1, .panel-heading h2, .page-heading h1, .page-heading h2 {
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, .45);
+}
+.game-panel-note, .cafe-status, .kitchen-status, .chat-note, .radio-status {
+  color: #e6dfcd;
+  line-height: 1.4;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, .35);
+}
     .game-app { background: rgba(22, 37, 29, .94); }
     .hud { border-bottom: 3px solid #101b14; background: #22362a; box-shadow: inset 0 3px #3c533a; }
     .brand { font-family: "Silkscreen", monospace; font-size: .78rem; }
@@ -1339,6 +1428,10 @@
     @media (max-width: 900px) {
       .tab-button { flex-direction: column; gap: .15rem; font-size: .58rem; }
       .tab-button .icon { width: 19px; height: 19px; }
+      .trash-bin.mobile-persistent { right: max(.45rem, env(safe-area-inset-right)); bottom: calc(76px + env(safe-area-inset-bottom)); visibility: visible; opacity: .9; pointer-events: auto; transform: scale(.88); transform-origin: 100% 100%; }
+      .trash-bin.mobile-persistent.active { opacity: 1; }
+      .trash-bin.mobile-persistent.over { transform: scale(1.04); }
+      .house-hint, .nature-hint, .house-panel-note, .gallery-intro, .slime-intro, .page-heading p, .wedding-intro, .wedding-note, .chat-note { display: none !important; }
     }
 
     @media (max-width: 800px) and (orientation: portrait) {
@@ -1508,6 +1601,18 @@
       #page-gallery .photo-slot img { height: 100%; min-height: 0; aspect-ratio: auto; }
       #page-gallery .photo-slot.empty button { height: 100%; min-height: 0; padding: .25rem; font-size: .6rem; }
       #page-gallery .photo-slot.empty span { margin-top: .15rem; font-size: 1rem; }
+      #page-gallery .photo-memory-card { gap: .22rem; }
+      #page-gallery .photo-memory-chat { gap: .2rem; padding: .25rem; border-width: 1px; box-shadow: inset 0 0 0 1px #cbbb92; }
+      #page-gallery .photo-chat-heading strong { font-size: .5rem; }
+      #page-gallery .photo-chat-heading span { display: none; }
+      #page-gallery .photo-chat-messages { height: 48px; gap: .2rem; padding: .2rem; }
+      #page-gallery .photo-chat-empty { font-size: .56rem; }
+      #page-gallery .photo-chat-message { padding: .18rem .24rem; }
+      #page-gallery .photo-chat-meta { font-size: .46rem; }
+      #page-gallery .photo-chat-message p { margin-top: .1rem; font-size: .64rem; }
+      #page-gallery .photo-chat-form { gap: .2rem; }
+      #page-gallery .photo-chat-input { min-height: 30px; padding: .22rem .28rem; font-size: .64rem; }
+      #page-gallery .photo-chat-send { min-height: 30px; padding: .2rem .35rem; font-size: .52rem; }
       #page-gallery .gallery-page-copy { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: .3rem; margin-top: .3rem; }
       #page-gallery .gallery-page-copy textarea { height: 40px; min-height: 40px; padding: .35rem; font-size: .72rem; line-height: 1.25; }
       #page-gallery .gallery-page-text { max-height: 52px; overflow-y: auto; font-size: .76rem; line-height: 1.35; }
@@ -1555,6 +1660,10 @@
       .world-slime { width: 44px; }
       .world-slime-label { font-size: .4rem; }
       .bunny { width: 44px; }
+      #page-gallery .photo-slot { height: 54px; }
+      #page-gallery .photo-chat-messages { height: 36px; }
+      #page-gallery .photo-chat-heading { display: none; }
+      #page-gallery .photo-chat-input, #page-gallery .photo-chat-send { min-height: 28px; }
       .chat-panel { top: 50px; bottom: 50px; max-height: none; }
       .chat-header { min-height: 40px; padding: .3rem .5rem; }
       .chat-header .eyebrow { display: none; }
@@ -1579,6 +1688,30 @@
       .arcade-touch button { min-height: 44px; }
       .arcade-help { grid-template-columns: 1fr; }
       .arcade-help .button { width: 100%; }
+    }
+
+    @media (max-width: 900px) {
+      .tab-button { font-size: .68rem; }
+      .hud-button { font-size: .68rem; }
+      .hud-button .icon { flex: 0 0 auto; }
+      .home-actions .button, .wedding-actions .button, .nature-actions .button,
+      #page-gallery .gallery-toolbar .button, #page-gallery .gallery-page-actions .button,
+      #page-gallery .gallery-admin-actions .button, .garden-palette .button,
+      .cafe-actions .pixel-button { font-family: "Pixelify Sans", "Courier New", monospace; font-size: .7rem; }
+      .cafe-status { font-size: .72rem; }
+      .cafe-stat, .cafe-residents { font-size: .72rem; }
+      #page-gallery .photo-chat-heading strong, #page-gallery .photo-chat-empty { font-size: .64rem; }
+      #page-gallery .photo-chat-meta { font-size: .56rem; }
+      #page-gallery .photo-chat-message p { font-size: .72rem; }
+      #page-gallery .photo-chat-input, #page-gallery .photo-chat-send { font-size: .7rem; }
+      #page-gallery .gallery-pager { font-size: .68rem; }
+    }
+
+    @media (max-height: 340px) and (orientation: landscape) {
+      .tab-button, .hud-button { font-size: .62rem; }
+      .cafe-status, .cafe-stat, .cafe-residents { font-size: .64rem; }
+      #page-gallery .photo-chat-message p, #page-gallery .photo-chat-input,
+      #page-gallery .photo-chat-send { font-size: .64rem; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -1608,6 +1741,7 @@
     <symbol id="i-cafe" viewBox="0 0 24 24"><path d="M4 7h13v8a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V7ZM17 9h2a3 3 0 0 1 0 6h-2M7 3v1M11 2v2M15 3v1M2 22h18"/></symbol>
     <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 20h16"/></symbol>
     <symbol id="i-deploy" viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12Z"/><circle cx="12" cy="9" r="2.5"/></symbol>
+    <symbol id="i-radio" viewBox="0 0 24 24"><path d="M3 5h18v14H3zM3 9h18M7 13h4M7 16h7"/><circle cx="17" cy="15" r="2"/><path d="m6 5 3-3 4 3"/></symbol>
   </svg>
 
   <div class="rotate-gate" id="rotate-gate">
@@ -1632,7 +1766,8 @@
       <div class="hud-actions">
         <span class="role-badge" id="role-badge" hidden></span>
         <button class="hud-button install-shortcut" type="button" id="install-app" aria-label="Install Birthday Quest app" title="Install app" data-copy-aria="installAppAria" data-copy-title="installAppTitle"><svg class="icon"><use href="#i-download"></use></svg><span data-field="hudGetApp">Get app</span></button>
-        <button class="hud-button" type="button" id="chat-button" aria-controls="chat-panel" aria-expanded="false"><svg class="icon"><use href="#i-chat"></use></svg><span data-field="hudChat">Chat</span></button>
+        <button class="hud-button radio-button" type="button" id="radio-button" aria-controls="radio-modal" aria-expanded="false"><svg class="icon"><use href="#i-radio"></use></svg><span data-field="hudRadio">Radio</span></button>
+        <button class="hud-button chat-button" type="button" id="chat-button" aria-controls="chat-panel" aria-expanded="false"><svg class="icon"><use href="#i-chat"></use></svg><span data-field="hudChat">Chat</span><span class="unread-badge" id="chat-hud-badge" hidden>0</span></button>
         <button class="hud-button" type="button" id="edit-button" hidden>Edit copy</button>
         <button class="hud-button" type="button" id="access-button" hidden>Access</button>
         <button class="hud-button primary" type="button" id="auth-button">Sign in</button>
@@ -1796,7 +1931,7 @@ You are loved more than this little game could ever hold.</p>
         <div class="page-heading">
           <span class="eyebrow" data-field="galleryEyebrow">Memory gallery</span>
           <h1 data-field="galleryTitle">Our little moments.</h1>
-          <p class="gallery-intro" data-field="galleryText">Each gallery page holds four photos and a note. Flip through the pages to revisit every little memory.</p>
+          <p class="gallery-intro" data-field="galleryText">Each gallery page holds four photos in a 2×2 grid, with a memory chat under every photo. Flip through the pages to revisit every little moment together.</p>
         </div>
         <div class="gallery-toolbar">
           <button class="button button-mint" type="button" id="new-gallery-page" hidden><svg class="icon"><use href="#i-photo"></use></svg><span data-field="galleryUploadButton">New gallery page</span></button>
@@ -1825,11 +1960,27 @@ You are loved more than this little game could ever hold.</p>
         <div class="habitat-scene" data-habitat-stage="bunnyBlue">
           <span class="habitat-sun"></span><span class="habitat-hill one"></span><span class="habitat-hill two"></span>
           <div class="habitat-fence" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+          <svg class="blue-enclosure-art" viewBox="0 0 1000 500" preserveAspectRatio="none" shape-rendering="crispEdges" aria-hidden="true">
+            <path d="M0 332h70v-24h64v-18h82v26h72v-36h74v30h84v-22h78v32h74v-18h72v22h78v-30h76v26h76v-18h100v210H0Z" fill="#537d48"/>
+            <path d="M72 418v-72h38v-34h86v26h64v80Z" fill="#8b6748" stroke="#654832" stroke-width="8"/>
+            <path d="M104 418v-56h30v-24h54v18h30v62Z" fill="#3c302d"/>
+            <path d="M120 418v-34h20v-18h42v14h22v38Z" fill="#241f22"/>
+            <path d="M710 438h228v-18h18v-34h-22v-18H732v18h-34v20h12Z" fill="#547f88" stroke="#456c73" stroke-width="8"/>
+            <path d="M746 414h168v-12h12v-16h-18v-12H756v12h-22v16h12Z" fill="#8fc7d1"/>
+            <path d="M778 398h44v6h-44ZM862 386h32v6h-32Z" fill="#d5edf0"/>
+            <path d="M474 258h10v112h-10ZM408 282h142v12H408Z" fill="#765438" stroke="#4d382b" stroke-width="6"/>
+            <path d="M420 238h116v62H420Z" fill="#bd9058" stroke="#654632" stroke-width="7"/>
+            <path d="M448 258h20v14h-10v12h10v10h-20v-10h-10v-12h10ZM492 270h10v8h8v10h-8v8h-10v-8h-8v-10h8Z" fill="#f2dfb5"/>
+            <path d="M330 402h8v-30h-8ZM320 388h28v8h-28ZM650 414h8v-34h-8ZM638 396h32v8h-32Z" fill="#4f713e"/>
+            <path d="M318 378h12v12h-12ZM638 386h12v12h-12ZM362 396h10v10h-10ZM676 402h10v10h-10Z" fill="#e8c767"/>
+            <g transform="translate(300 170)"><g class="blue-butterfly one"><path d="M0 0h12v14H0ZM16 0h12v14H16Z" fill="#f1d18b"/><path d="M10 10h8v16h-8Z" fill="#594c3d"/></g></g>
+            <g transform="translate(820 190)"><g class="blue-butterfly two"><path d="M0 0h10v12H0ZM14 0h10v12H14Z" fill="#e7aaa1"/><path d="M9 8h6v14H9Z" fill="#594c3d"/></g></g>
+          </svg>
         </div>
         <div class="nature-heading">
           <span class="eyebrow" data-field="blueEyebrow">Bluebell burrow</span>
           <h1 data-field="blueTitle">The Blue Cage</h1>
-          <p data-field="blueText">A cool blue meadow for curious little explorers.</p>
+          <p data-field="blueText">A sheltered meadow with a burrow, hay rack, pond, and room to hop.</p>
         </div>
         <div class="nature-actions">
           <button class="button button-mint" type="button" data-add-bunny="bunnyBlue" hidden><svg class="icon"><use href="#i-bunny"></use></svg><span data-field="blueAdoptBunny">Adopt a bunny</span></button>
@@ -1850,9 +2001,9 @@ You are loved more than this little game could ever hold.</p>
           <span class="garden-spark one"></span><span class="garden-spark two"></span><span class="garden-spark three"></span>
         </div>
         <div class="nature-heading">
-          <span class="eyebrow" data-field="gardenEyebrow">A little daily magic</span>
+          <span class="eyebrow" data-field="gardenEyebrow">A little slow magic</span>
           <h1 data-field="gardenTitle">The Tulip Garden</h1>
-          <p data-field="gardenText">Water a tulip once a day to help it grow. Drag your flowers anywhere you like.</p>
+          <p data-field="gardenText">Tulips grow slowly over three days. Water them if you like and drag them anywhere.</p>
         </div>
         <div class="nature-actions">
           <button class="button button-gold" type="button" id="plant-tulip" hidden><svg class="icon"><use href="#i-flower"></use></svg><span data-field="gardenPlantTulip">Plant a tulip</span></button>
@@ -1912,6 +2063,7 @@ You are loved more than this little game could ever hold.</p>
               <div class="house-choice-row" id="furniture-options"></div>
               <div class="house-choice-row">
                 <button class="house-small-button" type="button" id="add-house-cat" data-house-write hidden data-field="houseAdoptCat">+ Adopt a cat</button>
+                <button class="house-small-button" type="button" id="tidy-furniture" data-house-write hidden data-field="houseFurnitureTidy">Tidy room</button>
                 <button class="house-small-button" type="button" id="cancel-furniture" hidden data-field="houseCancelPlacement">Cancel placement</button>
               </div>
             </section>
@@ -1987,6 +2139,8 @@ You are loved more than this little game could ever hold.</p>
             <div class="espresso-machine" aria-hidden="true"></div>
             <div class="coffee-cup" id="coffee-cup" aria-hidden="true"></div>
             <span class="cafe-table one" aria-hidden="true"></span><span class="cafe-table two" aria-hidden="true"></span>
+            <button class="cafe-chair one" type="button" data-cafe-seat aria-label="Sit together at the cafe table" data-copy-aria="cafeChairAria" aria-pressed="false"><span class="chair-back" aria-hidden="true"></span><span class="chair-seat" aria-hidden="true"></span><span class="chair-legs" aria-hidden="true"></span></button>
+            <button class="cafe-chair two" type="button" data-cafe-seat aria-label="Sit together at the cafe table" data-copy-aria="cafeChairAria" aria-pressed="false"><span class="chair-back" aria-hidden="true"></span><span class="chair-seat" aria-hidden="true"></span><span class="chair-legs" aria-hidden="true"></span></button>
             <div class="cafe-cats" id="cafe-cats" aria-label="Cafe cats" data-copy-aria="cafeCatsAria"></div>
             <div class="scene-heading">
               <h2 data-field="cafeTitle">Purr & Pour</h2>
@@ -2001,6 +2155,7 @@ You are loved more than this little game could ever hold.</p>
               <button class="pixel-button" type="button" id="brew-coffee" data-field="cafeBrewButton">Brew coffee</button>
               <button class="pixel-button secondary" type="button" id="drink-coffee" disabled data-field="cafeDrinkButton">Drink coffee</button>
             </div>
+            <button class="pixel-button secondary cafe-sit" type="button" id="cafe-sit" data-field="cafeSitButton" aria-pressed="false">Sit together</button>
             <p class="cafe-status" id="cafe-status" aria-live="polite" data-field="cafeStatusReady">The espresso machine is warming up.</p>
             <div class="cafe-stats">
               <span class="cafe-stat" id="coffee-brewed">0 brewed</span>
@@ -2028,8 +2183,36 @@ You are loved more than this little game could ever hold.</p>
       <button class="tab-button" type="button" data-page-link="house" aria-selected="false"><svg class="icon"><use href="#i-house"></use></svg><span data-field="navHouse">Our house</span></button>
       <button class="tab-button" type="button" data-page-link="kitchen" aria-selected="false"><svg class="icon"><use href="#i-kitchen"></use></svg><span data-field="navKitchen">Kitchen</span></button>
       <button class="tab-button" type="button" data-page-link="cafe" aria-selected="false"><svg class="icon"><use href="#i-cafe"></use></svg><span data-field="navCafe">Cat café</span></button>
-      <button class="tab-button chat-tab" type="button" id="chat-nav-button" aria-controls="chat-panel" aria-expanded="false"><svg class="icon" shape-rendering="crispEdges"><use href="#i-chat"></use></svg><span data-field="hudChat">Chat</span></button>
+      <button class="tab-button chat-tab" type="button" id="chat-nav-button" aria-controls="chat-panel" aria-expanded="false"><svg class="icon" shape-rendering="crispEdges"><use href="#i-chat"></use></svg><span data-field="hudChat">Chat</span><span class="unread-badge" id="chat-nav-badge" hidden>0</span></button>
     </nav>
+  </div>
+
+  <div class="modal-backdrop" id="radio-modal" hidden>
+    <div class="modal radio-modal" role="dialog" aria-modal="true" aria-labelledby="radio-title">
+      <div class="modal-header"><h2 id="radio-title" data-field="radioTitle">Our little radio</h2><button class="modal-close" type="button" data-close="radio-modal" aria-label="Close radio" data-copy-aria="radioCloseAria">×</button></div>
+      <div class="radio-body">
+        <button class="radio-power" type="button" id="radio-power" aria-label="Turn radio on" data-copy-aria="radioOpenAria">
+          <svg viewBox="0 0 280 180" shape-rendering="crispEdges" aria-hidden="true">
+            <path d="M28 30h224v120H28Z" fill="#9b7146" stroke="#382f28" stroke-width="8"/>
+            <path d="M38 42h204v96H38Z" fill="#bd9058" stroke="#765b3c" stroke-width="5"/>
+            <path d="M52 56h112v68H52Z" fill="#d7c79e" stroke="#66503a" stroke-width="5"/>
+            <g class="radio-speaker"><path d="M64 70h88v6H64ZM64 84h88v6H64ZM64 98h88v6H64ZM76 112h64v6H76Z" fill="#6f573d"/><circle cx="96" cy="99" r="17" fill="#8b6c48"/><circle cx="96" cy="99" r="8" fill="#3e352c"/></g>
+            <path d="M180 56h44v34h-44Z" fill="#26362d" stroke="#66503a" stroke-width="5"/><path d="M188 66h28v6h-28Z" fill="#9cc7da"/>
+            <circle cx="190" cy="111" r="12" fill="#e8c767" stroke="#493d32" stroke-width="5"/><circle cx="220" cy="111" r="12" fill="#c77a5d" stroke="#493d32" stroke-width="5"/>
+            <path d="m112 30 24-24 42 24" fill="#9b7146" stroke="#382f28" stroke-width="6"/>
+            <path d="M48 150v12h184v-12" fill="#66503a" stroke="#382f28" stroke-width="5"/>
+          </svg>
+        </button>
+        <div class="radio-track"><strong id="radio-track-name" data-field="radioTrackLabel">Now playing</strong><span id="radio-track-status">Admin can add an MP3.</span></div>
+        <div class="radio-actions">
+          <button class="button button-mint" type="button" id="radio-toggle" data-field="radioPlay">Turn radio on</button>
+          <button class="button button-ghost" type="button" id="radio-upload" data-field="radioUpload" hidden>Add MP3</button>
+          <input id="radio-file" type="file" accept="audio/mpeg,.mp3" hidden>
+        </div>
+        <progress class="radio-progress" id="radio-progress" value="0" max="100" hidden></progress>
+        <p class="radio-status" id="radio-status" role="status" aria-live="polite"></p>
+      </div>
+    </div>
   </div>
 
   <aside class="chat-panel" id="chat-panel" aria-labelledby="chat-title" hidden>
@@ -2042,7 +2225,7 @@ You are loved more than this little game could ever hold.</p>
       <input class="chat-input" id="chat-input" type="text" maxlength="500" placeholder="Message your favorite player..." autocomplete="off" required data-copy-placeholder="chatPlaceholderReady">
       <button class="button button-mint chat-send" type="submit" id="chat-send" data-field="chatSend">Send</button>
     </form>
-    <p class="chat-note" id="chat-note" data-field="chatNoteSignedOut">Sign in as an admin or viewer to chat.</p>
+    <div class="chat-notify-row"><p class="chat-note" id="chat-note" data-field="chatNoteSignedOut">Sign in as an admin or viewer to chat.</p><button class="photo-action" type="button" id="chat-notify-button" data-field="chatEnableNotifications" hidden>Enable notifications</button></div>
   </aside>
 
   <div class="slime-achievement" id="slime-achievement" role="status" aria-live="assertive" hidden>
@@ -2182,6 +2365,10 @@ You are loved more than this little game could ever hold.</p>
       chatNoteSignedOut: "Sign in as an admin or viewer to chat.",
       chatNoteNoRole: "Your account needs an admin or viewer role to chat.",
       chatNoteReady: "Private to the two players · Press T to toggle chat",
+      chatEnableNotifications: "Enable notifications",
+      chatNotificationsDenied: "Notifications are blocked in browser settings.",
+      chatNotificationsOn: "Message notifications are on.",
+      chatNewMessage: "New message from {name}",
       weddingVowsActive: "Our forever starts now",
       weddingDanceActive: "Take a little bow",
       weddingBrideRole: "{name}, the bride",
@@ -2276,6 +2463,10 @@ You are loved more than this little game could ever hold.</p>
       coffeeOptionsAria: "Coffee drinks",
       cafeBrewButton: "Brew coffee",
       cafeDrinkButton: "Drink coffee",
+      cafeSitButton: "Sit together",
+      cafeStandButton: "Stand up",
+      cafeChairAria: "Sit together at the cafe table",
+      cafeSeated: "Shane and Zyrell are seated. Drink coffee to see them take a sip.",
       cafeStatusReady: "The espresso machine is warming up.",
       cafeBrewing: "Brewing {name}...",
       cafeReady: "{name} is ready. Drink it while it is warm!",
@@ -2332,6 +2523,40 @@ You are loved more than this little game could ever hold.</p>
       galleryPhotoAlt: "Gallery memory {current}",
       galleryPhotoAria: "Gallery memory {current}. Tap to view full screen.",
       galleryPhotoManageAria: "Gallery memory {current}. Tap to view full screen or drag to the trash to delete.",
+      galleryChatTitle: "Photo {current} memory chat",
+      galleryChatCount: "{count} notes",
+      galleryChatError: "Memory chats: {error}",
+      galleryChatSendError: "Could not add this memory: {error}",
+      galleryChatEmpty: "No notes yet. Mark this memory together.",
+      galleryChatSignedOut: "Sign in as admin or viewer to add a memory.",
+      galleryChatPlaceholder: "Write a memory...",
+      galleryChatPlaceholderSignedOut: "Sign in to write a memory...",
+      galleryChatSend: "Add",
+      galleryChatSending: "Adding...",
+      galleryChatInputAria: "Memory chat for photo {current}",
+      galleryChatFeedAria: "Messages for photo {current}",
+      radioTitle: "Our little radio",
+      radioEmpty: "Admin can add an MP3. It stays inside our game, not on a music platform.",
+      radioTrackLabel: "Now playing",
+      radioPlay: "Turn radio on",
+      radioPause: "Turn radio off",
+      radioLoading: "Loading our song...",
+      radioUpload: "Add MP3",
+      radioUploading: "Adding our song...",
+      radioUploaded: "Radio track added for both players.",
+      radioNeedAdmin: "Only the admin can add music.",
+      radioNeedSignIn: "Sign in as admin or viewer to use the radio.",
+      radioTypeInvalid: "Choose an MP3 audio file.",
+      radioSizeLimit: "Choose an MP3 smaller than 8 MB.",
+      radioFileEmpty: "Choose an MP3 with audio in it.",
+      radioUploadError: "Could not add the radio track: {error}",
+      radioLoadError: "Could not load the radio track: {error}",
+      radioPlayError: "Could not play the radio: {error}",
+      radioSharedTrack: "Shared local MP3",
+      radioOpenAria: "Open the shared radio",
+      radioCloseAria: "Close radio",
+      radioPanelAria: "Shared local MP3 radio",
+      hudRadio: "Radio",
       galleryAddPhoto: "Add photo",
       galleryMemorySoon: "Memory coming soon",
       galleryNotePlaceholder: "Write the note for this four-photo page...",
@@ -2363,7 +2588,9 @@ You are loved more than this little game could ever hold.</p>
       tulipStage2: "Bud",
       tulipStage3: "Blooming",
       tulipStage4: "Full bloom",
-      tulipAria: "{stage} tulip. Tap to water, drag to move.{manage}",
+      tulipAria: "{stage} tulip.{time} Tap to water, drag to move.{manage}",
+      tulipTimeRemaining: "{stage} · {time}",
+      tulipFullBloomTime: "Full bloom in {time}",
       tulipManageAria: " Drop in the trash to delete.",
       houseCharacterAria: "{name}, {location}. Drag to move.",
       characterDefaultName: "Character",
@@ -2484,6 +2711,10 @@ You are loved more than this little game could ever hold.</p>
       furnitureLanternLabel: "Lantern",
       furnitureSandboxLabel: "Sandbox",
       furnitureKiteLabel: "Kite",
+      furnitureHayrackLabel: "Hay rack",
+      furnitureBurrowLabel: "Cozy burrow",
+      furniturePondLabel: "Bunny pond",
+      furnitureFlowerpatchLabel: "Meadow flowers",
 
       pageTitleHome: "Home",
       pageTitleSlime: "Slime Lab",
@@ -2532,11 +2763,12 @@ You are loved more than this little game could ever hold.</p>
       natureToyMoved: "Toy moved in the blue cage.",
       natureTulipMoved: "Tulip moved.",
       natureTulipFullBloom: "This tulip is already in full bloom.",
-      natureTulipWatered: "This tulip has been watered. It can grow again in about a day.",
-      natureTulipBloomed: "Your tulip is in full bloom!",
-      natureTulipGrowing: "A little water, a little growth.",
+      natureTulipWatered: "Water saved. Tulips grow on their own over three days.",
+      natureTulipWaterCooldown: "This tulip is already watered. It will keep growing on its own.",
+      natureTulipBloomed: "Your tulip reached full bloom after three days!",
+      natureTulipGrowing: "Your tulip is still growing toward full bloom.",
       natureBunnyAdded: "A new bunny hopped into the habitat.",
-      natureTulipPlanted: "A tulip seed was planted. Tap it to start growing.",
+      natureTulipPlanted: "Tulip planted. It will reach full bloom in three days.",
       natureDeleteError: "Could not delete garden item: {error}",
       natureSeedError: "Could not prepare the garden: {error}",
       natureMoveError: "Could not move garden item: {error}",
@@ -2619,6 +2851,9 @@ You are loved more than this little game could ever hold.</p>
       houseItemRemoved: "Removed from the house.",
       houseFurniturePlaced: "{item} placed.",
       houseFurniturePlaceError: "Could not place furniture: {error}",
+      houseFurnitureTidy: "Tidy room",
+      houseFurnitureTidied: "Furniture spaced out so every piece is easy to select.",
+      houseFurnitureTidyError: "Could not tidy the furniture: {error}",
       houseCatAdded: "A new cat moved into the house.",
       houseCatAddError: "Could not add cat: {error}",
       houseMixError: "Could not save mixture: {error}",
@@ -2695,7 +2930,7 @@ You are loved more than this little game could ever hold.</p>
     ];
     const furnitureTypes = ["sofa", "armchair", "bed", "table", "kitchen", "plant", "lamp", "shelf", "dresser", "desk", "tv", "clock", "rug", "bench", "swing", "fountain", "mailbox", "arch", "parasol", "cart", "lantern", "sandbox", "kite"];
     const gardenDecorTypes = ["bench", "swing", "fountain", "mailbox", "arch", "parasol", "cart", "lantern", "sandbox", "kite"];
-    const blueDecorTypes = ["bed", "table", "shelf", "plant", "lamp", "rug", "armchair", "kite", "bench", "swing"];
+    const blueDecorTypes = ["bed", "table", "shelf", "plant", "lamp", "rug", "armchair", "kite", "bench", "swing", "hayrack", "burrow", "pond", "flowerpatch"];
     const catColors = ["#f2c49d", "#8d8b9d", "#f1e5d4", "#c78962", "#69758f", "#d7a7b6"];
 
     function hslToHex(h, s, l) {
@@ -2862,7 +3097,7 @@ You are loved more than this little game could ever hold.</p>
     ];
     const natureSeeds = {
       bunnies: demoBunnies.map(({ id, ...bunny }) => bunny),
-      tulips: demoTulips.map(({ id, ...tulip }) => ({ ...tulip, lastWateredAt: null, lastWateredBy: "" })),
+      tulips: demoTulips.map(({ id, ...tulip }) => ({ ...tulip, growth: 0, lastWateredAt: null, lastWateredBy: "" })),
     };
     const demoCharacters = [
       { id: "demo-girl", key: "girl", gender: "girl", clothes: "rose", zone: "yard", x: .36, y: .84 },
@@ -2900,6 +3135,12 @@ You are loved more than this little game could ever hold.</p>
       { id: "demo-blue-park-mailbox", type: "mailbox", zone: "bunnyBlue", x: .9, y: .73 },
       { id: "demo-blue-park-lantern", type: "lantern", zone: "bunnyBlue", x: .16, y: .89 },
       { id: "demo-blue-park-sandbox", type: "sandbox", zone: "bunnyBlue", x: .58, y: .89 },
+    ];
+    const demoBlueEnclosureFurniture = [
+      { id: "cozy-burrow", type: "burrow", zone: "bunnyBlue", x: .18, y: .76 },
+      { id: "hay-treats", type: "hayrack", zone: "bunnyBlue", x: .34, y: .66 },
+      { id: "bunny-pond", type: "pond", zone: "bunnyBlue", x: .79, y: .85 },
+      { id: "meadow-flowers", type: "flowerpatch", zone: "bunnyBlue", x: .63, y: .72 },
     ];
     const legacyBlueFurnitureIds = ["bed", "shelf", "plant", "lamp", "rug", "armchair"].map((type) => `seed-blue-${type}`);
     const demoCats = [
@@ -2958,6 +3199,7 @@ You are loved more than this little game could ever hold.</p>
     let photoUploading = false;
     let bunnies = [];
     let tulips = [];
+    let tulipRefreshTimer = 0;
     let natureLoaded = false;
     let activeNatureDrag = null;
     let activeTrashDrag = null;
@@ -2969,6 +3211,7 @@ You are loved more than this little game could ever hold.</p>
     let mixes = [];
     let charactersLoaded = false;
     let furnitureLoaded = false;
+    let furnitureTidyChecked = false;
     let catsLoaded = false;
     let houseSeeded = false;
     let houseSeedPromise = null;
@@ -2977,6 +3220,7 @@ You are loved more than this little game could ever hold.</p>
     let blueDecorSeeded = false;
     let blueDecorSeedPromise = null;
     let blueParkSeeded = false;
+    let blueEnclosureSeeded = false;
     const houseMotion = new Map();
     const furnitureMotion = new Map();
     const catMotion = new Map();
@@ -3019,11 +3263,32 @@ You are loved more than this little game could ever hold.</p>
     let brewingCoffee = false;
     let coffeeBoostUntil = 0;
     let coffeeBoostMultiplier = 1;
+    let cafeSeated = false;
+    let cafeDrinkAnimationUntil = 0;
+    let cafeDrinkTimer = 0;
     let cafeStats = { brewed: 0, drunk: 0 };
     let chatMessages = [];
     let chatUnsubscribe = null;
     let chatOpen = false;
     let chatSending = false;
+    let chatUnreadCount = 0;
+    let chatLastReadAt = 0;
+    let chatInitialSnapshot = true;
+    const chatSeenMessageIds = new Set();
+    let galleryChatMessages = [];
+    let galleryChatUnsubscribe = null;
+    let galleryChatPageId = "";
+    let galleryChatError = "";
+    const galleryChatSending = new Set();
+    let radioTrack = null;
+    let radioUnsubscribe = null;
+    let radioAudio = null;
+    let radioObjectUrl = "";
+    let radioPlaying = false;
+    let radioUploading = false;
+    let radioLoadedTrackId = "";
+    let radioLoadingTrackId = "";
+    let radioStatus = "";
     let deferredInstallPrompt = null;
     let appInstalled = false;
     let waitingServiceWorker = null;
@@ -3267,12 +3532,14 @@ You are loved more than this little game could ever hold.</p>
 
     function openModal(id) {
       $(`#${id}`).hidden = false;
+      if (id === "radio-modal") $("#radio-button").setAttribute("aria-expanded", "true");
       const focusTarget = $(`#${id}`).querySelector("input, button");
       if (focusTarget) setTimeout(() => focusTarget.focus(), 30);
     }
 
     function closeModal(id) {
       $(`#${id}`).hidden = true;
+      if (id === "radio-modal") $("#radio-button").setAttribute("aria-expanded", "false");
       if (id === "photo-viewer") $("#photo-viewer-image").removeAttribute("src");
     }
 
@@ -3292,6 +3559,7 @@ You are loved more than this little game could ever hold.</p>
       if (updateHash) history.replaceState(null, "", `#${pageId}`);
       document.title = documentTitle(pageId);
       updateRoamingVisibility();
+      syncPersistentTrash();
       if (pageId === "gallery") loadGalleryPages();
     }
 
@@ -3737,17 +4005,103 @@ You are loved more than this little game could ever hold.</p>
       return copyText(role === "admin" ? "chatAdminName" : "chatViewerName", role === "admin" ? "Admin" : "Player Two");
     }
 
+    function chatMessageTime(message) {
+      const value = message.createdAt?.toMillis?.() ?? (message.createdAt ? new Date(message.createdAt).getTime() : 0);
+      return Number.isFinite(value) ? value : 0;
+    }
+
+    function chatReadKey() {
+      return user ? `birthday-quest-chat-read-${user.uid}` : "";
+    }
+
+    function loadChatReadCursor() {
+      chatLastReadAt = 0;
+      try {
+        chatLastReadAt = Number(localStorage.getItem(chatReadKey())) || 0;
+      } catch {}
+    }
+
+    function markChatRead(persist = true) {
+      const latest = chatMessages.reduce((newest, message) => Math.max(newest, chatMessageTime(message)), 0);
+      chatLastReadAt = Math.max(chatLastReadAt, latest || Date.now());
+      chatUnreadCount = 0;
+      if (persist) {
+        try { localStorage.setItem(chatReadKey(), String(chatLastReadAt)); } catch {}
+      }
+      updateChatUnreadBadges();
+    }
+
+    function updateChatUnreadBadges() {
+      [$("#chat-hud-badge"), $("#chat-nav-badge")].forEach((badge) => {
+        badge.textContent = chatUnreadCount > 99 ? "99+" : String(chatUnreadCount);
+        badge.hidden = chatUnreadCount < 1;
+      });
+    }
+
+    async function notifyIncomingChat(message) {
+      const name = message.senderName || copyText(message.senderRole === "admin" ? "chatAdminName" : "chatViewerName", message.senderRole === "admin" ? "Admin" : "Player Two");
+      showToast(`${name}: ${String(message.text || "").slice(0, 120)}`);
+      if (!("Notification" in window) || Notification.permission !== "granted" || !("serviceWorker" in navigator)) return;
+      try {
+        const registration = await navigator.serviceWorker.ready;
+        await registration.showNotification(formatCopy("chatNewMessage", { name }, `New message from ${name}`), {
+          body: String(message.text || "").slice(0, 240),
+          icon: new URL("icon.svg", location.href).href,
+          badge: new URL("icon.svg", location.href).href,
+          tag: `birthday-quest-chat-${message.id}`,
+          data: { url: location.href },
+        });
+      } catch {}
+    }
+
+    async function requestChatNotifications() {
+      if (!("Notification" in window)) return;
+      try {
+        const permission = await Notification.requestPermission();
+        showToast(copyText(permission === "granted" ? "chatNotificationsOn" : "chatNotificationsDenied", permission === "granted" ? "Message notifications are on." : "Notifications are blocked in browser settings."));
+      } catch {
+        showToast(copyText("chatNotificationsDenied", "Notifications are blocked in browser settings."));
+      }
+      updateChatUi();
+    }
+
     function syncChatListener() {
       chatUnsubscribe?.();
       chatUnsubscribe = null;
       chatMessages = [];
+      chatUnreadCount = 0;
+      chatSeenMessageIds.clear();
+      chatInitialSnapshot = true;
+      loadChatReadCursor();
+      updateChatUnreadBadges();
       if (!user || !role || !db || !fs) {
         renderChatMessages();
+        updateChatUi();
         return;
       }
-      const query = fs.query(fs.collection(db, "chatMessages"), fs.orderBy("createdAt", "asc"), fs.limit(100));
+      const query = fs.query(fs.collection(db, "chatMessages"), fs.orderBy("createdAt", "desc"), fs.limit(100));
       chatUnsubscribe = fs.onSnapshot(query, (snapshot) => {
-        chatMessages = snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
+        chatMessages = snapshot.docs.map((item) => ({ id: item.id, ...item.data() })).reverse();
+        if (chatInitialSnapshot) {
+          chatInitialSnapshot = false;
+          chatMessages.forEach((message) => chatSeenMessageIds.add(message.id));
+          if (!chatLastReadAt) markChatRead(false);
+          else if (chatOpen) markChatRead(false);
+          else chatUnreadCount = chatMessages.filter((message) => message.senderId !== user.uid && chatMessageTime(message) > chatLastReadAt).length;
+          updateChatUnreadBadges();
+          renderChatMessages();
+          return;
+        }
+        snapshot.docChanges.forEach((change) => {
+          if (change.type !== "added") return;
+          const message = { id: change.doc.id, ...change.doc.data() };
+          if (chatSeenMessageIds.has(message.id)) return;
+          chatSeenMessageIds.add(message.id);
+          if (message.senderId !== user.uid && !chatOpen && chatMessageTime(message) > chatLastReadAt) notifyIncomingChat(message);
+        });
+        if (chatOpen) markChatRead(false);
+        else chatUnreadCount = chatMessages.filter((message) => message.senderId !== user.uid && chatMessageTime(message) > chatLastReadAt).length;
+        updateChatUnreadBadges();
         renderChatMessages();
       }, (error) => {
         $("#chat-note").textContent = formatAppError("chatError", "Chat", error);
@@ -3805,6 +4159,8 @@ You are loved more than this little game could ever hold.</p>
         : !role
           ? copyText("chatNoteNoRole", "Your account needs an admin or viewer role to chat.")
           : copyText("chatNoteReady", "Private to the two players · Press T to toggle chat");
+      $("#chat-notify-button").hidden = !enabled || !("Notification" in window) || Notification.permission !== "default";
+      updateChatUnreadBadges();
     }
 
     function setChatOpen(open) {
@@ -3815,6 +4171,7 @@ You are loved more than this little game could ever hold.</p>
         button.classList.toggle("active", chatOpen);
       });
       if (chatOpen) {
+        if (user && role) markChatRead();
         updateChatUi();
         renderChatMessages();
         if (user && role) setTimeout(() => $("#chat-input").focus(), 30);
@@ -3848,6 +4205,7 @@ You are loved more than this little game could ever hold.</p>
           createdAt: fs.serverTimestamp(),
         });
         input.value = "";
+        markChatRead();
       } catch (error) {
         showAppError("chatSendError", "Could not send message", error);
       } finally {
@@ -3865,6 +4223,7 @@ You are loved more than this little game could ever hold.</p>
       $$("[data-add-bunny]").forEach((button) => { button.hidden = !user || !role; });
       $("#plant-tulip").hidden = !user || !role;
       $$("[data-house-write], [data-garden-write], [data-nature-write]").forEach((button) => { button.hidden = !user || !role; });
+      $("#tidy-furniture").hidden = role !== "admin";
       $("#role-badge").hidden = !role;
       $("#role-badge").textContent = role ? copyText(role === "admin" ? "roleAdminLabel" : "roleViewerLabel", role === "admin" ? "Admin" : "Viewer") : "";
       syncChatListener();
@@ -3873,6 +4232,8 @@ You are loved more than this little game could ever hold.</p>
       renderBunnies();
       renderTulips();
       renderHouse();
+      syncPersistentTrash();
+      renderRadioUi();
       if (!editMode) applyEditableState();
     }
 
@@ -4479,6 +4840,44 @@ You are loved more than this little game could ever hold.</p>
       </svg>`;
     }
 
+    const TULIP_STAGE_MS = 18 * 60 * 60 * 1000;
+
+    function tulipCreatedAt(tulip) {
+      return tulip.createdAt?.toMillis?.()
+        ?? (typeof tulip.createdAt === "number" ? tulip.createdAt : null);
+    }
+
+    function effectiveTulipGrowth(tulip, now = Date.now()) {
+      const storedGrowth = Math.max(0, Math.min(4, Number(tulip.growth) || 0));
+      const createdAt = tulipCreatedAt(tulip);
+      if (!createdAt) return storedGrowth;
+      const ageGrowth = Math.min(4, Math.floor(Math.max(0, now - createdAt) / TULIP_STAGE_MS));
+      return Math.max(storedGrowth, ageGrowth);
+    }
+
+    function tulipTimeToNextStage(tulip, now = Date.now()) {
+      const createdAt = tulipCreatedAt(tulip);
+      const growth = effectiveTulipGrowth(tulip, now);
+      if (!createdAt || growth >= 4) return 0;
+      return Math.max(0, createdAt + (growth + 1) * TULIP_STAGE_MS - now);
+    }
+
+    function formatTulipTime(milliseconds) {
+      const hours = Math.max(1, Math.ceil(milliseconds / (60 * 60 * 1000)));
+      if (hours < 24) return `${hours}h`;
+      const days = Math.floor(hours / 24);
+      return `${days}d ${hours % 24}h`;
+    }
+
+    function scheduleTulipRefresh() {
+      clearTimeout(tulipRefreshTimer);
+      if (!natureLoaded || !tulips.length) return;
+      const now = Date.now();
+      const nextStage = Math.min(...tulips.map((tulip) => tulipTimeToNextStage(tulip, now)).filter((time) => time > 0));
+      if (!Number.isFinite(nextStage)) return;
+      tulipRefreshTimer = setTimeout(renderTulips, Math.min(2147483647, nextStage + 100));
+    }
+
     function canUseNature() {
       return Boolean(user && role && db && fs);
     }
@@ -4493,7 +4892,7 @@ You are loved more than this little game could ever hold.</p>
     }
 
     function canManageNatureItem(item) {
-      return Boolean(item && !String(item.id).startsWith("demo-") && (role === "admin" || item.createdBy === user?.uid));
+      return canManagePet(item);
     }
 
     async function deleteNatureItem(kind, item, source) {
@@ -4695,21 +5094,28 @@ You are loved more than this little game could ever hold.</p>
       const stage = $('[data-habitat-stage="garden"]');
       stage.querySelectorAll(".tulip").forEach((tulip) => tulip.remove());
       const visibleTulips = natureLoaded ? tulips : demoTulips;
+      const now = Date.now();
       const stageNames = ["tulipStage0", "tulipStage1", "tulipStage2", "tulipStage3", "tulipStage4"].map((key, index) => copyText(key, ["Seed", "Sprout", "Bud", "Blooming", "Full bloom"][index]));
       visibleTulips.forEach((tulip) => {
-        const growth = Math.max(0, Math.min(4, Number(tulip.growth) || 0));
+        const growth = effectiveTulipGrowth(tulip, now);
+        const remaining = tulipTimeToNextStage(tulip, now);
+        const timeText = remaining > 0 ? formatTulipTime(remaining) : "";
         const element = document.createElement("div");
         element.className = `tulip${growth === 4 ? " grown" : ""}`;
         element.dataset.trashKey = `tulip:${tulip.id}`;
+        element.dataset.growth = String(growth);
         element.style.left = `${Math.max(.06, Math.min(.94, Number(tulip.x) || .5)) * 100}%`;
         element.style.top = `${Math.max(.42, Math.min(.94, Number(tulip.y) || .82)) * 100}%`;
         element.tabIndex = 0;
         element.setAttribute("role", "button");
-        element.setAttribute("aria-label", formatCopy("tulipAria", { stage: stageNames[growth], manage: canManageNatureItem(tulip) ? copyText("tulipManageAria", " Drop in the trash to delete.") : "" }, `${stageNames[growth]} tulip. Tap to water, drag to move.${canManageNatureItem(tulip) ? " Drop in the trash to delete." : ""}`));
+        element.setAttribute("aria-label", formatCopy("tulipAria", { stage: stageNames[growth], time: timeText, manage: canManageNatureItem(tulip) ? copyText("tulipManageAria", " Drop in the trash to delete.") : "" }, `${stageNames[growth]} tulip.${timeText ? ` ${timeText} until the next stage.` : ""} Tap to water, drag to move.${canManageNatureItem(tulip) ? " Drop in the trash to delete." : ""}`));
         element.innerHTML = tulipSvg(tulip.color, growth);
         const stageLabel = document.createElement("span");
         stageLabel.className = "tulip-stage";
-        stageLabel.textContent = stageNames[growth];
+        stageLabel.textContent = remaining > 0
+          ? formatCopy("tulipTimeRemaining", { stage: stageNames[growth], time: timeText }, `${stageNames[growth]} · ${timeText}`)
+          : stageNames[growth];
+        stageLabel.title = remaining > 0 ? formatCopy("tulipFullBloomTime", { time: formatTulipTime(Math.max(0, (tulipCreatedAt(tulip) || now) + 4 * TULIP_STAGE_MS - now)) }, `Full bloom in ${formatTulipTime(Math.max(0, (tulipCreatedAt(tulip) || now) + 4 * TULIP_STAGE_MS - now))}`) : stageNames[growth];
         element.append(stageLabel);
         element.addEventListener("pointerdown", (event) => startNatureDrag("tulip", tulip, event));
         element.addEventListener("keydown", (event) => {
@@ -4720,10 +5126,11 @@ You are loved more than this little game could ever hold.</p>
         });
         stage.append(element);
       });
-      const grown = visibleTulips.filter((tulip) => Number(tulip.growth) === 4).length;
+      const grown = visibleTulips.filter((tulip) => effectiveTulipGrowth(tulip, now) === 4).length;
       $("#garden-counter").textContent = formatCopy(visibleTulips.length === 1 ? "tulipCountOne" : "tulipCountMany", { count: visibleTulips.length }, `${visibleTulips.length} ${visibleTulips.length === 1 ? "tulip" : "tulips"}`);
       $("#garden-growth").textContent = formatCopy("bloomingCount", { count: grown }, `${grown} blooming`);
       $("#garden-empty").hidden = visibleTulips.length > 0;
+      scheduleTulipRefresh();
     }
 
     function updateNaturePageVisual(pageId) {
@@ -4751,6 +5158,14 @@ You are loved more than this little game could ever hold.</p>
     function isOverTrash(clientX, clientY) {
       const rect = $("#trash-bin").getBoundingClientRect();
       return clientX >= rect.left - 10 && clientX <= rect.right + 10 && clientY >= rect.top - 10 && clientY <= rect.bottom + 10;
+    }
+
+    function syncPersistentTrash() {
+      const bin = $("#trash-bin");
+      const canManagePage = Boolean(user && role && ["house", "garden", "bunnyBlue"].includes(currentPage));
+      const persistent = canManagePage && window.matchMedia("(max-width: 900px)").matches;
+      bin.classList.toggle("mobile-persistent", persistent);
+      bin.setAttribute("aria-hidden", String(!canManagePage));
     }
 
     function startTrashDrag(event, key, source, remove, ghostSource = source, onTap = null) {
@@ -4820,7 +5235,7 @@ You are loved more than this little game could ever hold.</p>
         });
       }
       const content = document.createElement("div");
-      content.innerHTML = kind === "bunny" ? bunnySvg(item.color) : kind === "decor" ? furnitureSvg(item.type) : tulipSvg(item.color, item.growth);
+      content.innerHTML = kind === "bunny" ? bunnySvg(item.color) : kind === "decor" ? furnitureSvg(item.type) : tulipSvg(item.color, effectiveTulipGrowth(item));
       const ghostData = createDragGhost(rect, event, content);
       activeNatureDrag = {
         kind, item, element, pointerId: event.pointerId,
@@ -4941,26 +5356,24 @@ You are loved more than this little game could ever hold.</p>
         ensureNatureSeeds().catch((error) => showAppError("natureSeedError", "Could not prepare the garden", error));
         return;
       }
-      const growth = Number(tulip.growth) || 0;
+      const growth = effectiveTulipGrowth(tulip);
       if (growth >= 4) {
         showToast(copyText("natureTulipFullBloom", "This tulip is already in full bloom."));
         return;
       }
-      const lastWatered = tulip.lastWateredAt?.toMillis?.() ?? (typeof tulip.lastWateredAt === "number" ? tulip.lastWateredAt : null);
-      if (lastWatered && Date.now() - lastWatered < 20 * 60 * 60 * 1000) {
-        showToast(copyText("natureTulipWatered", "This tulip has been watered. It can grow again in about a day."));
+      const lastWateredAt = tulip.lastWateredAt?.toMillis?.()
+        ?? (typeof tulip.lastWateredAt === "number" ? tulip.lastWateredAt : 0);
+      if (lastWateredAt && Date.now() - lastWateredAt < 20 * 60 * 60 * 1000) {
+        showToast(copyText("natureTulipWaterCooldown", "This tulip is already watered. It will keep growing on its own."));
         return;
       }
       try {
         await fs.updateDoc(fs.doc(db, "tulips", tulip.id), {
-          growth: growth + 1,
           lastWateredAt: fs.serverTimestamp(),
           lastWateredBy: user.uid,
         });
-        gainXp(8);
-        showToast(growth === 3
-          ? copyText("natureTulipBloomed", "Your tulip is in full bloom!")
-          : copyText("natureTulipGrowing", "A little water, a little growth."));
+        gainXp(2);
+        showToast(copyText("natureTulipWatered", "Water saved. Tulips grow on their own over three days."));
       } catch (error) {
         showAppError("natureWaterError", "Could not water tulip", error);
       }
@@ -5022,8 +5435,9 @@ You are loved more than this little game could ever hold.</p>
         natureSeeded: state.natureSeeded === true || flag === "natureSeeded",
         houseSeeded: state.houseSeeded === true || flag === "houseSeeded",
         gardenDecorSeeded: state.gardenDecorSeeded === true || flag === "gardenDecorSeeded",
-        blueDecorSeeded: state.blueDecorSeeded === true || flag === "blueDecorSeeded" || flag === "blueParkSeeded",
-        blueParkSeeded: state.blueParkSeeded === true || flag === "blueParkSeeded",
+        blueDecorSeeded: state.blueDecorSeeded === true || flag === "blueDecorSeeded" || flag === "blueParkSeeded" || flag === "blueEnclosureSeeded",
+        blueParkSeeded: state.blueParkSeeded === true || flag === "blueParkSeeded" || flag === "blueEnclosureSeeded",
+        blueEnclosureSeeded: state.blueEnclosureSeeded === true || flag === "blueEnclosureSeeded",
       }, { merge: true });
     }
 
@@ -5078,26 +5492,36 @@ You are loved more than this little game could ever hold.</p>
     }
 
     function ensureBlueDecorSeeds() {
-      if (blueDecorSeeded && blueParkSeeded) return Promise.resolve();
+      if (blueDecorSeeded && blueParkSeeded && blueEnclosureSeeded) return Promise.resolve();
       if (blueDecorSeedPromise) return blueDecorSeedPromise;
       blueDecorSeedPromise = (async () => {
         const seedState = await fs.getDoc(seedStateRef());
         const state = seedState.exists() ? seedState.data() : {};
-        blueDecorSeeded = state.blueDecorSeeded === true || state.blueParkSeeded === true;
-        if (state.blueParkSeeded === true) {
-          blueParkSeeded = true;
+        blueDecorSeeded = state.blueDecorSeeded === true || state.blueParkSeeded === true || state.blueEnclosureSeeded === true;
+        blueParkSeeded = state.blueParkSeeded === true || state.blueEnclosureSeeded === true;
+        blueEnclosureSeeded = state.blueEnclosureSeeded === true;
+        if (blueParkSeeded && blueEnclosureSeeded) {
           renderGardenFurniture();
           return;
         }
-        if (role === "admin") {
+        if (!blueParkSeeded && role === "admin") {
           await Promise.all(legacyBlueFurnitureIds.map((id) => fs.deleteDoc(fs.doc(db, "furniture", id))));
         }
-        const entries = demoBlueFurniture.map(({ id, ...item }) => [
-          "furniture", `seed-blue-park-${item.type}`, { ...item, createdBy: user.uid, createdAt: fs.serverTimestamp() },
-        ]);
-        await commitSeedState("blueParkSeeded", entries);
+        const entries = [];
+        if (!blueParkSeeded) {
+          demoBlueFurniture.forEach(({ id, ...item }) => entries.push([
+            "furniture", `seed-blue-park-${item.type}`, { ...item, createdBy: user.uid, createdAt: fs.serverTimestamp() },
+          ]));
+        }
+        if (!blueEnclosureSeeded) {
+          demoBlueEnclosureFurniture.forEach(({ id, ...item }) => entries.push([
+            "furniture", `seed-blue-enclosure-${id}`, { ...item, createdBy: user.uid, createdAt: fs.serverTimestamp() },
+          ]));
+        }
+        await commitSeedState("blueEnclosureSeeded", entries);
         blueDecorSeeded = true;
         blueParkSeeded = true;
+        blueEnclosureSeeded = true;
         renderGardenFurniture();
       })().finally(() => { blueDecorSeedPromise = null; });
       return blueDecorSeedPromise;
@@ -5150,7 +5574,7 @@ You are loved more than this little game could ever hold.</p>
       return copyText(key, type[0].toUpperCase() + type.slice(1));
     }
 
-    function chibiSvg(person) {
+    function chibiSvg(person, seated = false) {
       const outfit = outfitById(person.clothes);
       const girl = person.gender === "girl";
       const hair = girl ? "#654654" : "#40384d";
@@ -5170,11 +5594,12 @@ You are loved more than this little game could ever hold.</p>
                   : outfit.pattern === "flakes"
                     ? '<g fill="' + outfit.secondary + '"><path d="M36 76h4v8h8v4h-8v8h-4v-8h-8v-4h8ZM62 96h4v8h8v4h-8v8h-4v-8h-8v-4h8Z"/></g>'
                     : '<g fill="' + outfit.secondary + '"><path d="M46 80h8v8h-8ZM46 94h8v8h-8ZM46 108h8v8h-8Z"/></g>';
-      return `<svg viewBox="0 0 100 145" shape-rendering="crispEdges" aria-hidden="true">
+      return `<svg viewBox="0 0 100 ${seated ? 132 : 145}" shape-rendering="crispEdges" aria-hidden="true">
         <path d="M26 136h48v7H26Z" fill="#263b2a" opacity=".25"/>
         ${girl ? '<path d="M22 34h10v58H22ZM68 34h10v58H68Z" fill="' + hair + '"/>' : ''}
-        <path d="M34 108h14v24H34ZM52 108h14v24H52Z" fill="${outfit.secondary}" stroke="#493d32" stroke-width="3"/>
-        <path d="M28 130h22v8H28ZM50 130h22v8H50Z" fill="#eee3c6" stroke="#493d32" stroke-width="3"/>
+        ${seated
+          ? '<path d="M28 108h22v14H28ZM50 108h22v14H50Z" fill="' + outfit.secondary + '" stroke="#493d32" stroke-width="3"/><path d="M22 120h30v8H22ZM50 120h28v8H50Z" fill="#eee3c6" stroke="#493d32" stroke-width="3"/>'
+          : '<path d="M34 108h14v24H34ZM52 108h14v24H52Z" fill="' + outfit.secondary + '" stroke="#493d32" stroke-width="3"/><path d="M28 130h22v8H28ZM50 130h22v8H50Z" fill="#eee3c6" stroke="#493d32" stroke-width="3"/>'}
         <path d="M22 80h10v30H22ZM68 80h10v30H68Z" fill="${outfit.primary}" stroke="#493d32" stroke-width="3"/>
         <path d="M22 104h10v8H22ZM68 104h10v8H68Z" fill="${skin}" stroke="#493d32" stroke-width="3"/>
         <path d="M30 74h40v44H30Z" fill="${outfit.primary}" stroke="#493d32" stroke-width="3"/>
@@ -5216,6 +5641,10 @@ You are loved more than this little game could ever hold.</p>
         lantern: '<path d="M40 12h20v10H40ZM34 22h32v8H34ZM38 30h24v48H38Z" fill="#66563c" stroke="#493d32" stroke-width="4"/><path d="M44 36h12v36H44Z" fill="#f0cf76"/><path d="M32 78h36v8H32Z" fill="#66563c" stroke="#493d32" stroke-width="3"/>',
         sandbox: '<path d="M8 44h84v40H8Z" fill="#b88a52" stroke="#493d32" stroke-width="4"/><path d="M16 52h68v24H16Z" fill="#e8c767"/><path d="M32 70V50h10v20h10V46h10v24Z" fill="#c77a5d" stroke="#493d32" stroke-width="3"/>',
         kite: '<path d="M50 8h24v24L50 56 26 32Z" fill="#e7aaa1" stroke="#493d32" stroke-width="4"/><path d="M50 8v48M26 32h48" stroke="#f5efd9" stroke-width="3"/><path d="M50 56c-16 12 16 16 0 30" fill="none" stroke="#493d32" stroke-width="3"/><path d="M42 66h16v8H42ZM50 78h12v8H50Z" fill="#f0cf76"/>',
+        hayrack: '<path d="M14 30h10v62H14ZM76 30h10v62H76ZM10 24h80v10H10ZM10 48h80v10H10Z" fill="#765438" stroke="#493d32" stroke-width="4"/><path d="M22 34h56v12H22Z" fill="#e8c767"/><path d="M28 30v12M40 30v12M54 30v12M66 30v12" stroke="#b88a3d" stroke-width="4"/><path d="M24 58h52v10H24Z" fill="#d7b154"/>',
+        burrow: '<path d="M8 88V64h12V48h18V34h32v12h16v14h8v28Z" fill="#9b7146" stroke="#654632" stroke-width="5"/><path d="M30 88V68h12V54h20v14h12v20Z" fill="#3c302d"/><path d="M38 88V72h8v-8h12v8h8v16Z" fill="#241f22"/><path d="M14 54h10v8H14ZM70 42h12v8H70Z" fill="#6f9c4c"/>',
+        pond: '<path d="M6 58h18V44h52V32h28v12h16v14h12v26H84v10H22V84H6Z" fill="#547f88" stroke="#456c73" stroke-width="5"/><path d="M22 60h20V50h34v10h20v16H72v8H34V76H22Z" fill="#8fc7d1"/><path d="M34 60h22v6H34ZM62 72h20v6H62Z" fill="#d5edf0"/><path d="M14 76h12v8H14Z" fill="#6f9c4c"/>',
+        flowerpatch: '<path d="M8 84h84v10H8Z" fill="#6f9c4c"/><path d="M22 42h6v42h-6ZM48 30h6v54h-6ZM74 46h6v38h-6Z" fill="#4f713e"/><path d="M14 58h14v8H14ZM62 64h14v8H62Z" fill="#78a952"/><path d="M16 30h16v16H16ZM42 18h16v16H42ZM68 34h16v16H68Z" fill="#e7aaa1"/><path d="M22 36h6v6h-6ZM48 24h6v6h-6ZM74 40h6v6h-6Z" fill="#f0cf76"/>',
         rug: '<path d="M8 18h84v64H8Z" fill="#a85f50" stroke="#493d32" stroke-width="4"/><path d="M16 26h68v48H16Z" fill="#c77a5d"/><path d="M42 32h16v8H42ZM34 40h32v8H34ZM42 48h16v24H42Z" fill="#e8c767"/>',
       };
       return `<svg viewBox="0 0 100 100" shape-rendering="crispEdges" aria-hidden="true">${drawings[type] || drawings.plant}</svg>`;
@@ -5244,6 +5673,10 @@ You are loved more than this little game could ever hold.</p>
       return Boolean(item && !String(item.id).startsWith("demo-") && (role === "admin" || item.createdBy === user?.uid));
     }
 
+    function canManagePet(item) {
+      return Boolean(item && !String(item.id).startsWith("demo-") && user && ["admin", "viewer"].includes(role));
+    }
+
     function requireHouseAccess() {
       if (user && role && db && fs) return true;
       showToast(user
@@ -5269,6 +5702,75 @@ You are loved more than this little game could ever hold.</p>
 
     function houseBounds(zone) {
       return zone === "house" ? { minX: .45, maxX: .92 } : { minX: .08, maxX: .38 };
+    }
+
+    function furnitureHalfWidth(type) {
+      if (type === "rug") return .1;
+      if (["sofa", "bed", "kitchen", "bench"].includes(type)) return .085;
+      if (["arch", "swing", "fountain"].includes(type)) return .07;
+      return .052;
+    }
+
+    function resolveFurniturePosition(zone, type, desired, excludeId = "", knownBlockers = null) {
+      const bounds = houseBounds(zone);
+      const targetX = Math.max(bounds.minX, Math.min(bounds.maxX, Number(desired.x) || .5));
+      const blockers = (knownBlockers || visibleFurniture()).filter((item) => item.id !== excludeId && item.zone === zone && item.type !== "rug");
+      const halfWidth = furnitureHalfWidth(type);
+      const candidates = [];
+      const maxSteps = Math.ceil((bounds.maxX - bounds.minX) / .012);
+      for (let step = 0; step <= maxSteps; step += 1) {
+        const offsets = step === 0 ? [0] : [-step * .012, step * .012];
+        offsets.forEach((offset) => {
+          const x = Math.round(Math.max(bounds.minX, Math.min(bounds.maxX, targetX + offset)) * 10000) / 10000;
+          if (!candidates.includes(x)) candidates.push(x);
+        });
+      }
+      let best = null;
+      let bestOverlap = Infinity;
+      candidates.forEach((x) => {
+        const overlap = blockers.reduce((total, item) => {
+          const distance = Math.abs(x - (Number(item.x) || .5));
+          return total + Math.max(0, halfWidth + furnitureHalfWidth(item.type) + .008 - distance);
+        }, 0);
+        const score = overlap * 100 + Math.abs(x - targetX);
+        if (score < bestOverlap) {
+          bestOverlap = score;
+          best = x;
+        }
+        if (overlap === 0 && Math.abs(x - targetX) < .0001) best = x;
+      });
+      const x = best ?? targetX;
+      const overlap = blockers.reduce((total, item) => total + Math.max(
+        0,
+        halfWidth + furnitureHalfWidth(item.type) + .008 - Math.abs(x - (Number(item.x) || .5))
+      ), 0);
+      return { x, y: houseGroundY(zone, x), zone, clear: overlap === 0 };
+    }
+
+    async function tidyHouseFurniture() {
+      if (role !== "admin" || !db || !fs) return;
+      const items = visibleFurniture().filter((item) => ["house", "yard"].includes(item.zone));
+      const placed = [];
+      const updates = [];
+      items.sort((a, b) => Number(a.createdAt?.toMillis?.() || 0) - Number(b.createdAt?.toMillis?.() || 0)).forEach((item) => {
+        const original = { x: Number(item.x) || .5, y: Number(item.y) || .84, zone: item.zone };
+        const blockers = placed.filter((other) => other.zone === item.zone && other.type !== "rug");
+        const position = item.type === "rug"
+          ? { ...original, x: Math.max(.06, Math.min(.94, original.x)), y: Math.max(.26, Math.min(.9, original.y)) }
+          : resolveFurniturePosition(item.zone, item.type, original, item.id, blockers);
+        const collision = blockers.some((other) => Math.abs(other.x - position.x) < furnitureHalfWidth(other.type) + furnitureHalfWidth(item.type) + .008);
+        placed.push({ ...item, ...position });
+        if (collision || Math.abs(position.x - original.x) > .0001 || Math.abs(position.y - original.y) > .0001) {
+          updates.push(fs.updateDoc(fs.doc(db, "furniture", item.id), { x: position.x, y: position.y, zone: position.zone }));
+        }
+      });
+      try {
+        for (let index = 0; index < updates.length; index += 100) await Promise.all(updates.slice(index, index + 100));
+        renderHouse();
+        showToast(copyText("houseFurnitureTidied", "Furniture spaced out so every piece is easy to select."));
+      } catch (error) {
+        showAppError("houseFurnitureTidyError", "Could not tidy the furniture", error);
+      }
     }
 
     function ensureHouseMotion(item) {
@@ -5404,11 +5906,14 @@ You are loved more than this little game could ever hold.</p>
       const left = `${motion.x / pageCount * 100}%`;
       const jump = Math.max(0, motion.jumpY);
       const transform = `translate(-50%, calc(-100% - ${jump}px))`;
-      const walking = Math.abs(motion.vx) > .01 || activeRoamDrag?.item.id === motion.element.dataset.roamId;
+      const seated = cafeSeated && pages[Math.floor(motion.x)] === "cafe";
+      const walking = !seated && (Math.abs(motion.vx) > .01 || activeRoamDrag?.item.id === motion.element.dataset.roamId);
       if (motion.element.style.left !== left) motion.element.style.left = left;
       if (motion.element.style.transform !== transform) motion.element.style.transform = transform;
       if (motion.element.classList.contains("walking") !== walking) motion.element.classList.toggle("walking", walking);
+      if (motion.element.classList.contains("cafe-seated") !== seated) motion.element.classList.toggle("cafe-seated", seated);
       if (motion.shadow) {
+        motion.shadow.classList.toggle("cafe-seated", seated);
         const scale = Math.max(.55, 1 - jump / 70);
         const opacity = String(Math.max(.2, 1 - jump / 55));
         if (motion.shadow.style.left !== left) motion.shadow.style.left = left;
@@ -5434,12 +5939,16 @@ You are loved more than this little game could ever hold.</p>
         element.type = "button";
         element.className = "world-character";
         element.dataset.roamId = person.id;
-        element.innerHTML = chibiSvg(person);
+        element.innerHTML = chibiSvg(person, cafeSeated);
         element.setAttribute("aria-label", formatCopy("roamCharacterAria", { name: characterName(person), page: worldSlimePageLabel(pages[Math.floor(motion.x)] || currentPage) }, `${characterName(person)}. Drag to move between pages.`));
         const label = document.createElement("span");
         label.className = "world-character-label";
         label.textContent = characterName(person);
-        element.append(label);
+        const mug = document.createElement("span");
+        mug.className = "cafe-character-mug";
+        mug.setAttribute("aria-hidden", "true");
+        mug.innerHTML = coffeeSvg(cafeDrinks[1]);
+        element.append(label, mug);
         element.addEventListener("pointerdown", (event) => startRoamDrag(person, event));
         element.addEventListener("click", () => {
           if (performance.now() - Number(element.dataset.draggedAt || 0) < 400) return;
@@ -5481,6 +5990,10 @@ You are loved more than this little game could ever hold.</p>
           motion.onGround = true;
           motion.nextPlan = time + 1800;
           motion.nextHop = time + 3200;
+        }
+        if (cafeSeated) {
+          applyRoamMotion(motion);
+          return;
         }
         if (time >= motion.nextPlan && Math.abs(motion.targetX - motion.x) < .02) {
           const currentIndex = Math.max(0, Math.min(pages.length - 1, Math.floor(motion.x)));
@@ -5602,10 +6115,13 @@ You are loved more than this little game could ever hold.</p>
         return;
       }
       event.preventDefault();
+      if (cafeSeated) setCafeSeated(false, false);
       const motion = ensureRoamMotion(person);
       const element = event.currentTarget;
       const rect = element.getBoundingClientRect();
-      const ghostData = createDragGhost(rect, event, element.cloneNode(true));
+      const ghostContent = document.createElement("div");
+      ghostContent.innerHTML = chibiSvg(person);
+      const ghostData = createDragGhost(rect, event, ghostContent);
       activeRoamDrag = {
         item: person, motion, element, pointerId: event.pointerId,
         startClientX: event.clientX, startClientY: event.clientY, startX: motion.x,
@@ -5681,7 +6197,8 @@ You are loved more than this little game could ever hold.</p>
     function ensureFurnitureMotion(item) {
       if (item.type === "rug") return null;
       const zone = item.zone === "house" ? "house" : "yard";
-      const x = Math.max(.06, Math.min(.94, Number(item.x) || .5));
+      const bounds = houseBounds(zone);
+      const x = Math.max(bounds.minX, Math.min(bounds.maxX, Number(item.x) || .5));
       const ground = houseGroundY(zone, x);
       let motion = furnitureMotion.get(item.id);
       if (!motion) {
@@ -5718,13 +6235,15 @@ You are loved more than this little game could ever hold.</p>
       const delta = Math.min(.05, Math.max(.001, (time - previousTime) / 1000));
       furnitureMotion.forEach((motion, id) => {
         if (activeHouseDrag?.kind === "furniture" && activeHouseDrag.item.id === id) return;
+        const currentBounds = houseBounds(motion.zone);
         const currentGround = houseGroundY(motion.zone, motion.x);
         if (
           !Number.isFinite(motion.x) || !Number.isFinite(motion.y) || !Number.isFinite(motion.vy)
-          || !["house", "yard"].includes(motion.zone) || motion.x < .06 || motion.x > .94
+          || !["house", "yard"].includes(motion.zone) || motion.x < currentBounds.minX || motion.x > currentBounds.maxX
           || motion.y > currentGround + .01 || motion.y < .22 || Math.abs(motion.vy) > 2
         ) {
-          motion.x = Number.isFinite(motion.x) ? Math.max(.06, Math.min(.94, motion.x)) : .5;
+          const bounds = houseBounds(motion.zone);
+          motion.x = Number.isFinite(motion.x) ? Math.max(bounds.minX, Math.min(bounds.maxX, motion.x)) : (bounds.minX + bounds.maxX) / 2;
           motion.zone = ["house", "yard"].includes(motion.zone) ? motion.zone : "yard";
           motion.y = houseGroundY(motion.zone, motion.x);
           motion.vy = 0;
@@ -5764,7 +6283,9 @@ You are loved more than this little game could ever hold.</p>
       const layer = $("#house-furniture");
       layer.replaceChildren();
       const visibleIds = new Set();
-      visibleFurniture().filter((item) => ["house", "yard"].includes(item.zone)).forEach((item) => {
+      visibleFurniture().filter((item) => ["house", "yard"].includes(item.zone))
+        .sort((a, b) => (Number(a.y) || .84) - (Number(b.y) || .84) || a.id.localeCompare(b.id))
+        .forEach((item) => {
         visibleIds.add(item.id);
         const motion = ensureFurnitureMotion(item);
         const shadow = motion ? document.createElement("span") : null;
@@ -5780,7 +6301,8 @@ You are loved more than this little game could ever hold.</p>
         element.dataset.trashKey = `furniture:${item.id}`;
         element.tabIndex = 0;
         element.setAttribute("role", "button");
-        element.style.width = item.type === "rug" ? "120px" : ["sofa", "bed", "kitchen", "bench"].includes(item.type) ? "104px" : ["arch", "swing", "fountain"].includes(item.type) ? "92px" : "74px";
+        element.style.width = item.type === "rug" ? "15%" : ["sofa", "bed", "kitchen", "bench"].includes(item.type) ? "13%" : ["arch", "swing", "fountain"].includes(item.type) ? "11.5%" : "9.25%";
+        element.style.zIndex = item.type === "rug" ? "1" : String(5 + Math.round((motion?.y ?? Number(item.y) ?? .84) * 20));
         element.setAttribute("aria-label", formatCopy("houseFurnitureAria", { name: furnitureTypeLabel(item.type), manage: canManageHouseItem(item) ? copyText("houseManageAria", " Drop in the trash to delete.") : "" }, `${furnitureTypeLabel(item.type)}. Tap to use or drag to move.${canManageHouseItem(item) ? " Drop in the trash to delete." : ""}`));
         element.innerHTML = furnitureSvg(item.type);
         element.addEventListener("pointerdown", (event) => startHouseDrag("furniture", item, event));
@@ -5795,7 +6317,8 @@ You are loved more than this little game could ever hold.</p>
           motion.shadow = shadow;
           applyFurnitureMotion(motion);
         } else {
-          element.style.left = `${Math.max(.06, Math.min(.94, Number(item.x) || .5)) * 100}%`;
+          const bounds = houseBounds(item.zone);
+          element.style.left = `${Math.max(bounds.minX, Math.min(bounds.maxX, Number(item.x) || .5)) * 100}%`;
           element.style.top = `${Math.max(.26, Math.min(.9, Number(item.y) || .84)) * 100}%`;
         }
         layer.append(...(shadow ? [shadow] : []), element);
@@ -5909,7 +6432,7 @@ You are loved more than this little game could ever hold.</p>
         element.dataset.trashKey = `cats:${cat.id}`;
         element.tabIndex = 0;
         element.setAttribute("role", "button");
-        element.setAttribute("aria-label", formatCopy("catAria", { name: catName(cat), manage: canManageHouseItem(cat) ? copyText("houseManageAria", " Drop in the trash to delete.") : "" }, `${catName(cat)}. Tap to pet or drag to move.${canManageHouseItem(cat) ? " Drop in the trash to delete." : ""}`));
+        element.setAttribute("aria-label", formatCopy("catAria", { name: catName(cat), manage: canManagePet(cat) ? copyText("houseManageAria", " Drop in the trash to delete.") : "" }, `${catName(cat)}. Tap to pet or drag to move.${canManagePet(cat) ? " Drop in the trash to delete." : ""}`));
         element.innerHTML = catSvg(cat.color);
         const label = document.createElement("span");
         label.className = "house-item-label";
@@ -6056,7 +6579,7 @@ You are loved more than this little game could ever hold.</p>
       content.innerHTML = kind === "character" ? chibiSvg(item) : kind === "cat" ? catSvg(item.color) : furnitureSvg(item.type);
       const ghostData = createDragGhost(rect, event, content);
       const houseX = houseMotion.get(item.id)?.x ?? Number(item.x) ?? .5;
-      activeHouseDrag = { kind, item, element, pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, clientX: event.clientX, clientY: event.clientY, moved: false, worldX: null, dropPage: null, startWorldX: pages.indexOf("house") + Math.max(.08, Math.min(.92, houseX)), canTrash: kind !== "character" && canManageHouseItem(item), trashVisible: false, ...ghostData };
+      activeHouseDrag = { kind, item, element, pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, clientX: event.clientX, clientY: event.clientY, moved: false, worldX: null, dropPage: null, startWorldX: pages.indexOf("house") + Math.max(.08, Math.min(.92, houseX)), canTrash: kind === "cat" ? canManagePet(item) : kind === "furniture" && canManageHouseItem(item), trashVisible: false, ...ghostData };
       if (activeHouseDrag.canTrash) {
         $("#trash-bin").classList.add("active");
         activeHouseDrag.trashVisible = true;
@@ -6142,7 +6665,16 @@ You are loved more than this little game could ever hold.</p>
       const bounds = houseBounds(dropped.zone);
       const x = Math.round(Math.max(bounds.minX, Math.min(bounds.maxX, dropped.x)) * 10000) / 10000;
       const ground = houseGroundY(dropped.zone, x);
-      const position = { ...dropped, x, y: ground };
+      const position = drag.kind === "furniture"
+        ? drag.item.type === "rug"
+          ? { ...dropped, x: Math.max(.06, Math.min(.94, x)), y: Math.max(.26, Math.min(.9, dropped.y)) }
+          : resolveFurniturePosition(dropped.zone, drag.item.type, dropped, drag.item.id)
+        : { ...dropped, x, y: ground };
+      if (drag.kind === "furniture" && position.clear === false) {
+        renderHouse();
+        showToast(copyText("houseFurnitureNoRoom", "No clear spot here. Move another piece or try the yard."));
+        return;
+      }
       if (drag.kind === "character") Object.assign(position, { worldPage: "house", worldX: x });
       if (drag.kind === "character") {
         drag.item.zone = dropped.zone;
@@ -6168,21 +6700,19 @@ You are loved more than this little game could ever hold.</p>
           applyHouseMotion(motion);
         }
       } else if (drag.kind === "furniture" && drag.item.type !== "rug") {
-        drag.item.zone = dropped.zone;
-        drag.item.x = x;
-        drag.item.y = ground;
+        Object.assign(drag.item, position);
         const motion = ensureFurnitureMotion(drag.item);
-        Object.assign(motion, { zone: dropped.zone, x, y: Math.min(ground, Math.max(.3, dropped.y)), vy: 0, bounces: 0, lastFrame: null, savedX: x, savedY: ground, savedZone: dropped.zone });
-        motion.onGround = motion.y >= ground - .002;
+        Object.assign(motion, { zone: dropped.zone, x: position.x, y: Math.min(position.y, Math.max(.3, dropped.y)), vy: 0, bounces: 0, lastFrame: null, savedX: position.x, savedY: position.y, savedZone: dropped.zone });
+        motion.onGround = motion.y >= position.y - .002;
         applyFurnitureMotion(motion);
       } else if (drag.kind === "furniture") {
-        drag.item.zone = dropped.zone;
-        drag.item.x = x;
-        drag.item.y = Math.max(.3, Math.min(.9, dropped.y));
+        Object.assign(drag.item, position);
       }
       try {
         const collection = drag.kind === "character" ? "characters" : drag.kind === "cat" ? "cats" : "furniture";
-        await fs.updateDoc(fs.doc(db, collection, drag.item.id), position);
+        const savedPosition = { x: position.x, y: position.y, zone: position.zone };
+        if (drag.kind === "character") Object.assign(savedPosition, { worldPage: "house", worldX: x });
+        await fs.updateDoc(fs.doc(db, collection, drag.item.id), savedPosition);
         if (drag.kind === "character") {
           selectedWardrobeCharacter = drag.item.key || drag.item.gender;
           updateWardrobe();
@@ -6591,6 +7121,38 @@ You are loved more than this little game could ever hold.</p>
       });
     }
 
+    function setCafeSeated(seated, rebuild = true) {
+      cafeSeated = seated;
+      if (!seated) {
+        cafeDrinkAnimationUntil = 0;
+        clearTimeout(cafeDrinkTimer);
+      }
+      const cafeIndex = pages.indexOf("cafe");
+      visibleCharacters().forEach((person) => {
+        const motion = roamMotion.get(person.id);
+        if (!motion) return;
+        const localX = person.key === "girl" || person.gender === "girl" ? .125 : .335;
+        motion.x = seated ? cafeIndex + localX : motion.x;
+        motion.targetX = motion.x;
+        motion.targetPage = "cafe";
+        motion.vx = 0;
+        motion.jumpY = 0;
+        motion.jumpV = 0;
+        motion.onGround = true;
+        motion.nextPlan = performance.now() + 1400;
+        motion.nextHop = performance.now() + 3200;
+        if (!rebuild) applyRoamMotion(motion);
+      });
+      if (rebuild) renderRoamingCharacters();
+      updateCafeUi();
+      if (seated) $("#cafe-status").textContent = copyText("cafeSeated", "Shane and Zyrell are seated. Drink coffee to see them take a sip.");
+    }
+
+    function toggleCafeSeats() {
+      if (!requireHouseAccess()) return;
+      setCafeSeated(!cafeSeated);
+    }
+
     function updateCafeUi() {
       renderCoffeeOptions();
       const drink = cafeDrinks.find((item) => item.id === selectedCoffee) || cafeDrinks[1];
@@ -6600,6 +7162,11 @@ You are loved more than this little game could ever hold.</p>
       $("#coffee-cup").style.setProperty("--coffee-color", readyCoffee?.color || drink.color);
       $("#coffee-brewed").textContent = formatCopy("cafeBrewedStat", { count: cafeStats.brewed }, `${cafeStats.brewed} brewed`);
       $("#coffee-drunk").textContent = formatCopy("cafeDrunkStat", { count: cafeStats.drunk }, `${cafeStats.drunk} enjoyed`);
+      $("#cafe-sit").textContent = copyText(cafeSeated ? "cafeStandButton" : "cafeSitButton", cafeSeated ? "Stand up" : "Sit together");
+      $("#cafe-sit").setAttribute("aria-pressed", String(cafeSeated));
+      $$("[data-cafe-seat]").forEach((chair) => chair.setAttribute("aria-pressed", String(cafeSeated)));
+      const drinking = performance.now() < cafeDrinkAnimationUntil;
+      $$(".world-character").forEach((element) => element.classList.toggle("drinking", drinking && cafeSeated));
     }
 
     async function brewCoffee() {
@@ -6634,6 +7201,13 @@ You are loved more than this little game could ever hold.</p>
       saveCafeProgress();
       coffeeBoostUntil = performance.now() + 30000;
       coffeeBoostMultiplier = drink.strength;
+      if (!cafeSeated) setCafeSeated(true);
+      cafeDrinkAnimationUntil = performance.now() + 1700;
+      clearTimeout(cafeDrinkTimer);
+      cafeDrinkTimer = setTimeout(() => {
+        cafeDrinkAnimationUntil = 0;
+        updateCafeUi();
+      }, 1750);
       gainXp(8);
       $("#cafe-status").textContent = formatCopy("cafeDrinking", { name: coffeeName(drink.id) }, `You enjoy a warm ${coffeeName(drink.id)}. Speed boost active for 30 seconds!`);
       readyCoffee = null;
@@ -6787,7 +7361,7 @@ You are loved more than this little game could ever hold.</p>
         showToast(copyText("housePairProtected", "The birthday pair stays with you."));
         return;
       }
-      if (!canManageHouseItem(item) || !db) return;
+      if (!(kind === "cats" ? canManagePet(item) : canManageHouseItem(item)) || !db) return;
       try {
         const removed = await trashInteraction(`${kind}:${item.id}`, source, () => fs.deleteDoc(fs.doc(db, kind, item.id)));
         if (removed) showToast(copyText("houseItemRemoved", "Removed from the house."));
@@ -6808,16 +7382,27 @@ You are loved more than this little game could ever hold.</p>
     }
 
     async function placeFurniture(event) {
-      if (!placementFurniture || !requireHouseAccess() || event.target.closest(".house-item")) return;
-      const position = normalizeHousePosition(event.clientX, event.clientY);
-      if (placementFurniture !== "rug") position.y = Math.min(position.y, houseGroundY(position.zone, position.x));
+      const type = placementFurniture;
+      if (!type || $("#house-stage").dataset.placementBusy === "true" || !requireHouseAccess() || event.target.closest(".house-item")) return;
+      const requested = normalizeHousePosition(event.clientX, event.clientY);
+      const position = type === "rug"
+        ? { ...requested, x: Math.max(.06, Math.min(.94, requested.x)), y: Math.max(.26, Math.min(.9, requested.y)) }
+        : resolveFurniturePosition(requested.zone, type, requested);
+      if (position.clear === false) {
+        showToast(copyText("houseFurnitureNoRoom", "No clear spot here. Move another piece or try the yard."));
+        setFurniturePlacement(null);
+        return;
+      }
+      $("#house-stage").dataset.placementBusy = "true";
       try {
-        await fs.addDoc(fs.collection(db, "furniture"), { type: placementFurniture, ...position, createdBy: user.uid, createdAt: fs.serverTimestamp() });
+        await fs.addDoc(fs.collection(db, "furniture"), { type, x: position.x, y: position.y, zone: position.zone, createdBy: user.uid, createdAt: fs.serverTimestamp() });
         gainXp(8);
-        showToast(formatCopy("houseFurniturePlaced", { item: furnitureTypeLabel(placementFurniture) }, `${furnitureTypeLabel(placementFurniture)} placed.`));
+        showToast(formatCopy("houseFurniturePlaced", { item: furnitureTypeLabel(type) }, `${furnitureTypeLabel(type)} placed.`));
         setFurniturePlacement(null);
       } catch (error) {
         showAppError("houseFurniturePlaceError", "Could not place furniture", error);
+      } finally {
+        delete $("#house-stage").dataset.placementBusy;
       }
     }
 
@@ -7257,6 +7842,363 @@ You are loved more than this little game could ever hold.</p>
       return galleryPages[galleryIndex];
     }
 
+    function galleryChatTimestamp(message) {
+      const value = message.createdAt?.toMillis?.() ?? (message.createdAt ? new Date(message.createdAt).getTime() : 0);
+      return Number.isFinite(value) ? value : 0;
+    }
+
+    function syncGalleryChatListener() {
+      const pageId = currentGalleryPage()?.id || "";
+      const canChat = Boolean(user && role && db && fs && pageId);
+      if (!canChat || galleryChatPageId !== pageId || !galleryChatUnsubscribe) {
+        galleryChatUnsubscribe?.();
+        galleryChatUnsubscribe = null;
+        galleryChatPageId = canChat ? pageId : "";
+        galleryChatMessages = [];
+        galleryChatError = "";
+        galleryChatSending.clear();
+        if (canChat) {
+          const query = fs.query(fs.collection(db, "galleryPhotoChats"), fs.where("pageId", "==", pageId));
+          galleryChatUnsubscribe = fs.onSnapshot(query, (snapshot) => {
+            if (galleryChatPageId !== pageId) return;
+            galleryChatMessages = snapshot.docs.map((item) => ({ id: item.id, ...item.data() }))
+              .sort((a, b) => galleryChatTimestamp(a) - galleryChatTimestamp(b) || a.id.localeCompare(b.id));
+            galleryChatError = "";
+            renderGalleryPhotoChats();
+          }, (error) => {
+            if (galleryChatPageId !== pageId) return;
+            galleryChatError = formatAppError("galleryChatError", "Memory chats", error);
+            renderGalleryPhotoChats();
+          });
+        }
+      }
+      renderGalleryPhotoChats();
+    }
+
+    function createGalleryPhotoChat(page, photo, index) {
+      const chat = document.createElement("section");
+      chat.className = "photo-memory-chat";
+      chat.dataset.photoChatKey = galleryPhotoKey(photo);
+      chat.setAttribute("aria-label", formatCopy("galleryChatFeedAria", { current: index + 1 }, `Messages for photo ${index + 1}`));
+      const heading = document.createElement("div");
+      heading.className = "photo-chat-heading";
+      const title = document.createElement("strong");
+      title.textContent = formatCopy("galleryChatTitle", { current: index + 1 }, `Photo ${index + 1} memory chat`);
+      const count = document.createElement("span");
+      count.className = "photo-chat-count";
+      heading.append(title, count);
+      const feed = document.createElement("div");
+      feed.className = "photo-chat-messages";
+      feed.setAttribute("role", "log");
+      feed.setAttribute("aria-live", "polite");
+      const form = document.createElement("form");
+      form.className = "photo-chat-form";
+      const input = document.createElement("textarea");
+      input.className = "photo-chat-input";
+      input.rows = 1;
+      input.maxLength = 500;
+      input.setAttribute("aria-label", formatCopy("galleryChatInputAria", { current: index + 1 }, `Memory chat for photo ${index + 1}`));
+      const send = document.createElement("button");
+      send.className = "photo-action publish photo-chat-send";
+      send.type = "submit";
+      form.append(input, send);
+      form.addEventListener("submit", (event) => sendGalleryPhotoChat(event, page, photo, chat));
+      input.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" && !event.shiftKey && !event.isComposing) {
+          event.preventDefault();
+          form.requestSubmit();
+        }
+      });
+      chat.append(heading, feed, form);
+      return chat;
+    }
+
+    function renderGalleryPhotoChats() {
+      const page = currentGalleryPage();
+      $$("#gallery-grid .photo-memory-chat").forEach((chat) => {
+        const photoKey = chat.dataset.photoChatKey;
+        const messages = page && galleryChatPageId === page.id
+          ? galleryChatMessages.filter((message) => message.photoKey === photoKey).slice(-80)
+          : [];
+        const feed = chat.querySelector(".photo-chat-messages");
+        const count = chat.querySelector(".photo-chat-count");
+        const input = chat.querySelector(".photo-chat-input");
+        const send = chat.querySelector(".photo-chat-send");
+        const atBottom = feed.scrollHeight - feed.scrollTop - feed.clientHeight < 28;
+        count.textContent = messages.length ? formatCopy("galleryChatCount", { count: messages.length }, `${messages.length} notes`) : "";
+        feed.replaceChildren();
+        if (!messages.length) {
+          const empty = document.createElement("p");
+          empty.className = "photo-chat-empty";
+          empty.textContent = galleryChatError || copyText(user && role ? "galleryChatEmpty" : "galleryChatSignedOut", user && role ? "No notes yet. Mark this memory together." : "Sign in as admin or viewer to add a memory.");
+          feed.append(empty);
+        } else {
+          messages.forEach((message) => {
+            const item = document.createElement("article");
+            item.className = `photo-chat-message${message.senderId === user?.uid ? " own" : ""}`;
+            const meta = document.createElement("div");
+            meta.className = "photo-chat-meta";
+            const name = document.createElement("span");
+            name.textContent = message.senderName || copyText(message.senderRole === "admin" ? "chatAdminName" : "chatViewerName", message.senderRole === "admin" ? "Admin" : "Player Two");
+            const time = document.createElement("time");
+            time.dateTime = message.createdAt?.toDate?.().toISOString?.() || "";
+            time.textContent = formatChatTime(message.createdAt);
+            const text = document.createElement("p");
+            text.textContent = message.text || "";
+            meta.append(name, time);
+            item.append(meta, text);
+            feed.append(item);
+          });
+          if (atBottom || messages.some((message) => message.senderId === user?.uid)) feed.scrollTop = feed.scrollHeight;
+        }
+        const sending = galleryChatSending.has(`${page?.id || ""}:${photoKey}`);
+        const enabled = Boolean(user && role && db && fs && page && galleryChatPageId === page.id);
+        input.disabled = !enabled || sending;
+        send.disabled = !enabled || sending;
+        input.placeholder = copyText(enabled ? "galleryChatPlaceholder" : "galleryChatPlaceholderSignedOut", enabled ? "Write a memory..." : "Sign in to write a memory...");
+        send.textContent = copyText(sending ? "galleryChatSending" : "galleryChatSend", sending ? "Adding..." : "Add");
+      });
+    }
+
+    async function sendGalleryPhotoChat(event, page, photo, chat) {
+      event.preventDefault();
+      if (!user || !role) {
+        showToast(copyText("galleryChatSignedOut", "Sign in as admin or viewer to add a memory."));
+        if (!user) openAuth();
+        return;
+      }
+      if (!db || !fs || currentGalleryPage()?.id !== page.id) return;
+      const photoKey = galleryPhotoKey(photo);
+      const sendKey = `${page.id}:${photoKey}`;
+      const input = chat.querySelector(".photo-chat-input");
+      const originalText = input.value;
+      const text = originalText.trim();
+      if (!text || galleryChatSending.has(sendKey)) return;
+      galleryChatSending.add(sendKey);
+      renderGalleryPhotoChats();
+      try {
+        await fs.addDoc(fs.collection(db, "galleryPhotoChats"), {
+          pageId: page.id,
+          photoKey,
+          text: text.slice(0, 500),
+          senderId: user.uid,
+          senderName: chatDisplayName(),
+          senderRole: role,
+          createdAt: fs.serverTimestamp(),
+        });
+        if (chat.isConnected && input.value === originalText) input.value = "";
+      } catch (error) {
+        showAppError("galleryChatSendError", "Could not add this memory", error);
+      } finally {
+        galleryChatSending.delete(sendKey);
+        renderGalleryPhotoChats();
+        if (chat.isConnected) input.focus();
+      }
+    }
+
+    async function galleryChatDocs(pageId, photoKey = "") {
+      if (!db || !fs) return [];
+      const snapshot = await fs.getDocs(fs.query(fs.collection(db, "galleryPhotoChats"), fs.where("pageId", "==", pageId)));
+      return snapshot.docs.filter((doc) => !photoKey || doc.data().photoKey === photoKey);
+    }
+
+    function renderRadioUi() {
+      const hasTrack = Boolean(radioTrack && radioAudio);
+      $("#radio-track-name").textContent = radioTrack?.title || copyText("radioTrackLabel", "Now playing");
+      $("#radio-track-status").textContent = radioTrack
+        ? `${copyText("radioSharedTrack", "Shared local MP3")} · ${(Number(radioTrack.size) / 1048576).toFixed(1)} MB`
+        : copyText("radioEmpty", "Admin can add an MP3. It stays inside our game, not on a music platform.");
+      $("#radio-toggle").textContent = copyText(radioPlaying ? "radioPause" : "radioPlay", radioPlaying ? "Turn radio off" : "Turn radio on");
+      $("#radio-toggle").disabled = !hasTrack || radioUploading;
+      $("#radio-power").classList.toggle("playing", radioPlaying);
+      $("#radio-power").setAttribute("aria-label", copyText(radioPlaying ? "radioPause" : "radioPlay", radioPlaying ? "Turn radio off" : "Turn radio on"));
+      $("#radio-upload").hidden = role !== "admin";
+      $("#radio-upload").disabled = radioUploading;
+      $("#radio-upload").textContent = copyText(radioUploading ? "radioUploading" : "radioUpload", radioUploading ? "Adding our song..." : "Add MP3");
+      $("#radio-progress").hidden = !radioUploading;
+      $("#radio-status").textContent = radioStatus;
+      $("#radio-button").classList.toggle("playing", radioPlaying);
+    }
+
+    function syncRadioListener() {
+      radioUnsubscribe?.();
+      radioUnsubscribe = null;
+      if (!user || !role || !db || !fs) {
+        radioTrack = null;
+        loadRadioTrack();
+        return;
+      }
+      radioUnsubscribe = fs.onSnapshot(fs.doc(db, "radio", "current"), (snapshot) => {
+        const nextTrack = snapshot.exists() ? { id: snapshot.id, ...snapshot.data() } : null;
+        radioTrack = nextTrack;
+        if (nextTrack?.trackId === radioLoadedTrackId || nextTrack?.trackId === radioLoadingTrackId) {
+          renderRadioUi();
+          return;
+        }
+        loadRadioTrack();
+      }, (error) => {
+        radioStatus = formatAppError("radioLoadError", "Could not load the radio track", error);
+        renderRadioUi();
+      });
+    }
+
+    async function loadRadioTrack() {
+      radioAudio?.pause();
+      if (radioObjectUrl) URL.revokeObjectURL(radioObjectUrl);
+      radioObjectUrl = "";
+      radioAudio = null;
+      radioPlaying = false;
+      radioLoadedTrackId = "";
+      radioLoadingTrackId = "";
+      renderRadioUi();
+      if (!radioTrack?.trackId || !db || !fs) return;
+      const trackId = radioTrack.trackId;
+      radioLoadingTrackId = trackId;
+      radioStatus = copyText("radioLoading", "Loading our song...");
+      renderRadioUi();
+      try {
+        const snapshot = await fs.getDocs(fs.query(fs.collection(db, "radioChunks"), fs.where("trackId", "==", trackId)));
+        if (radioLoadingTrackId !== trackId || radioTrack?.trackId !== trackId) return;
+        const chunks = snapshot.docs.map((doc) => doc.data()).sort((a, b) => a.index - b.index);
+        if (chunks.length !== Number(radioTrack.chunkCount) || chunks.some((chunk, index) => chunk.index !== index)) {
+          throw new Error("The shared audio is incomplete.");
+        }
+        const blob = new Blob(chunks.map((chunk) => {
+          const binary = atob(chunk.data);
+          const bytes = new Uint8Array(binary.length);
+          for (let index = 0; index < binary.length; index += 1) bytes[index] = binary.charCodeAt(index);
+          return bytes;
+        }), { type: radioTrack.mime || "audio/mpeg" });
+        radioObjectUrl = URL.createObjectURL(blob);
+        radioAudio = new Audio(radioObjectUrl);
+        radioAudio.loop = true;
+        radioAudio.volume = .65;
+        radioAudio.addEventListener("play", () => { radioPlaying = true; renderRadioUi(); });
+        radioAudio.addEventListener("pause", () => { radioPlaying = false; renderRadioUi(); });
+        radioAudio.addEventListener("ended", () => { radioPlaying = false; renderRadioUi(); });
+        radioLoadedTrackId = trackId;
+        radioStatus = "";
+      } catch (error) {
+        if (radioLoadingTrackId === trackId) {
+          radioStatus = formatAppError("radioLoadError", "Could not load the radio track", error);
+        }
+      } finally {
+        if (radioLoadingTrackId === trackId) radioLoadingTrackId = "";
+        renderRadioUi();
+      }
+    }
+
+    async function toggleRadio() {
+      if (!user || !role) {
+        showToast(copyText("radioNeedSignIn", "Sign in as admin or viewer to use the radio."));
+        if (!user) openAuth();
+        return;
+      }
+      if (!radioAudio || !radioTrack) {
+        if (radioTrack?.trackId && radioLoadedTrackId !== radioTrack.trackId && radioLoadingTrackId !== radioTrack.trackId) {
+          loadRadioTrack();
+        } else {
+          radioStatus = radioTrack ? copyText("radioLoading", "Loading our song...") : copyText("radioEmpty", "Admin can add an MP3.");
+          renderRadioUi();
+        }
+        return;
+      }
+      if (radioPlaying) {
+        radioAudio.pause();
+        return;
+      }
+      try {
+        await radioAudio.play();
+      } catch (error) {
+        radioStatus = formatAppError("radioPlayError", "Could not play the radio", error);
+        renderRadioUi();
+      }
+    }
+
+    function readRadioChunk(file, start, end) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result).split(",")[1] || "");
+        reader.onerror = () => reject(reader.error || new Error("Could not read the MP3."));
+        reader.readAsDataURL(file.slice(start, end));
+      });
+    }
+
+    async function uploadRadioTrack(file) {
+      if (role !== "admin") {
+        showToast(copyText("radioNeedAdmin", "Only the admin can add music."));
+        return;
+      }
+      if (!file || radioUploading || !db || !fs) return;
+      const isMp3 = file.type === "audio/mpeg" || /\.mp3$/i.test(file.name);
+      if (!isMp3) {
+        showToast(copyText("radioTypeInvalid", "Choose an MP3 audio file."));
+        return;
+      }
+      if (file.size > 8 * 1048576) {
+        showToast(copyText("radioSizeLimit", "Choose an MP3 smaller than 8 MB."));
+        return;
+      }
+      if (file.size === 0) {
+        showToast(copyText("radioFileEmpty", "Choose an MP3 with audio in it."));
+        return;
+      }
+      radioUploading = true;
+      radioStatus = copyText("radioUploading", "Adding our song...");
+      renderRadioUi();
+      const previousTrackId = radioTrack?.trackId || "";
+      const trackId = globalThis.crypto?.randomUUID?.() || `track-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      const chunkSize = 600 * 1024;
+      const chunkCount = Math.ceil(file.size / chunkSize);
+      const createdChunkIds = [];
+      let published = false;
+      try {
+        for (let index = 0; index < chunkCount; index += 1) {
+          const start = index * chunkSize;
+          const data = await readRadioChunk(file, start, Math.min(file.size, start + chunkSize));
+          const chunkId = `${trackId}-${String(index).padStart(4, "0")}`;
+          const batch = fs.writeBatch(db);
+          batch.set(fs.doc(db, "radioChunks", chunkId), { trackId, index, data });
+          await batch.commit();
+          createdChunkIds.push(chunkId);
+          $("#radio-progress").value = String(Math.round(((index + 1) / (chunkCount + 1)) * 100));
+        }
+        await fs.setDoc(fs.doc(db, "radio", "current"), {
+          trackId,
+          title: file.name.replace(/\.mp3$/i, "").slice(0, 120) || "Our song",
+          mime: "audio/mpeg",
+          size: file.size,
+          chunkCount,
+          createdBy: user.uid,
+          createdAt: fs.serverTimestamp(),
+        });
+        published = true;
+        $("#radio-progress").value = "100";
+        if (previousTrackId && previousTrackId !== trackId) {
+          const oldChunks = await fs.getDocs(fs.query(fs.collection(db, "radioChunks"), fs.where("trackId", "==", previousTrackId)));
+          for (let index = 0; index < oldChunks.docs.length; index += 400) {
+            const batch = fs.writeBatch(db);
+            oldChunks.docs.slice(index, index + 400).forEach((doc) => batch.delete(doc.ref));
+            await batch.commit();
+          }
+        }
+        radioStatus = "";
+        showToast(copyText("radioUploaded", "Radio track added for both players."));
+      } catch (error) {
+        if (!published && createdChunkIds.length) {
+          const cleanup = fs.writeBatch(db);
+          createdChunkIds.forEach((chunkId) => cleanup.delete(fs.doc(db, "radioChunks", chunkId)));
+          await cleanup.commit().catch(() => {});
+        }
+        radioStatus = formatAppError("radioUploadError", "Could not add the radio track", error);
+        showAppError("radioUploadError", "Could not add the radio track", error);
+      } finally {
+        radioUploading = false;
+        $("#radio-file").value = "";
+        renderRadioUi();
+      }
+    }
+
     function openPhotoViewer(photos, index, caption = "") {
       const available = photos.filter((photo) => typeof photo?.url === "string" && photo.url);
       if (!available.length) return;
@@ -7336,6 +8278,7 @@ You are loved more than this little game could ever hold.</p>
         $("#gallery-page-indicator").textContent = copyText("galleryNoPages", "No gallery pages");
         $("#gallery-page-status").textContent = "";
         $("#gallery-page-status").className = "gallery-page-status";
+        syncGalleryChatListener();
         return;
       }
 
@@ -7349,6 +8292,8 @@ You are loved more than this little game could ever hold.</p>
 
       for (let index = 0; index < 4; index += 1) {
         const photo = pagePhotos[index];
+        const card = document.createElement("article");
+        card.className = "photo-memory-card";
         const slot = document.createElement("div");
         slot.className = `photo-slot${photo ? "" : " empty"}`;
         if (photo) slot.dataset.trashKey = `gallery-photo:${page.id}:${galleryPhotoKey(photo)}`;
@@ -7390,7 +8335,9 @@ You are loved more than this little game could ever hold.</p>
           soon.textContent = copyText("galleryMemorySoon", "Memory coming soon");
           slot.append(soon);
         }
-        grid.append(slot);
+        card.append(slot);
+        if (photo) card.append(createGalleryPhotoChat(page, photo, index));
+        grid.append(card);
       }
 
       if (manageable) {
@@ -7427,6 +8374,7 @@ You are loved more than this little game could ever hold.</p>
       const status = $("#gallery-page-status");
       status.textContent = page.published ? copyText("galleryStatusShared", "Shared with both of you") : copyText("galleryStatusWaiting", "Waiting for admin");
       status.className = `gallery-page-status${page.published ? " published" : ""}`;
+      syncGalleryChatListener();
     }
 
     async function createGalleryPage() {
@@ -7585,6 +8533,12 @@ You are loved more than this little game could ever hold.</p>
       try {
         const removed = await trashInteraction(`gallery-photo:${page.id}:${galleryPhotoKey(photo)}`, source, async () => {
           await fs.updateDoc(fs.doc(db, "galleryPages", page.id), { photos: fs.arrayRemove(photo) });
+          const messages = await galleryChatDocs(page.id, galleryPhotoKey(photo));
+          for (let index = 0; index < messages.length; index += 400) {
+            const batch = fs.writeBatch(db);
+            messages.slice(index, index + 400).forEach((message) => batch.delete(message.ref));
+            await batch.commit();
+          }
           await deleteLegacyGalleryFile(photo.path);
           await loadGalleryPages();
         });
@@ -7610,8 +8564,21 @@ You are loved more than this little game could ever hold.</p>
       try {
         const removed = await trashInteraction(`gallery-page:${page.id}`, source, async () => {
           const pagePhotos = Array.isArray(page.photos) ? page.photos : [];
+          const messages = await galleryChatDocs(page.id);
           await Promise.all(pagePhotos.map((photo) => deleteLegacyGalleryFile(photo.path)));
-          await fs.deleteDoc(fs.doc(db, "galleryPages", page.id));
+          if (messages.length < 499) {
+            const batch = fs.writeBatch(db);
+            messages.forEach((message) => batch.delete(message.ref));
+            batch.delete(fs.doc(db, "galleryPages", page.id));
+            await batch.commit();
+          } else {
+            for (let index = 0; index < messages.length; index += 400) {
+              const batch = fs.writeBatch(db);
+              messages.slice(index, index + 400).forEach((message) => batch.delete(message.ref));
+              await batch.commit();
+            }
+            await fs.deleteDoc(fs.doc(db, "galleryPages", page.id));
+          }
           await loadGalleryPages();
         });
         if (removed) showToast(copyText("galleryPageDeleted", "Gallery page deleted."));
@@ -7668,6 +8635,7 @@ You are loved more than this little game could ever hold.</p>
         }
       }
       updateRoleUi();
+      syncRadioListener();
       readCafeProgress();
       renderCafeCats();
       updateCafeUi();
@@ -7689,7 +8657,19 @@ You are loved more than this little game could ever hold.</p>
           } else {
             const stored = snapshot.data();
             const missingDefaults = Object.fromEntries(Object.entries(defaultContent).filter(([key]) => !(key in stored)));
-            if (Object.keys(missingDefaults).length) await fs.setDoc(contentRef(), missingDefaults, { merge: true });
+            const legacyTulipCopy = {
+              gardenEyebrow: "A little daily magic",
+              gardenText: "Water a tulip once a day to help it grow. Drag your flowers anywhere you like.",
+              natureTulipWatered: "This tulip has been watered. It can grow again in about a day.",
+              natureTulipBloomed: "Your tulip is in full bloom!",
+              natureTulipGrowing: "A little water, a little growth.",
+              natureTulipPlanted: "A tulip seed was planted. Tap it to start growing.",
+            };
+            const tulipCopyMigration = Object.fromEntries(Object.entries(legacyTulipCopy)
+              .filter(([key, value]) => stored[key] === value)
+              .map(([key]) => [key, defaultContent[key]]));
+            const contentUpdates = { ...missingDefaults, ...tulipCopyMigration };
+            if (Object.keys(contentUpdates).length) await fs.setDoc(contentRef(), contentUpdates, { merge: true });
           }
           contentExists = true;
         } catch (error) {
@@ -7767,6 +8747,7 @@ You are loved more than this little game could ever hold.</p>
       }));
       $("#send-character-out").addEventListener("click", sendCharacterOut);
       $("#cancel-furniture").addEventListener("click", () => setFurniturePlacement(null));
+      $("#tidy-furniture").addEventListener("click", tidyHouseFurniture);
       $("#add-house-cat").addEventListener("click", addHouseCat);
       $("#house-stage").addEventListener("click", placeFurniture);
       $("#mix-color-a").addEventListener("change", updateMixerPreview);
@@ -7792,6 +8773,8 @@ You are loved more than this little game could ever hold.</p>
       });
       $("#brew-coffee").addEventListener("click", brewCoffee);
       $("#drink-coffee").addEventListener("click", drinkCoffee);
+      $("#cafe-sit").addEventListener("click", toggleCafeSeats);
+      $$("[data-cafe-seat]").forEach((chair) => chair.addEventListener("click", toggleCafeSeats));
       $("#cafe-cats").addEventListener("click", (event) => {
         const button = event.target.closest("[data-cafe-cat]");
         if (button) petCafeCat(button.dataset.cafeCat);
@@ -7901,6 +8884,10 @@ You are loved more than this little game could ever hold.</p>
           furnitureLoaded = true;
           renderFurniture();
           renderGardenFurniture();
+          if (role === "admin" && !furnitureTidyChecked) {
+            furnitureTidyChecked = true;
+            queueMicrotask(tidyHouseFurniture);
+          }
         }, (error) => showAppError("furnitureLoadError", "Furniture", error));
         fs.onSnapshot(fs.collection(db, "cats"), (snapshot) => {
           cats = snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
@@ -8004,6 +8991,7 @@ You are loved more than this little game could ever hold.</p>
     window.addEventListener("resize", () => {
       const index = pages.indexOf(currentPage);
       viewport.scrollTo({ left: index * viewport.clientWidth, behavior: "auto" });
+      syncPersistentTrash();
     });
 
     $("#continue-portrait").addEventListener("click", () => document.body.classList.add("portrait-allowed"));
@@ -8014,9 +9002,15 @@ You are loved more than this little game could ever hold.</p>
       waitingServiceWorker?.postMessage({ type: "SKIP_WAITING" });
       $("#app-update").hidden = true;
     });
+    $("#radio-button").addEventListener("click", () => openModal("radio-modal"));
+    $("#radio-power").addEventListener("click", toggleRadio);
+    $("#radio-toggle").addEventListener("click", toggleRadio);
+    $("#radio-upload").addEventListener("click", () => $("#radio-file").click());
+    $("#radio-file").addEventListener("change", (event) => uploadRadioTrack(event.target.files?.[0]));
     $("#chat-button").addEventListener("click", () => setChatOpen(!chatOpen));
     $("#chat-nav-button").addEventListener("click", () => setChatOpen(!chatOpen));
     $("#chat-close").addEventListener("click", () => setChatOpen(false));
+    $("#chat-notify-button").addEventListener("click", requestChatNotifications);
     $("#chat-form").addEventListener("submit", sendChatMessage);
     window.addEventListener("beforeinstallprompt", (event) => {
       event.preventDefault();
@@ -8246,6 +9240,7 @@ You are loved more than this little game could ever hold.</p>
     startWorldMotion();
     updateInstallUi();
     updateChatUi();
+    renderRadioUi();
     registerServiceWorker();
     showPage(location.hash.slice(1) || "home", false);
     initFirebase();

@@ -166,7 +166,8 @@ service cloud.firestore {
       return data.type in [
         'sofa', 'armchair', 'bed', 'table', 'kitchen', 'plant', 'lamp', 'shelf',
         'dresser', 'desk', 'tv', 'clock', 'rug', 'bench', 'swing', 'fountain',
-        'mailbox', 'arch', 'parasol', 'cart', 'lantern', 'sandbox', 'kite'
+        'mailbox', 'arch', 'parasol', 'cart', 'lantern', 'sandbox', 'kite',
+        'hayrack', 'burrow', 'pond', 'flowerpatch'
       ]
         && validHousePosition(data)
         && data.createdBy == request.auth.uid
@@ -280,46 +281,38 @@ service cloud.firestore {
         && request.resource.data.habitat in ['bunnyRose', 'bunnyBlue', 'garden']
         && validNaturePosition(request.resource.data.x, request.resource.data.y)
       );
-      allow delete: if isAdmin() || (
-        isViewer() && resource.data.createdBy == request.auth.uid
-      );
+      allow delete: if isAdmin() || isViewer();
     }
 
     match /tulips/{tulipId} {
       allow read: if true;
       allow create: if (isAdmin() || isViewer())
-        && validTulip(request.resource.data);
+        && validTulip(request.resource.data)
+        && request.resource.data.growth == 0;
       allow update: if isAdmin() || (
         isViewer()
         && request.resource.data.createdBy == resource.data.createdBy
         && request.resource.data.createdAt == resource.data.createdAt
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
-          'x', 'y', 'growth', 'lastWateredAt', 'lastWateredBy'
+          'x', 'y', 'lastWateredAt', 'lastWateredBy'
         ])
         && validNaturePosition(request.resource.data.x, request.resource.data.y)
-        && request.resource.data.growth is int
-        && request.resource.data.growth >= 0
-        && request.resource.data.growth <= 4
         && (
           (
-            request.resource.data.growth == resource.data.growth + 1
-            && request.resource.data.lastWateredAt == request.time
+            request.resource.data.lastWateredAt == resource.data.lastWateredAt
+            && request.resource.data.lastWateredBy == resource.data.lastWateredBy
+          )
+          || (
+            request.resource.data.lastWateredAt == request.time
             && request.resource.data.lastWateredBy == request.auth.uid
             && (
               resource.data.lastWateredAt == null
-              || request.time - resource.data.lastWateredAt >= duration.value(20, 'h')
+              || request.time >= resource.data.lastWateredAt + duration.value(20, 'h')
             )
-          )
-          || (
-            request.resource.data.growth == resource.data.growth
-            && request.resource.data.lastWateredAt == resource.data.lastWateredAt
-            && request.resource.data.lastWateredBy == resource.data.lastWateredBy
           )
         )
       );
-      allow delete: if isAdmin() || (
-        isViewer() && resource.data.createdBy == request.auth.uid
-      );
+      allow delete: if isAdmin() || isViewer();
     }
 
     match /characters/{characterId} {
@@ -390,9 +383,7 @@ service cloud.firestore {
         && request.resource.data.zone in ['house', 'yard']
         && validHousePosition(request.resource.data)
       );
-      allow delete: if isAdmin() || (
-        isViewer() && resource.data.createdBy == request.auth.uid
-      );
+      allow delete: if isAdmin() || isViewer();
     }
 
     match /mixes/{mixId} {
@@ -475,6 +466,50 @@ service cloud.firestore {
       );
     }
 
+    function validRadioTrack(data) {
+      return data.keys().hasOnly(['trackId', 'title', 'mime', 'size', 'chunkCount', 'createdBy', 'createdAt'])
+        && data.trackId is string
+        && data.trackId.size() >= 1
+        && data.trackId.size() <= 128
+        && data.title is string
+        && data.title.size() >= 1
+        && data.title.size() <= 120
+        && data.mime == 'audio/mpeg'
+        && data.size is int
+        && data.size > 0
+        && data.size <= 8388608
+        && data.chunkCount is int
+        && data.chunkCount >= 1
+        && data.chunkCount <= 20
+        && data.createdBy == request.auth.uid
+        && data.createdAt == request.time;
+    }
+
+    function validRadioChunk(data) {
+      return data.keys().hasOnly(['trackId', 'index', 'data'])
+        && data.trackId is string
+        && data.trackId.size() >= 1
+        && data.trackId.size() <= 128
+        && data.index is int
+        && data.index >= 0
+        && data.index <= 19
+        && data.data is string
+        && data.data.size() >= 1
+        && data.data.size() <= 820000;
+    }
+
+    match /radio/current {
+      allow read: if isAdmin() || isViewer();
+      allow create, update: if isAdmin() && validRadioTrack(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /radioChunks/{chunkId} {
+      allow read: if isAdmin() || isViewer();
+      allow create: if isAdmin() && validRadioChunk(request.resource.data);
+      allow update, delete: if isAdmin();
+    }
+
     match /meta/seedState {
       allow read: if isAdmin() || isViewer();
       allow create: if (isAdmin() || isViewer())
@@ -482,16 +517,67 @@ service cloud.firestore {
         && request.resource.data.houseSeeded is bool
         && request.resource.data.gardenDecorSeeded is bool
         && request.resource.data.blueDecorSeeded is bool
-        && request.resource.data.blueParkSeeded is bool;
+        && request.resource.data.blueParkSeeded is bool
+        && request.resource.data.blueEnclosureSeeded is bool;
       allow update: if (isAdmin() || isViewer())
         && request.resource.data.natureSeeded is bool
         && request.resource.data.houseSeeded is bool
         && request.resource.data.gardenDecorSeeded is bool
         && request.resource.data.blueDecorSeeded is bool
         && request.resource.data.blueParkSeeded is bool
+        && request.resource.data.blueEnclosureSeeded is bool
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
-          'natureSeeded', 'houseSeeded', 'gardenDecorSeeded', 'blueDecorSeeded', 'blueParkSeeded'
+          'natureSeeded', 'houseSeeded', 'gardenDecorSeeded', 'blueDecorSeeded', 'blueParkSeeded', 'blueEnclosureSeeded'
         ]);
+    }
+
+    function canAccessGalleryPage(pageId) {
+      return exists(/databases/$(database)/documents/galleryPages/$(pageId))
+        && (isAdmin() || isViewer())
+        && (
+          get(/databases/$(database)/documents/galleryPages/$(pageId)).data.published == true
+          || isAdmin()
+          || get(/databases/$(database)/documents/galleryPages/$(pageId)).data.createdBy == request.auth.uid
+        );
+    }
+
+    function validGalleryPhotoChat(data) {
+      return data.keys().hasOnly(['pageId', 'photoKey', 'text', 'senderId', 'senderName', 'senderRole', 'createdAt'])
+        && data.pageId is string
+        && data.pageId.size() >= 1
+        && data.pageId.size() <= 128
+        && data.photoKey is string
+        && data.photoKey.size() >= 1
+        && data.photoKey.size() <= 512
+        && data.photoKey.matches('^(image-[0-9a-z]+|gallery/.+)$')
+        && data.text is string
+        && data.text.size() >= 1
+        && data.text.size() <= 500
+        && data.senderId == request.auth.uid
+        && data.senderName is string
+        && data.senderName.size() >= 1
+        && data.senderName.size() <= 24
+        && data.senderRole in ['admin', 'viewer']
+        && (
+          (data.senderRole == 'admin' && isAdmin())
+          || (data.senderRole == 'viewer' && isViewer())
+        )
+        && data.createdAt == request.time;
+    }
+
+    match /galleryPhotoChats/{messageId} {
+      allow read: if (isAdmin() || isViewer())
+        && canAccessGalleryPage(resource.data.pageId);
+      allow create: if (isAdmin() || isViewer())
+        && validGalleryPhotoChat(request.resource.data)
+        && canAccessGalleryPage(request.resource.data.pageId);
+      allow delete: if (isAdmin() || isViewer())
+        && canAccessGalleryPage(resource.data.pageId)
+        && (
+          isAdmin()
+          || resource.data.senderId == request.auth.uid
+          || get(/databases/$(database)/documents/galleryPages/$(resource.data.pageId)).data.createdBy == request.auth.uid
+        );
     }
 
     match /galleryPages/{pageId} {
