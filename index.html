@@ -194,7 +194,7 @@
       top: 0;
       bottom: 0;
       left: 0;
-      width: 800%;
+      width: 1000%;
       pointer-events: none;
     }
     .world-character {
@@ -251,13 +251,14 @@
       top: 0;
       bottom: 0;
       left: 0;
-      width: 800%;
+      width: 1000%;
       pointer-events: none;
     }
     .world-slime {
       position: absolute;
       z-index: 8;
       width: clamp(48px, 6vw, 76px);
+      aspect-ratio: 240 / 190;
       padding: 0;
       border: 0;
       background: transparent;
@@ -619,13 +620,20 @@
     .craft-header .eyebrow { margin-bottom: .2rem; }
     .craft-layout { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(210px, .75fr); gap: .9rem; }
     .craft-products { min-width: 0; }
-    .product-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .5rem; }
+    .product-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .5rem; }
     .product-button { display: grid; min-width: 0; min-height: 74px; place-items: center; gap: .25rem; padding: .45rem; border: 2px solid var(--line); border-radius: 10px; color: var(--muted); background: rgba(255, 255, 255, .035); font-size: .62rem; font-weight: 900; line-height: 1.15; text-align: center; }
     .product-button:hover { border-color: rgba(188, 232, 215, .35); }
     .product-button.active { color: var(--ink); border-color: var(--mint); background: rgba(188, 232, 215, .13); box-shadow: inset 0 -3px rgba(188, 232, 215, .22); }
     .product-button:disabled { cursor: not-allowed; opacity: .45; }
-    .product-icon { display: grid; width: 30px; height: 30px; place-items: center; border: 2px solid rgba(255, 255, 255, .25); background: var(--product-color); box-shadow: inset -5px -5px rgba(41, 57, 44, .2), 3px 3px rgba(0, 0, 0, .18); }
-    .product-icon svg { width: 22px; height: 22px; fill: rgba(255, 255, 255, .72); }
+    .product-icon { display: grid; width: 42px; height: 34px; place-items: center; border: 0; background: transparent; filter: drop-shadow(0 3px 2px rgba(0, 0, 0, .2)); }
+    .product-icon svg { width: 100%; height: 100%; }
+    .product-count { position: absolute; top: 3px; right: 3px; display: grid; min-width: 18px; height: 18px; place-items: center; padding: 0 3px; border: 2px solid #182a1e; color: #182a1e; background: #f0cf76; font: 700 .58rem "Silkscreen", monospace; }
+    .product-button { position: relative; }
+    .craft-selection { display: grid; min-height: 44px; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .35rem; margin-top: .5rem; }
+    .craft-slot { display: flex; min-width: 0; align-items: center; gap: .25rem; padding: .25rem; border: 2px dashed #526747; color: var(--muted); background: rgba(0, 0, 0, .12); font: 700 .52rem "Pixelify Sans", monospace; }
+    .craft-slot.filled { border-style: solid; border-color: #78985d; color: var(--ink); background: #263c2b; cursor: pointer; }
+    .craft-slot svg { width: 30px; height: 25px; flex: 0 0 auto; }
+    .craft-slot span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .craft-status { min-height: 2.8em; margin: .55rem 0 0; color: var(--muted); font-size: .68rem; line-height: 1.4; }
     .craft-bench { display: flex; min-width: 0; align-items: stretch; flex-direction: column; gap: .55rem; padding: .65rem; border: 2px solid #526747; background: #182a1e; }
     .craft-cauldron { position: relative; display: grid; min-height: 126px; flex: 1; overflow: hidden; place-items: center; border: 3px solid #202d25; background: linear-gradient(180deg, #233b2b 0 72%, #506f3e 72%); box-shadow: inset 0 4px #314a34, 0 4px #101c14; isolation: isolate; }
@@ -647,6 +655,16 @@
     @keyframes craftSwirl { 0%, 100% { transform: rotate(-4deg) scale(.94, 1.04); } 50% { transform: rotate(4deg) scale(1.05, .94); } }
     @keyframes craftBubble { from { opacity: .8; transform: translateY(0) scale(.5); } to { opacity: 0; transform: translateY(-54px) scale(1.3); } }
     @keyframes craftReveal { 0% { opacity: .3; transform: translateY(12px) scale(.72); } 65% { transform: translateY(-5px) scale(1.08, .92); } 100% { opacity: 1; transform: none; } }
+    .slime-achievement { position: fixed; top: max(1rem, env(safe-area-inset-top)); left: 50%; z-index: 220; display: flex; width: min(430px, calc(100vw - 2rem)); align-items: center; gap: .8rem; padding: .8rem 1rem; border: 4px solid #f0cf76; color: #fff4cf; background: #263c2b; box-shadow: inset 0 0 0 4px #40573c, 0 8px 0 #132117, 0 14px 35px rgba(0, 0, 0, .35); font-family: "Pixelify Sans", monospace; transform: translateX(-50%); animation: achievementIn .35s cubic-bezier(.2, .9, .2, 1.2); }
+    .slime-achievement[hidden] { display: none; }
+    .achievement-icon { width: 82px; flex: 0 0 auto; }
+    .achievement-icon svg { display: block; width: 100%; }
+    .slime-achievement > div:last-child { display: grid; min-width: 0; gap: .2rem; }
+    .slime-achievement span { color: #b9d7a1; font: 700 .62rem "Silkscreen", monospace; letter-spacing: .04em; text-transform: uppercase; }
+    .slime-achievement strong { font-size: clamp(1.1rem, 4vw, 1.55rem); line-height: 1; }
+    .slime-achievement small { color: #d5e8b7; font-size: .72rem; }
+    .dish-achievement { background: #4a3524; box-shadow: inset 0 0 0 4px #6b5134, 0 8px 0 #251c14, 0 14px 35px rgba(0, 0, 0, .35); }
+    @keyframes achievementIn { from { opacity: 0; transform: translate(-50%, -24px) scale(.85); } to { opacity: 1; transform: translate(-50%, 0) scale(1); } }
 
     .gallery-toolbar { display: flex; min-height: 54px; align-items: center; justify-content: space-between; gap: .7rem; margin: .7rem 0 1rem; padding: .65rem .8rem; border: 1px solid var(--line); border-radius: 16px; background: rgba(255, 255, 255, .035); }
     .upload-status { color: var(--muted); font-size: .7rem; text-align: right; }
@@ -775,7 +793,7 @@
     @keyframes swingMotion { from { transform: rotate(-5deg); } to { transform: rotate(5deg); } }
     @keyframes kiteFloat { from { transform: translate(-3px, 0) rotate(-2deg); } to { transform: translate(4px, -8px) rotate(3deg); } }
     @keyframes fountainPulse { 0%, 100% { filter: brightness(1); } 50% { filter: brightness(1.18); } }
-    .drag-ghost { position: fixed; z-index: 150; pointer-events: none; opacity: .92; filter: drop-shadow(0 18px 15px rgba(0, 0, 0, .28)); transform: translate(-50%, -50%); }
+    .drag-ghost { position: fixed; top: 0; left: 0; z-index: 150; pointer-events: none; opacity: .96; filter: drop-shadow(0 12px 10px rgba(0, 0, 0, .3)); transform: translate3d(0, 0, 0); transform-origin: top left; will-change: transform; }
     .drag-ghost svg { display: block; width: 100%; }
     .drag-ghost, .drag-ghost * { animation: none !important; transition: none !important; }
     .trash-bin {
@@ -850,8 +868,11 @@
     .house-choice-row .select-input { min-height: 32px; padding: .35rem .45rem; font-size: .6rem; }
     .house-item { position: absolute; z-index: 5; transform: translate(-50%, -50%); cursor: grab; touch-action: none; filter: drop-shadow(0 7px 5px rgba(25, 24, 43, .22)); }
     .house-item:active { cursor: grabbing; }
-    .house-furniture { transform: translate(-50%, -100%); }
+    .house-furniture { transform: translate(-50%, -100%); will-change: left, top; }
     .house-furniture[data-furniture-type="rug"] { transform: translate(-50%, -50%); }
+    .house-furniture[data-grounded="false"] svg { animation: furnitureWobble .28s ease-in-out infinite alternate; transform-origin: 50% 100%; }
+    .house-furniture-shadow { position: absolute; z-index: 3; width: 62px; height: 13px; background: rgba(28, 43, 29, .26); clip-path: polygon(12% 0, 88% 0, 100% 45%, 88% 100%, 12% 100%, 0 45%); transform: translate(-50%, -50%); pointer-events: none; will-change: left, top, transform, opacity; }
+    @keyframes furnitureWobble { from { transform: rotate(-1deg); } to { transform: rotate(1deg); } }
     .house-item svg { display: block; width: 100%; overflow: visible; pointer-events: none; }
     .house-item.dragging { opacity: .25; }
     .house-character { z-index: 8; width: clamp(62px, 8vw, 88px); transform: translate(-50%, -100%); will-change: left, top; }
@@ -863,6 +884,8 @@
     .house-character[data-action="read"] svg { animation: chibiRead .7s ease-in-out 3; }
     .house-character[data-action="rest"] svg { animation: chibiRest 1.4s ease-in-out 2; }
     .house-character[data-action="dance"] svg { animation: chibiDance .5s ease-in-out 4 alternate; }
+    .house-character[data-action="cook"] svg { animation: chibiCook .45s ease-in-out infinite alternate; transform-origin: 50% 100%; }
+    @keyframes chibiCook { to { transform: translateY(-3px) rotate(2deg); } }
     .house-actor-shadow { position: absolute; z-index: 4; width: 58px; height: 14px; background: rgba(28, 43, 29, .3); clip-path: polygon(12% 0, 88% 0, 100% 45%, 88% 100%, 12% 100%, 0 45%); transform: translate(-50%, -50%); pointer-events: none; will-change: left, top, transform; }
     .house-cat { z-index: 7; width: clamp(48px, 6vw, 68px); transform: translate(-50%, -100%); will-change: left, top; }
     .house-cat svg { animation: catBreathe 2.2s ease-in-out infinite; transform-origin: 50% 100%; }
@@ -885,6 +908,150 @@
     .house-small-button.active { color: var(--bg); border-color: var(--gold); background: var(--gold); }
     .house-small-button.danger { color: var(--danger); }
     .house-empty { padding: .5rem; border: 1px dashed var(--line); border-radius: 9px; color: var(--muted); font-size: .6rem; text-align: center; }
+    .kitchen-page, .cafe-page { padding: clamp(.45rem, 1.4vw, 1rem); overflow: hidden; }
+    .kitchen-layout, .cafe-layout { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(280px, .8fr); gap: clamp(.5rem, 1.4vw, 1rem); height: 100%; min-height: 0; }
+    .scene-frame { position: relative; min-width: 0; min-height: 0; overflow: hidden; border: 4px solid #553d2d; outline: 2px solid #a67c4b; background: #35291f; box-shadow: inset 0 0 0 3px #211b16, 0 5px #1d1712; }
+    .scene-heading { position: absolute; z-index: 6; top: .7rem; left: .8rem; max-width: 72%; margin: 0; padding: .45rem .6rem; border: 2px solid #b89562; background: rgba(35, 45, 31, .92); box-shadow: 3px 3px #1a2218; }
+    .scene-heading h2 { margin: 0; font-family: "Silkscreen", monospace; font-size: clamp(.75rem, 1.5vw, 1.15rem); line-height: 1.15; }
+    .scene-heading p { margin: .2rem 0 0; color: #dfd2b2; font-size: .58rem; line-height: 1.25; }
+    .kitchen-world { position: relative; overflow: hidden; background: linear-gradient(180deg, #b9c3a1 0 54%, #6b5038 54% 58%, #8f6847 58%); }
+    .kitchen-world::before { position: absolute; inset: 54% 0 0; background: repeating-linear-gradient(90deg, transparent 0 68px, rgba(54, 36, 24, .28) 68px 72px), repeating-linear-gradient(0deg, transparent 0 38px, rgba(54, 36, 24, .22) 38px 41px); content: ""; }
+    .kitchen-window { position: absolute; top: 17%; left: 10%; width: 29%; height: 29%; border: 7px solid #795337; background: linear-gradient(180deg, #9fc4c5 0 64%, #6e955b 64%); box-shadow: inset 0 0 0 3px #3c4b38, 4px 5px rgba(48, 32, 22, .35); }
+    .kitchen-window::before { position: absolute; inset: 0 47%; background: #795337; content: ""; }
+    .kitchen-window::after { position: absolute; inset: 47% 0; background: #795337; content: ""; }
+    .kitchen-shelf { position: absolute; top: 20%; right: 8%; width: 40%; height: 9%; border: 5px solid #6c482f; background: #3e3227; box-shadow: 4px 5px rgba(40, 27, 19, .35); }
+    .kitchen-jars { position: absolute; top: -16px; left: 9%; display: flex; align-items: end; gap: 9%; width: 82%; height: 20px; }
+    .kitchen-jars i { display: block; width: 19%; height: 18px; border: 3px solid #263027; background: #d8b96e; box-shadow: inset 0 -5px #9d6d4b; }
+    .kitchen-jars i:nth-child(2) { background: #b86854; height: 22px; }
+    .kitchen-jars i:nth-child(3) { background: #8d9d66; }
+    .kitchen-counter { position: absolute; right: -4%; bottom: 0; left: -4%; height: 38%; border-top: 9px solid #c49a64; background: linear-gradient(90deg, #6f4c34, #8a6342 48%, #6f4c34); box-shadow: inset 0 8px #533b2a, 0 -5px rgba(35, 26, 18, .3); }
+    .kitchen-counter::before { position: absolute; inset: 24% 0 0; background: repeating-linear-gradient(90deg, transparent 0 29%, rgba(41, 29, 20, .38) 29% 30%); content: ""; }
+    .kitchen-stove { position: absolute; top: -18px; left: 50%; width: 31%; height: 25px; transform: translateX(-50%); border: 4px solid #252b27; background: #414a40; box-shadow: 0 5px #24221d; }
+    .kitchen-station { position: absolute; z-index: 3; top: 62%; left: 50%; width: 130px; height: 100px; transform: translate(-50%, -100%); }
+    .kitchen-pot { position: absolute; bottom: 18px; left: 50%; width: 74px; height: 42px; transform: translateX(-50%); border: 4px solid #202d25; background: #3e4b3d; box-shadow: inset 7px 0 #56634c, inset -7px 0 #29382c, 0 6px #17251b; }
+    .kitchen-pot::before { position: absolute; top: -10px; left: -7px; width: 80px; height: 12px; border: 4px solid #202d25; background: var(--craft-color, #b8784e); content: ""; }
+    .kitchen-pot::after { position: absolute; top: 3px; left: -12px; width: 9px; height: 18px; background: #202d25; box-shadow: 80px 0 #202d25; content: ""; }
+    .kitchen-steam { position: absolute; bottom: 70px; width: 6px; height: 24px; background: rgba(238, 240, 218, .7); opacity: 0; }
+    .kitchen-steam.one { left: calc(50% - 17px); }
+    .kitchen-steam.two { left: 50%; }
+    .kitchen-steam.three { left: calc(50% + 17px); }
+    .kitchen-station.cooking .kitchen-steam { animation: kitchenSteam .8s ease-in-out infinite; }
+    .kitchen-station.cooking .kitchen-steam.two { animation-delay: .2s; }
+    .kitchen-station.cooking .kitchen-steam.three { animation-delay: .4s; }
+    .kitchen-station.cooking .kitchen-pot { animation: kitchenBubble .35s ease-in-out infinite alternate; }
+    @keyframes kitchenSteam { from { opacity: 0; transform: translateY(8px); } 50% { opacity: .8; } to { opacity: 0; transform: translateY(-18px); } }
+    @keyframes kitchenBubble { to { transform: translate(-50%, -2px) rotate(1deg); } }
+    .kitchen-recipe-hint { position: absolute; z-index: 4; right: 7%; bottom: 10%; left: 7%; margin: 0; color: #f3e6c5; font: 700 clamp(.52rem, 1vw, .72rem) "Silkscreen", monospace; text-align: center; text-shadow: 2px 2px #2a2119; }
+    .game-panel { min-width: 0; min-height: 0; overflow-y: auto; padding: clamp(.65rem, 1.3vw, 1rem); border: 4px solid #5f5033; outline: 2px solid #a38b54; background: linear-gradient(180deg, rgba(47, 55, 39, .98), rgba(35, 42, 31, .98)); box-shadow: inset 0 0 0 3px #20291e, 0 5px #1a1711; scrollbar-width: thin; scrollbar-color: #8d7650 #293025; }
+    .game-panel-title { margin-bottom: .45rem; color: #f0ddae; font-family: "Silkscreen", monospace; font-size: clamp(.8rem, 1.4vw, 1.05rem); }
+    .game-panel-note { margin-bottom: .65rem; color: #c9bea0; font-size: .64rem; line-height: 1.4; }
+    .ingredient-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: .3rem; margin-bottom: .6rem; }
+    .ingredient-button { display: grid; min-width: 0; min-height: 48px; place-items: center; gap: 2px; padding: .25rem .1rem; border: 2px solid #697055; background: #394331; color: #ece0bd; cursor: pointer; box-shadow: inset 0 -3px #252e23; }
+    .ingredient-button:hover, .ingredient-button:focus-visible { border-color: #d5b775; background: #4b583e; outline: none; }
+    .ingredient-button:disabled { cursor: not-allowed; opacity: .48; }
+    .ingredient-button svg { width: 23px; height: 23px; shape-rendering: crispEdges; }
+    .ingredient-button span { width: 100%; overflow: hidden; font-size: .47rem; line-height: 1.1; text-overflow: ellipsis; white-space: nowrap; }
+    .ingredient-slots { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .35rem; margin-bottom: .55rem; }
+    .ingredient-slot { display: grid; min-width: 0; min-height: 48px; place-items: center; padding: .2rem; border: 2px dashed #7d7e61; background: rgba(25, 31, 23, .7); color: #a9a589; cursor: pointer; }
+    .ingredient-slot.filled { border-style: solid; border-color: #b69a65; background: #4b523b; color: #f4e6c4; }
+    .ingredient-slot svg { width: 23px; height: 23px; shape-rendering: crispEdges; }
+    .ingredient-slot span { font-size: .47rem; }
+    .kitchen-actions { display: grid; grid-template-columns: auto 1fr; gap: .4rem; align-items: stretch; }
+    .pixel-button { min-height: 40px; border: 3px solid #1d271c; background: #67804d; color: #fff5cf; font: 700 .62rem "Silkscreen", monospace; box-shadow: inset 0 -5px #405432, inset 0 3px #8ba567; cursor: pointer; }
+    .pixel-button:hover:not(:disabled), .pixel-button:focus-visible { filter: brightness(1.12); outline: 2px solid #f0d895; outline-offset: 1px; }
+    .pixel-button:disabled { cursor: not-allowed; filter: grayscale(.65); opacity: .6; }
+    .pixel-button.secondary { background: #9b6d45; box-shadow: inset 0 -5px #66452d, inset 0 3px #bd9162; }
+    .kitchen-progress { display: flex; align-items: center; justify-content: center; padding: .25rem; border: 2px solid #60694d; background: #293225; color: #d9d1b6; font: 700 .58rem "Silkscreen", monospace; }
+    .kitchen-status { min-height: 2.3em; margin: .5rem 0; color: #d8cba9; font-size: .62rem; line-height: 1.35; }
+    .kitchen-result { display: none; grid-template-columns: 58px 1fr; align-items: center; gap: .5rem; margin: .45rem 0; padding: .4rem; border: 2px solid #b39459; background: #3f462f; }
+    .kitchen-result.visible { display: grid; }
+    .kitchen-result svg { width: 58px; height: 48px; shape-rendering: crispEdges; }
+    .kitchen-result strong { display: block; color: #ffe7a8; font-family: "Silkscreen", monospace; font-size: .72rem; }
+    .kitchen-result small { color: #d7cdaa; font-size: .55rem; }
+    .kitchen-cookbook { margin-top: .55rem; border: 2px solid #656b50; background: rgba(34, 41, 30, .8); }
+    .kitchen-cookbook summary { padding: .45rem .55rem; color: #e6d6ab; font: 700 .62rem "Silkscreen", monospace; cursor: pointer; }
+    .cookbook-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .25rem; max-height: 210px; overflow-y: auto; padding: .35rem; }
+    .cookbook-dish { padding: .32rem; border: 1px solid #555e46; background: #30392b; color: #c9c3a5; font-size: .52rem; line-height: 1.25; }
+    .cookbook-dish.cooked { border-color: #9eae69; background: #3d4b31; color: #e1e7bb; }
+    .cookbook-dish small { display: block; margin-top: 2px; color: #aaa98f; font-size: .45rem; }
+    .cafe-world { position: relative; overflow: hidden; background: linear-gradient(180deg, #c8b18d 0 67%, #6c4937 67% 70%, #9a7355 70%); }
+    .cafe-world::before { position: absolute; inset: 70% 0 0; background: repeating-linear-gradient(90deg, transparent 0 62px, rgba(60, 38, 29, .25) 62px 66px), repeating-linear-gradient(0deg, transparent 0 34px, rgba(60, 38, 29, .18) 34px 37px); content: ""; }
+    .cafe-window { position: absolute; top: 13%; left: 7%; width: 31%; height: 36%; border: 7px solid #654631; background: linear-gradient(180deg, #9fbdb8, #d3cba7 68%, #738b5c 68%); box-shadow: inset 0 0 0 3px #3c493b, 4px 5px rgba(54, 35, 25, .3); }
+    .cafe-window::before { position: absolute; inset: 0 47%; background: #654631; content: ""; }
+    .cafe-window::after { position: absolute; inset: 47% 0; background: #654631; content: ""; }
+    .cafe-sign { position: absolute; top: 14%; right: 8%; display: grid; width: 42%; height: 22%; place-items: center; border: 6px solid #533a2c; background: #35442f; color: #efd39a; font: 700 clamp(.56rem, 1.2vw, .9rem) "Silkscreen", monospace; text-align: center; box-shadow: 5px 5px rgba(57, 37, 26, .35); }
+    .cafe-sign small { display: block; color: #c9c6a4; font-size: .52em; }
+    .cafe-counter { position: absolute; right: -3%; bottom: 18%; left: -3%; height: 20%; border-top: 9px solid #c99b66; background: repeating-linear-gradient(90deg, #704a34 0 31%, #62402f 31% 33%); box-shadow: inset 0 7px #4d3528, 0 6px rgba(46, 29, 23, .35); }
+    .espresso-machine { position: absolute; right: 12%; bottom: calc(18% + 20px); width: 23%; height: 30%; border: 5px solid #2d3330; background: #65706a; box-shadow: inset 0 5px #8d9991, 5px 5px #342820; }
+    .espresso-machine::before { position: absolute; top: 21%; right: 8%; left: 8%; height: 9px; background: #252c29; box-shadow: 0 14px #252c29; content: ""; }
+    .espresso-machine::after { position: absolute; bottom: 8px; left: 38%; width: 24%; height: 18px; border: 3px solid #2b302d; background: #e4dcc5; content: ""; }
+    .coffee-cup { position: absolute; z-index: 4; left: 20%; bottom: calc(18% + 25px); width: 48px; height: 42px; border: 4px solid #ddd3b8; border-top-color: #f0e7d1; background: var(--coffee-color, #71472f); box-shadow: 5px 5px rgba(45, 28, 20, .3); opacity: .35; transition: opacity .2s, transform .2s; }
+    .coffee-cup::before { position: absolute; top: -7px; left: -2px; width: 44px; height: 8px; background: #422c23; content: ""; }
+    .coffee-cup::after { position: absolute; top: 8px; right: -17px; width: 14px; height: 19px; border: 5px solid #ddd3b8; border-left: 0; content: ""; }
+    .coffee-cup.ready { opacity: 1; transform: translateY(-4px); }
+    .coffee-cup.brewing::before { animation: kitchenSteam .8s ease-in-out infinite; }
+    .cafe-table { position: absolute; z-index: 2; bottom: 24%; width: 24%; height: 10%; border: 6px solid #56392a; background: #b68254; box-shadow: 0 7px #493126; }
+    .cafe-table.one { left: 8%; }
+    .cafe-table.two { right: 7%; bottom: 12%; width: 19%; }
+    .cafe-table::after { position: absolute; top: 100%; left: 42%; width: 16%; height: 28px; background: #54382b; content: ""; }
+    .cafe-cats { position: absolute; z-index: 5; inset: 0; pointer-events: none; }
+    .cafe-cat { position: absolute; width: 62px; height: 52px; transform: translate(-50%, -100%); cursor: pointer; pointer-events: auto; filter: drop-shadow(0 4px rgba(42, 27, 20, .25)); }
+    .cafe-cat svg { width: 100%; height: 100%; shape-rendering: crispEdges; }
+    .cafe-cat:hover svg, .cafe-cat[data-pet="true"] svg { transform: translateY(-3px); }
+    .cafe-cat[data-pet="true"] svg { animation: cafePet .45s steps(2, end); }
+    @keyframes cafePet { 50% { transform: translateY(-6px) scale(1.05); } }
+    .cafe-cat-shadow { position: absolute; z-index: 1; width: 54px; height: 12px; transform: translate(-50%, -50%); background: rgba(42, 29, 21, .25); pointer-events: none; }
+    .cafe-cat-heart { position: absolute; z-index: 7; color: #ffd1d5; font: 700 1rem "Silkscreen", monospace; pointer-events: none; animation: cafeHeart .8s ease-out forwards; }
+    @keyframes cafeHeart { from { opacity: 1; transform: translateY(0) scale(.7); } to { opacity: 0; transform: translateY(-28px) scale(1.1); } }
+    .coffee-options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .35rem; margin-bottom: .65rem; }
+    .coffee-option { display: grid; min-width: 0; min-height: 60px; place-items: center; gap: 3px; padding: .3rem; border: 3px solid #6b573f; background: #493b2d; color: #d9c8a4; cursor: pointer; }
+    .coffee-option.active { border-color: #e0bc7b; background: #6a4f35; color: #fff0c4; }
+    .coffee-option svg { width: 25px; height: 25px; shape-rendering: crispEdges; }
+    .coffee-option span { font-size: .52rem; }
+    .cafe-actions { display: grid; grid-template-columns: 1fr 1fr; gap: .4rem; }
+    .cafe-status { min-height: 2.5em; margin: .6rem 0; color: #d8cba9; font-size: .62rem; line-height: 1.4; }
+    .cafe-stats { display: flex; gap: .35rem; margin-bottom: .65rem; }
+    .cafe-stat { flex: 1; padding: .4rem; border: 2px solid #625f47; background: #2d3528; color: #d8d1af; font: 700 .54rem "Silkscreen", monospace; text-align: center; }
+    .cafe-residents { border-top: 2px solid #5e6048; padding-top: .55rem; color: #c8c2a4; font-size: .58rem; line-height: 1.5; }
+    .cafe-residents strong { color: #ebd8a7; }
+    @media (max-width: 900px) {
+      .kitchen-layout, .cafe-layout { grid-template-columns: minmax(0, 1fr) minmax(250px, .86fr); }
+      .ingredient-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+      .cafe-table.two { display: none; }
+    }
+    @media (max-height: 520px) {
+      .scene-heading { top: .35rem; left: .4rem; padding: .3rem .4rem; }
+      .scene-heading p { display: none; }
+      .game-panel { padding: .45rem; }
+      .game-panel-note { margin-bottom: .35rem; font-size: .55rem; }
+      .ingredient-button { min-height: 40px; }
+      .ingredient-slot { min-height: 40px; }
+      .kitchen-cookbook { margin-top: .35rem; }
+      .kitchen-status, .cafe-status { margin: .3rem 0; }
+      .kitchen-page .game-panel { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-content: start; gap: .25rem; padding: .35rem; }
+      .kitchen-page .game-panel-title { grid-column: 1; grid-row: 1; align-self: center; margin: 0; font-size: .72rem; }
+      .kitchen-page .kitchen-progress { grid-column: 2; grid-row: 1; padding: .2rem .3rem; white-space: nowrap; font-size: .5rem; }
+      .kitchen-page .game-panel-note, .kitchen-page .kitchen-status { display: none; }
+      .kitchen-page .ingredient-grid { grid-column: 1 / -1; grid-row: 2; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: .2rem; margin: 0; }
+      .kitchen-page .ingredient-button { min-height: 30px; gap: 0; padding: .1rem; border-width: 1px; }
+      .kitchen-page .ingredient-button svg { width: 17px; height: 17px; }
+      .kitchen-page .ingredient-button span { font-size: .4rem; }
+      .kitchen-page .ingredient-slots { grid-column: 1 / -1; grid-row: 3; gap: .25rem; margin: 0; }
+      .kitchen-page .ingredient-slot { min-height: 30px; padding: .1rem; border-width: 1px; }
+      .kitchen-page .ingredient-slot svg { width: 17px; height: 17px; }
+      .kitchen-page .kitchen-actions { grid-column: 1 / -1; grid-row: 4; }
+      .kitchen-page .kitchen-actions .pixel-button { min-height: 30px; border-width: 2px; font-size: .54rem; }
+      .kitchen-page .kitchen-result { grid-column: 1 / -1; grid-row: 5; margin: 0; padding: .2rem; }
+      .kitchen-page .kitchen-result svg { width: 40px; height: 34px; }
+      .kitchen-page .kitchen-cookbook { grid-column: 1 / -1; grid-row: 6; margin: 0; }
+      .kitchen-page .kitchen-cookbook summary { padding: .25rem .4rem; font-size: .5rem; }
+    }
+    @media (max-height: 360px) and (orientation: landscape) {
+      .kitchen-page .ingredient-grid { grid-template-columns: repeat(9, minmax(0, 1fr)); }
+      .kitchen-page .ingredient-button, .kitchen-page .ingredient-slot { min-height: 26px; }
+      .kitchen-page .ingredient-button svg, .kitchen-page .ingredient-slot svg { width: 15px; height: 15px; }
+      .kitchen-page .kitchen-actions .pixel-button { min-height: 26px; }
+    }
     .mixer-station { position: relative; display: grid; min-height: 125px; place-items: center; overflow: hidden; border: 1px solid var(--line); border-radius: 14px; background: radial-gradient(circle at 50% 60%, rgba(188, 232, 215, .12), transparent 60%), rgba(9, 8, 23, .35); }
     .mixer-cauldron { position: relative; width: 100px; height: 80px; margin-top: 27px; border: 3px solid #393346; border-radius: 12px 12px 45px 45px; background: linear-gradient(135deg, #555064, #282536); box-shadow: 0 10px 15px rgba(0, 0, 0, .25); }
     .mixer-cauldron::before { position: absolute; top: -9px; left: -8px; width: 110px; height: 18px; border: 3px solid #393346; border-radius: 50%; background: var(--mix-color, #9c87c7); content: ""; transition: background .5s; }
@@ -928,7 +1095,7 @@
     .tab-bar {
       z-index: 20;
       display: grid;
-      grid-template-columns: repeat(8, minmax(0, 1fr));
+      grid-template-columns: repeat(10, minmax(0, 1fr));
       min-height: 66px;
       padding: .45rem clamp(.5rem, 3vw, 2rem) max(.45rem, env(safe-area-inset-bottom));
       border-top: 1px solid var(--line);
@@ -1245,11 +1412,15 @@
       #page-slime .craft-header h2 { font-size: .9rem; }
       #page-slime .craft-layout { min-height: 0; flex: 1; grid-template-columns: minmax(0, 1.35fr) minmax(112px, .65fr); gap: .4rem; }
       #page-slime .craft-products { min-height: 0; overflow-y: auto; }
-      #page-slime .product-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .28rem; }
-      #page-slime .product-button { min-height: 44px; gap: .12rem; padding: .18rem .12rem; font-size: .44rem; }
+      #page-slime .product-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .22rem; }
+      #page-slime .product-button { min-height: 48px; gap: .08rem; padding: .14rem .08rem; font-size: .42rem; }
       #page-slime .product-button > span:last-child { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-      #page-slime .product-icon { width: 20px; height: 20px; border-width: 1px; }
-      #page-slime .product-icon svg { width: 15px; height: 15px; }
+      #page-slime .product-icon { width: 27px; height: 23px; }
+      #page-slime .product-icon svg { width: 100%; height: 100%; }
+      #page-slime .product-count { top: 1px; right: 1px; min-width: 14px; height: 14px; border-width: 1px; font-size: .45rem; }
+      #page-slime .craft-selection { min-height: 30px; gap: .2rem; margin-top: .25rem; }
+      #page-slime .craft-slot { gap: .12rem; padding: .12rem; border-width: 1px; font-size: .42rem; }
+      #page-slime .craft-slot svg { width: 20px; height: 17px; }
       #page-slime .craft-status { min-height: 0; margin-top: .3rem; font-size: .52rem; line-height: 1.25; }
       #page-slime .craft-bench { min-height: 0; gap: .3rem; padding: .35rem; border-width: 2px; }
       #page-slime .craft-cauldron { min-height: 74px; }
@@ -1433,6 +1604,8 @@
     <symbol id="i-paw" viewBox="0 0 24 24"><ellipse cx="12" cy="16" rx="6" ry="5"/><circle cx="5" cy="9" r="2"/><circle cx="10" cy="5" r="2"/><circle cx="16" cy="5" r="2"/><circle cx="21" cy="9" r="2"/></symbol>
     <symbol id="i-mix" viewBox="0 0 24 24"><path d="M9 3h6M10 3v6L4 19a2 2 0 0 0 2 3h12a2 2 0 0 0 2-3L14 9V3"/><path d="M7 15h10M9 18h.01M14 17h.01"/></symbol>
     <symbol id="i-chat" viewBox="0 0 24 24"><path d="M3 4h18v13H9l-6 4V4Z"/><path d="M7 9h10M7 13h6"/></symbol>
+    <symbol id="i-kitchen" viewBox="0 0 24 24"><path d="M5 10h14v10H5zM3 20h18M8 10V7h8v3M8 3v2M12 3v2M16 3v2M2 13h3M19 13h3"/></symbol>
+    <symbol id="i-cafe" viewBox="0 0 24 24"><path d="M4 7h13v8a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V7ZM17 9h2a3 3 0 0 1 0 6h-2M7 3v1M11 2v2M15 3v1M2 22h18"/></symbol>
     <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 20h16"/></symbol>
     <symbol id="i-deploy" viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12Z"/><circle cx="12" cy="9" r="2.5"/></symbol>
   </svg>
@@ -1517,7 +1690,6 @@
           </div>
           <div class="game-card slime-controls">
             <label><span class="control-label" data-field="slimeNameLabel">Slime name</span><input class="text-input" id="slime-name" maxlength="40" placeholder="Name your slime" data-copy-placeholder="slimeNamePlaceholder"></label>
-            <fieldset><legend class="control-label" data-field="slimeColorsLabel">100-color palette</legend><div class="color-grid" id="color-options" aria-label="Slime color palette" data-copy-aria="slimePaletteAria"></div><div class="color-picker-footer"><span id="selected-color">#bce8d7</span><button class="random-color" type="button" id="random-color" data-field="randomColor">Surprise me</button></div></fieldset>
             <fieldset><legend class="control-label" data-field="slimeEyesLabel">Face</legend><div class="option-row" id="eye-options">
               <button class="option-button active" type="button" data-eyes="happy"><span data-field="eyesHappy">Happy</span></button>
               <button class="option-button" type="button" data-eyes="sleepy"><span data-field="eyesSleepy">Sleepy</span></button>
@@ -1529,19 +1701,19 @@
               <button class="option-button" type="button" data-accessory="flower"><span data-field="accessoryFlower">Flower</span></button>
               <button class="option-button" type="button" data-accessory="glasses"><span data-field="accessoryGlasses">Glasses</span></button>
             </div></fieldset>
-            <button class="button button-mint" type="button" id="create-slime"><svg class="icon"><use href="#i-star"></use></svg><span data-field="slimeCreateButton">Create slime</span></button>
           </div>
         </div>
         <section class="game-card slime-craft" aria-labelledby="slime-craft-title">
           <div class="craft-header">
-            <div><span class="eyebrow" data-field="craftEyebrow">Product workshop</span><h2 id="slime-craft-title" data-field="craftTitle">Brew a new slime</h2></div>
-            <span class="role-badge" data-field="craftRule">Pick up to 3 products</span>
+            <div><span class="eyebrow" data-field="craftEyebrow">Color workshop</span><h2 id="slime-craft-title" data-field="craftTitle">Mix 3 slimes</h2></div>
+            <span class="role-badge" id="craft-progress">5 / 100 colors</span>
           </div>
           <div class="craft-layout">
             <div class="craft-products">
-              <span class="control-label" data-field="craftProductsLabel">Product shelf</span>
-              <div class="product-grid" id="craft-products" aria-label="Slime making products" data-copy-aria="craftProductsAria"></div>
-              <p class="craft-status" id="craft-status" aria-live="polite" data-field="craftStatusReady">Choose the products you want to mix.</p>
+              <span class="control-label" data-field="craftProductsLabel">Five base slimes</span>
+              <div class="product-grid" id="craft-products" aria-label="Five base slimes" data-copy-aria="craftProductsAria"></div>
+              <div class="craft-selection" id="craft-selection" aria-label="Selected slimes"></div>
+              <p class="craft-status" id="craft-status" aria-live="polite" data-field="craftStatusReady">Pick any 3 base slimes. Repeats are allowed!</p>
             </div>
             <div class="craft-bench">
               <div class="craft-cauldron" id="craft-cauldron" aria-hidden="true">
@@ -1549,7 +1721,7 @@
                 <svg class="craft-preview" id="craft-preview" viewBox="0 0 240 190"></svg>
                 <span class="craft-bubble one"></span><span class="craft-bubble two"></span><span class="craft-bubble three"></span>
               </div>
-              <button class="button button-mint" type="button" id="craft-slime"><svg class="icon"><use href="#i-mix"></use></svg><span data-field="craftButton">Brew slime</span></button>
+              <button class="button button-mint" type="button" id="craft-slime" disabled><svg class="icon"><use href="#i-mix"></use></svg><span data-field="craftButton">Mix 3 slimes</span></button>
             </div>
           </div>
         </section>
@@ -1766,6 +1938,82 @@ You are loved more than this little game could ever hold.</p>
           </aside>
         </div>
       </section>
+
+      <section class="app-page kitchen-page" id="page-kitchen" data-page="kitchen">
+        <div class="kitchen-layout">
+          <div class="scene-frame kitchen-world" id="kitchen-world" aria-label="First-person kitchen counter" data-copy-aria="kitchenWorldAria">
+            <span class="kitchen-window" aria-hidden="true"></span>
+            <span class="kitchen-shelf" aria-hidden="true"><span class="kitchen-jars"><i></i><i></i><i></i></span></span>
+            <div class="scene-heading">
+              <h2 data-field="kitchenTitle">The Birthday Kitchen</h2>
+              <p data-field="kitchenNote">Pick up to four ingredients and cook a recipe.</p>
+            </div>
+            <div class="kitchen-counter" aria-hidden="true"><span class="kitchen-stove"></span></div>
+            <div class="kitchen-station" id="kitchen-station" aria-hidden="true">
+              <span class="kitchen-steam one"></span><span class="kitchen-steam two"></span><span class="kitchen-steam three"></span>
+              <div class="kitchen-pot"></div>
+            </div>
+            <p class="kitchen-recipe-hint" id="kitchen-recipe-hint" data-field="kitchenHintEmpty">The stove is warm and ready.</p>
+          </div>
+          <aside class="game-panel" aria-label="Ingredient crafting and cookbook" data-copy-aria="kitchenPanelAria">
+            <h2 class="game-panel-title" data-field="kitchenPantryTitle">Ingredient pantry</h2>
+            <p class="game-panel-note" data-field="kitchenPantryNote">Tap ingredients in any order. Tap a filled slot to remove it.</p>
+            <div class="ingredient-grid" id="kitchen-ingredients" aria-label="Ingredients" data-copy-aria="kitchenIngredientsAria"></div>
+            <div class="ingredient-slots" id="ingredient-slots" aria-label="Chosen ingredients" data-copy-aria="ingredientSlotsAria"></div>
+            <div class="kitchen-actions">
+              <button class="pixel-button secondary" type="button" id="clear-ingredients" data-field="kitchenClearButton">Clear</button>
+              <button class="pixel-button" type="button" id="cook-dish" disabled data-field="kitchenCookButton">Cook recipe</button>
+            </div>
+            <span class="kitchen-progress" id="dish-progress">0 / 50 dishes</span>
+            <p class="kitchen-status" id="dish-status" aria-live="polite" data-field="kitchenStatusReady">Choose ingredients to discover a dish.</p>
+            <div class="kitchen-result" id="kitchen-result" aria-live="polite">
+              <svg id="kitchen-result-art" viewBox="0 0 80 64" aria-hidden="true"></svg>
+              <div><strong id="kitchen-result-name"></strong><small id="kitchen-result-note"></small></div>
+            </div>
+            <details class="kitchen-cookbook">
+              <summary data-field="kitchenCookbookTitle">Recipe book · 50 dishes</summary>
+              <div class="cookbook-grid" id="kitchen-cookbook-list"></div>
+            </details>
+          </aside>
+        </div>
+      </section>
+
+      <section class="app-page cafe-page" id="page-cafe" data-page="cafe">
+        <div class="cafe-layout">
+          <div class="scene-frame cafe-world" id="cafe-world" aria-label="Cat coffee shop" data-copy-aria="cafeWorldAria">
+            <span class="cafe-window" aria-hidden="true"></span>
+            <span class="cafe-sign"><span><span data-field="cafeSignTitle">Purr & Pour</span><small data-field="cafeSignSubtitle">CAT CAFÉ</small></span></span>
+            <div class="cafe-counter" aria-hidden="true"></div>
+            <div class="espresso-machine" aria-hidden="true"></div>
+            <div class="coffee-cup" id="coffee-cup" aria-hidden="true"></div>
+            <span class="cafe-table one" aria-hidden="true"></span><span class="cafe-table two" aria-hidden="true"></span>
+            <div class="cafe-cats" id="cafe-cats" aria-label="Cafe cats" data-copy-aria="cafeCatsAria"></div>
+            <div class="scene-heading">
+              <h2 data-field="cafeTitle">Purr & Pour</h2>
+              <p data-field="cafeNote">A warm coffee stop for Shane, Zyrell, and the cats.</p>
+            </div>
+          </div>
+          <aside class="game-panel" aria-label="Coffee bar" data-copy-aria="cafePanelAria">
+            <h2 class="game-panel-title" data-field="cafeBarTitle">Coffee bar</h2>
+            <p class="game-panel-note" data-field="cafeBarNote">Choose a drink, brew it at the machine, then drink it for a temporary speed boost.</p>
+            <div class="coffee-options" id="coffee-options" aria-label="Coffee drinks" data-copy-aria="coffeeOptionsAria"></div>
+            <div class="cafe-actions">
+              <button class="pixel-button" type="button" id="brew-coffee" data-field="cafeBrewButton">Brew coffee</button>
+              <button class="pixel-button secondary" type="button" id="drink-coffee" disabled data-field="cafeDrinkButton">Drink coffee</button>
+            </div>
+            <p class="cafe-status" id="cafe-status" aria-live="polite" data-field="cafeStatusReady">The espresso machine is warming up.</p>
+            <div class="cafe-stats">
+              <span class="cafe-stat" id="coffee-brewed">0 brewed</span>
+              <span class="cafe-stat" id="coffee-drunk">0 enjoyed</span>
+            </div>
+            <div class="cafe-residents">
+              <strong data-field="cafeResidentsTitle">Cafe residents</strong><br>
+              <span data-field="cafeResidentsText">Mochi, Pepper, and Biscuit are always happy to see you. Tap a cat to pet it.</span>
+            </div>
+          </aside>
+        </div>
+      </section>
+
       <div class="world-character-layer" id="world-characters" aria-label="Shane and Zyrell exploring the game" data-copy-aria="worldCharactersAria"></div>
       <div class="world-slime-layer" id="world-slimes" aria-label="Slimes deployed in the world" data-copy-aria="worldSlimesAria"></div>
     </main>
@@ -1778,6 +2026,8 @@ You are loved more than this little game could ever hold.</p>
       <button class="tab-button" type="button" data-page-link="bunnyBlue" aria-selected="false"><svg class="icon"><use href="#i-bunny"></use></svg><span data-field="navBlue">Blue cage</span></button>
       <button class="tab-button" type="button" data-page-link="garden" aria-selected="false"><svg class="icon"><use href="#i-flower"></use></svg><span data-field="navGarden">Garden</span></button>
       <button class="tab-button" type="button" data-page-link="house" aria-selected="false"><svg class="icon"><use href="#i-house"></use></svg><span data-field="navHouse">Our house</span></button>
+      <button class="tab-button" type="button" data-page-link="kitchen" aria-selected="false"><svg class="icon"><use href="#i-kitchen"></use></svg><span data-field="navKitchen">Kitchen</span></button>
+      <button class="tab-button" type="button" data-page-link="cafe" aria-selected="false"><svg class="icon"><use href="#i-cafe"></use></svg><span data-field="navCafe">Cat café</span></button>
       <button class="tab-button chat-tab" type="button" id="chat-nav-button" aria-controls="chat-panel" aria-expanded="false"><svg class="icon" shape-rendering="crispEdges"><use href="#i-chat"></use></svg><span data-field="hudChat">Chat</span></button>
     </nav>
   </div>
@@ -1794,6 +2044,15 @@ You are loved more than this little game could ever hold.</p>
     </form>
     <p class="chat-note" id="chat-note" data-field="chatNoteSignedOut">Sign in as an admin or viewer to chat.</p>
   </aside>
+
+  <div class="slime-achievement" id="slime-achievement" role="status" aria-live="assertive" hidden>
+    <div class="achievement-icon"><svg viewBox="0 0 240 190" aria-hidden="true"></svg></div>
+    <div><span data-field="achievementEyebrow">Achievement unlocked</span><strong id="achievement-message">Nice one, baby!</strong><small id="achievement-color">New slime color</small></div>
+  </div>
+  <div class="slime-achievement dish-achievement" id="dish-achievement" role="status" aria-live="assertive" hidden>
+    <div class="achievement-icon"><svg viewBox="0 0 240 190" aria-hidden="true"><g shape-rendering="crispEdges"><ellipse cx="120" cy="160" rx="82" ry="13" fill="#251c14" opacity=".45"/><path d="M48 116h144v24H48Z" fill="#e8dfc4"/><path d="M60 104h120v16H60Z" fill="#fff4d6"/><path d="M72 88h96v20H72Z" fill="#d79b58"/><path d="M84 72h72v20H84Z" fill="#8f4f37"/><path d="M92 64h16v16H92ZM124 60h16v20h-16Z" fill="#c96f4f"/><path d="M108 48h8v16h-8ZM136 48h8v16h-8Z" fill="#9db56f"/></g></svg></div>
+    <div><span data-field="dishAchievementEyebrow">New dish unlocked</span><strong id="dish-achievement-message">Delicious discovery!</strong><small id="dish-achievement-name">Dish name</small></div>
+  </div>
 
   <div class="modal-backdrop" id="photo-viewer" hidden>
     <div class="photo-viewer" role="dialog" aria-modal="true" aria-labelledby="photo-viewer-title">
@@ -1812,12 +2071,12 @@ You are loved more than this little game could ever hold.</p>
       <div class="modal-header"><h2 id="text-modal-title" data-field="textModalTitle">Manage all text</h2><button class="modal-close" type="button" data-close="text-modal" aria-label="Close text manager" data-copy-aria="textCloseAria">×</button></div>
       <div class="modal-body">
         <p class="modal-note" data-field="textManagerNote">Edit or clear every built-in label. Clear removes the visible copy; Reset restores its original wording. Press Save all text to publish your changes.</p>
-        <label><span class="control-label" data-field="textShowPage">Show page</span><select class="select-input" id="text-page-filter"><option value="all" data-field="textFilterAll">All text</option><option value="app" data-field="pageAppLabel">App & navigation</option><option value="chat" data-field="pageChatLabel">Chat</option><option value="home" data-field="pageHomeLabel">Home</option><option value="slime" data-field="pageSlimeLabel">Slime lab</option><option value="gift" data-field="pageGiftLabel">Present</option><option value="wedding" data-field="pageWeddingLabel">Wedding</option><option value="gallery" data-field="pageGalleryLabel">Gallery</option><option value="bunnyBlue" data-field="pageBlueLabel">Blue cage</option><option value="garden" data-field="pageGardenLabel">Garden</option><option value="house" data-field="pageHouseLabel">House</option></select></label>
+        <label><span class="control-label" data-field="textShowPage">Show page</span><select class="select-input" id="text-page-filter"><option value="all" data-field="textFilterAll">All text</option><option value="app" data-field="pageAppLabel">App & navigation</option><option value="chat" data-field="pageChatLabel">Chat</option><option value="home" data-field="pageHomeLabel">Home</option><option value="slime" data-field="pageSlimeLabel">Slime lab</option><option value="gift" data-field="pageGiftLabel">Present</option><option value="wedding" data-field="pageWeddingLabel">Wedding</option><option value="gallery" data-field="pageGalleryLabel">Gallery</option><option value="bunnyBlue" data-field="pageBlueLabel">Blue cage</option><option value="garden" data-field="pageGardenLabel">Garden</option><option value="house" data-field="pageHouseLabel">House</option><option value="kitchen" data-field="pageKitchenLabel">Kitchen</option><option value="cafe" data-field="pageCafeLabel">Cat café</option></select></label>
         <div class="text-field-list" id="text-fields"></div>
         <section class="custom-text-editor">
           <h3 data-field="textCustomTitle">Add or edit custom text</h3>
           <div class="custom-text-form">
-            <label><span class="control-label" data-field="textPageLabel">Page</span><select class="select-input" id="custom-text-page"><option value="home" data-field="pageHomeLabel">Home</option><option value="slime" data-field="pageSlimeLabel">Slime lab</option><option value="gift" data-field="pageGiftLabel">Present</option><option value="wedding" data-field="pageWeddingLabel">Wedding</option><option value="gallery" data-field="pageGalleryLabel">Gallery</option><option value="bunnyBlue" data-field="pageBlueLabel">Blue cage</option><option value="garden" data-field="pageGardenLabel">Garden</option><option value="house" data-field="pageHouseLabel">House</option></select></label>
+            <label><span class="control-label" data-field="textPageLabel">Page</span><select class="select-input" id="custom-text-page"><option value="home" data-field="pageHomeLabel">Home</option><option value="slime" data-field="pageSlimeLabel">Slime lab</option><option value="gift" data-field="pageGiftLabel">Present</option><option value="wedding" data-field="pageWeddingLabel">Wedding</option><option value="gallery" data-field="pageGalleryLabel">Gallery</option><option value="bunnyBlue" data-field="pageBlueLabel">Blue cage</option><option value="garden" data-field="pageGardenLabel">Garden</option><option value="house" data-field="pageHouseLabel">House</option><option value="kitchen" data-field="pageKitchenLabel">Kitchen</option><option value="cafe" data-field="pageCafeLabel">Cat café</option></select></label>
             <label><span class="control-label" data-field="textCustomText">Text</span><textarea id="custom-text-input" maxlength="2000" placeholder="Write a new note, caption, or extra message..." data-copy-placeholder="textCustomPlaceholder"></textarea></label>
             <button class="button button-mint" type="button" id="add-custom-text">Add text block</button>
           </div>
@@ -1887,11 +2146,12 @@ You are loved more than this little game could ever hold.</p>
       appId: "1:385782930980:web:8515fac32ce4c28a42c2b1",
     };
 
-    const pages = ["home", "slime", "gift", "wedding", "gallery", "bunnyBlue", "garden", "house"];
+    const pages = ["home", "slime", "gift", "wedding", "gallery", "bunnyBlue", "garden", "house", "kitchen", "cafe"];
     const naturePages = ["bunnyBlue", "garden"];
     const pageTitleKeys = {
       home: "pageTitleHome", slime: "pageTitleSlime", gift: "pageTitleGift", wedding: "pageTitleWedding",
       gallery: "pageTitleGallery", bunnyBlue: "pageTitleBunnyBlue", garden: "pageTitleGarden", house: "pageTitleHouse",
+      kitchen: "pageTitleKitchen", cafe: "pageTitleCafe",
     };
     const viewerFields = new Set(["homeText", "slimeText", "galleryText", "houseText"]);
     const runtimeCopyDefaults = {
@@ -1943,21 +2203,98 @@ You are loved more than this little game could ever hold.</p>
       slimeMixing: "Mixing your little friend...",
       slimeCreatedCloud: "{name} bubbled into the collection.",
       slimeCreatedLocal: "{name} created for this session. Connect Firebase to save permanently.",
-      craftEyebrow: "Product workshop",
-      craftTitle: "Brew a new slime",
-      craftRule: "Pick up to 3 products",
-      craftProductsLabel: "Product shelf",
-      craftProductsAria: "Slime making products",
-      craftStatusReady: "Choose the products you want to mix.",
-      craftStatusSelected: "{count} of 3 products ready.",
-      craftStatusLimit: "The cauldron can hold three products. Remove one first.",
+      craftEyebrow: "Color workshop",
+      craftTitle: "Mix 3 slimes",
+      craftRule: "Every recipe unlocks a new color",
+      craftProductsLabel: "Five base slimes",
+      craftProductsAria: "Five base slimes",
+      craftStatusReady: "Pick any 3 base slimes. Repeats are allowed!",
+      craftStatusSelected: "{count} of 3 slimes ready. Choose {remaining} more.",
+      craftStatusReadyThree: "Recipe ready! This mix unlocks {color}.",
+      craftStatusLimit: "All three slots are full. Remove one to change the recipe.",
       craftStatusPouring: "Pouring your products into the cauldron...",
       craftStatusSwirling: "Swirling the colors and textures...",
       craftStatusBubbling: "Bubble, bubble... your slime is taking shape!",
       craftStatusDone: "{name} is ready to join the collection.",
       craftFailed: "The mixture fizzled. Try again.",
-      craftButton: "Brew slime",
-      craftNeedProducts: "Choose at least one product first.",
+      craftButton: "Mix 3 slimes",
+      craftNeedThree: "Choose exactly 3 base slimes first.",
+      craftProgress: "{count} / 100 colors",
+      craftSlotRemove: "Remove {name} from slot {slot}.",
+      craftSlotEmpty: "Mix slot {slot} is empty.",
+      achievementEyebrow: "Achievement unlocked",
+      achievementNice: "Nice one, baby!",
+      achievementWow: "Wow, galing!",
+      achievementColor: "New color unlocked: {color}",
+      slimeLockedName: "Locked color",
+      craftStatusLockedThree: "Recipe ready! A locked color is waiting to be created.",
+      craftStatusKnownThree: "Recipe ready! This mix makes {color}.",
+      kitchenTitle: "The Birthday Kitchen",
+      kitchenNote: "Pick up to four ingredients and cook a recipe.",
+      kitchenPantryTitle: "Ingredient pantry",
+      kitchenPantryNote: "Tap ingredients in any order. Tap a filled slot to remove it.",
+      kitchenWorldAria: "First-person kitchen counter",
+      kitchenPanelAria: "Ingredient crafting and cookbook",
+      kitchenIngredientsAria: "Ingredients",
+      ingredientSlotsAria: "Chosen ingredients",
+      kitchenHintEmpty: "The stove is warm and ready.",
+      kitchenHintSelected: "{count} of 4 ingredients on the counter.",
+      kitchenHintMatch: "Recipe found: {name}",
+      kitchenHintNoMatch: "No recipe yet. Change an ingredient and try again.",
+      kitchenSlotsFull: "All four ingredient slots are full. Remove one to change the recipe.",
+      kitchenClearButton: "Clear",
+      kitchenCookButton: "Cook recipe",
+      kitchenProgress: "{count} / 50 dishes",
+      kitchenStatusReady: "Choose ingredients to discover a dish.",
+      kitchenNeedIngredients: "Choose at least one ingredient first.",
+      kitchenNeedMatch: "Those ingredients do not make a recipe yet.",
+      kitchenCooking: "Cooking {name}...",
+      kitchenCooked: "{name} is ready. Enjoy!",
+      kitchenCookedAgain: "{name} cooked again. A family favorite!",
+      kitchenAllCooked: "All 50 dishes cooked. What a feast!",
+      kitchenSavedCloud: "Dish added to your shared cookbook.",
+      kitchenSavedLocal: "Dish saved on this device. Cloud sync is unavailable.",
+      kitchenSaveError: "Dish saved here, but the shared cookbook could not update.",
+      kitchenCookbookTitle: "Recipe book · 50 dishes",
+      kitchenDishNew: "New",
+      kitchenDishCooked: "Cooked",
+      ingredientSlotEmpty: "Empty slot {slot}",
+      ingredientSlotRemove: "Remove {name} from slot {slot}.",
+      dishAchievementEyebrow: "New dish unlocked",
+      dishAchievementMessage: "Delicious discovery!",
+      dishResultFirst: "First time cooked",
+      dishResultAgain: "Family favorite",
+      cafeTitle: "Purr & Pour",
+      cafeNote: "A warm coffee stop for Shane, Zyrell, and the cats.",
+      cafeWorldAria: "Cat coffee shop",
+      cafePanelAria: "Coffee bar",
+      cafeCatsAria: "Cafe cats",
+      cafeSignTitle: "Purr & Pour",
+      cafeSignSubtitle: "CAT CAFÉ",
+      cafeBarTitle: "Coffee bar",
+      cafeBarNote: "Choose a drink, brew it at the machine, then drink it for a temporary speed boost.",
+      coffeeOptionsAria: "Coffee drinks",
+      cafeBrewButton: "Brew coffee",
+      cafeDrinkButton: "Drink coffee",
+      cafeStatusReady: "The espresso machine is warming up.",
+      cafeBrewing: "Brewing {name}...",
+      cafeReady: "{name} is ready. Drink it while it is warm!",
+      cafeDrinking: "You enjoy a warm {name}. Speed boost active for 30 seconds!",
+      cafeDrinkEmpty: "Brew a coffee before drinking.",
+      cafeBrewedStat: "{count} brewed",
+      cafeDrunkStat: "{count} enjoyed",
+      cafeResidentsTitle: "Cafe residents",
+      cafeResidentsText: "Mochi, Pepper, and Biscuit are always happy to see you. Tap a cat to pet it.",
+      cafeCatAria: "Pet {name}",
+      cafePetMessage: "{name} purrs happily!",
+      cafeCatMochi: "Mochi",
+      cafeCatPepper: "Pepper",
+      cafeCatBiscuit: "Biscuit",
+      coffeeEspresso: "Espresso",
+      coffeeLatte: "Latte",
+      coffeeMocha: "Mocha",
+      navKitchen: "Kitchen",
+      navCafe: "Cat café",
       craftProductDew: "Moon Dew",
       craftProductPetal: "Rose Petal",
       craftProductMint: "Mint Leaf",
@@ -2156,6 +2493,10 @@ You are loved more than this little game could ever hold.</p>
       pageTitleBunnyBlue: "Blue Cage",
       pageTitleGarden: "Garden",
       pageTitleHouse: "Our Little House",
+      pageTitleKitchen: "The Birthday Kitchen",
+      pageTitleCafe: "Purr & Pour Cat Cafe",
+      pageKitchenLabel: "Kitchen",
+      pageCafeLabel: "Cat Cafe",
 
       errorUnknown: "Please try again.",
       editorSaveError: "Could not save copy: {error}",
@@ -2383,6 +2724,7 @@ You are loved more than this little game could ever hold.</p>
     const SLIME_COLORS = Array.from({ length: 100 }, (_, index) =>
       hslToHex((18 + index * 137.508) % 360, 58 + (index % 4) * 7, 56 + (index % 5) * 3)
     );
+    const SLIME_BASE_COLORS = SLIME_COLORS.slice(0, 5);
     const SLIME_PRODUCTS = [
       { id: "dew", label: "craftProductDew", color: "#9cc7da", shape: "drop" },
       { id: "petal", label: "craftProductPetal", color: "#e7aaa1", shape: "petal" },
@@ -2393,6 +2735,110 @@ You are loved more than this little game could ever hold.</p>
       { id: "star", label: "craftProductStar", color: "#f7dc74", shape: "star" },
       { id: "cocoa", label: "craftProductCocoa", color: "#8b6252", shape: "square" },
     ];
+    const SLIME_BASE_PRODUCTS = SLIME_PRODUCTS.slice(0, 5).map((product, index) => ({
+      ...product, color: SLIME_BASE_COLORS[index],
+    }));
+    const INGREDIENTS = [
+      { id: "flour", name: "Flour", color: "#e7d7ad" },
+      { id: "egg", name: "Egg", color: "#f3d58f" },
+      { id: "milk", name: "Milk", color: "#e8edf0" },
+      { id: "butter", name: "Butter", color: "#f0cf76" },
+      { id: "sugar", name: "Sugar", color: "#f4ecd5" },
+      { id: "berry", name: "Berries", color: "#c96f7c" },
+      { id: "apple", name: "Apple", color: "#c96f4f" },
+      { id: "chocolate", name: "Chocolate", color: "#76503c" },
+      { id: "vanilla", name: "Vanilla", color: "#d7c49a" },
+      { id: "tomato", name: "Tomato", color: "#d66b54" },
+      { id: "cheese", name: "Cheese", color: "#f0cf76" },
+      { id: "bread", name: "Bread", color: "#c99562" },
+      { id: "potato", name: "Potato", color: "#b99a67" },
+      { id: "pasta", name: "Pasta", color: "#e7c979" },
+      { id: "rice", name: "Rice", color: "#eee5c9" },
+      { id: "chicken", name: "Chicken", color: "#d9a98b" },
+      { id: "fish", name: "Fish", color: "#8fb9c6" },
+      { id: "beef", name: "Beef", color: "#9b5f50" },
+      { id: "pork", name: "Pork", color: "#d59a94" },
+      { id: "mushroom", name: "Mushroom", color: "#a68b72" },
+      { id: "vegetable", name: "Vegetables", color: "#8faf68" },
+      { id: "fruit", name: "Fruit", color: "#e79b72" },
+      { id: "tortilla", name: "Tortilla", color: "#e5c98c" },
+      { id: "avocado", name: "Avocado", color: "#9db56f" },
+      { id: "cinnamon", name: "Cinnamon", color: "#b87950" },
+      { id: "lemon", name: "Lemon", color: "#f0dc74" },
+      { id: "tea", name: "Tea", color: "#78945f" },
+    ];
+    const DISH_RECIPES = [
+      { name: "Pancakes", ingredients: ["flour", "egg", "milk", "butter"] },
+      { name: "Scrambled Eggs", ingredients: ["egg", "butter"] },
+      { name: "Buttered Toast", ingredients: ["bread", "butter"] },
+      { name: "Berry Porridge", ingredients: ["milk", "berry"] },
+      { name: "Hot Chocolate", ingredients: ["milk", "chocolate", "sugar"] },
+      { name: "Tomato Soup", ingredients: ["tomato", "vegetable"] },
+      { name: "Grilled Cheese", ingredients: ["bread", "cheese", "butter"] },
+      { name: "Garden Salad", ingredients: ["vegetable", "tomato", "cheese"] },
+      { name: "Chicken Noodles", ingredients: ["chicken", "pasta", "vegetable"] },
+      { name: "Rice Bowl", ingredients: ["rice", "chicken", "vegetable"] },
+      { name: "Spaghetti", ingredients: ["pasta", "tomato", "beef"] },
+      { name: "Pizza", ingredients: ["flour", "cheese", "tomato"] },
+      { name: "Burrito", ingredients: ["tortilla", "rice", "beef"] },
+      { name: "Taco", ingredients: ["tortilla", "beef", "vegetable"] },
+      { name: "Sushi", ingredients: ["rice", "fish", "vegetable"] },
+      { name: "Dumplings", ingredients: ["flour", "vegetable"] },
+      { name: "Fried Rice", ingredients: ["rice", "egg", "vegetable"] },
+      { name: "Curry", ingredients: ["rice", "chicken", "mushroom"] },
+      { name: "Hearty Stew", ingredients: ["beef", "potato", "vegetable"] },
+      { name: "Roast Chicken", ingredients: ["chicken", "potato"] },
+      { name: "Fish and Chips", ingredients: ["fish", "potato"] },
+      { name: "Salmon", ingredients: ["fish", "lemon"] },
+      { name: "Beef Stir Fry", ingredients: ["beef", "vegetable", "mushroom"] },
+      { name: "Pork Chop", ingredients: ["pork", "potato"] },
+      { name: "Meatballs", ingredients: ["beef", "bread", "egg"] },
+      { name: "Lasagna", ingredients: ["pasta", "cheese", "beef"] },
+      { name: "Mac and Cheese", ingredients: ["pasta", "cheese", "milk"] },
+      { name: "Baked Potato", ingredients: ["potato", "cheese"] },
+      { name: "Stuffed Peppers", ingredients: ["vegetable", "rice", "beef"] },
+      { name: "Mushroom Risotto", ingredients: ["rice", "mushroom", "cheese"] },
+      { name: "Veggie Omelet", ingredients: ["egg", "vegetable", "cheese"] },
+      { name: "Avocado Toast", ingredients: ["bread", "avocado"] },
+      { name: "French Toast", ingredients: ["bread", "egg", "milk"] },
+      { name: "Waffles", ingredients: ["flour", "egg", "milk", "vanilla"] },
+      { name: "Crepes", ingredients: ["flour", "egg", "milk", "lemon"] },
+      { name: "Muffins", ingredients: ["flour", "sugar", "egg", "berry"] },
+      { name: "Chocolate Cake", ingredients: ["flour", "chocolate", "egg", "sugar"] },
+      { name: "Vanilla Cake", ingredients: ["flour", "vanilla", "sugar", "milk"] },
+      { name: "Apple Pie", ingredients: ["apple", "flour", "sugar"] },
+      { name: "Brownies", ingredients: ["chocolate", "flour", "butter"] },
+      { name: "Cookies", ingredients: ["flour", "sugar", "butter"] },
+      { name: "Cupcakes", ingredients: ["flour", "sugar", "egg", "vanilla"] },
+      { name: "Donuts", ingredients: ["flour", "sugar", "milk"] },
+      { name: "Cinnamon Rolls", ingredients: ["flour", "butter", "sugar", "cinnamon"] },
+      { name: "Ice Cream", ingredients: ["milk", "sugar", "vanilla"] },
+      { name: "Fruit Salad", ingredients: ["fruit", "berry"] },
+      { name: "Strawberry Smoothie", ingredients: ["berry", "milk", "vanilla"] },
+      { name: "Lemonade", ingredients: ["lemon", "sugar"] },
+      { name: "Iced Tea", ingredients: ["tea", "sugar"] },
+      { name: "Birthday Cake", ingredients: ["flour", "egg", "sugar", "cinnamon"] },
+    ];
+    const DISHES = DISH_RECIPES.map((dish) => dish.name);
+    const DISH_LOOKUP = new Map(DISH_RECIPES.map((dish, index) => [
+      [...dish.ingredients].sort().join("|"), index,
+    ]));
+    INGREDIENTS.forEach((ingredient) => {
+      runtimeCopyDefaults[`ingredient${ingredient.id[0].toUpperCase()}${ingredient.id.slice(1)}`] = ingredient.name;
+    });
+    DISHES.forEach((dish, index) => {
+      runtimeCopyDefaults[`dishName${index + 1}`] = dish;
+    });
+
+    function ingredientName(id) {
+      const ingredient = INGREDIENTS.find((item) => item.id === id);
+      const key = `ingredient${id[0].toUpperCase()}${id.slice(1)}`;
+      return copyText(key, ingredient?.name || id);
+    }
+
+    function dishName(index) {
+      return copyText(`dishName${index + 1}`, DISHES[index] || "");
+    }
 
     const demoBunnies = [
       { id: "demo-mochi", color: bunnyColors[0], habitat: "bunnyBlue", x: .22, y: .69 },
@@ -2418,7 +2864,6 @@ You are loved more than this little game could ever hold.</p>
       bunnies: demoBunnies.map(({ id, ...bunny }) => bunny),
       tulips: demoTulips.map(({ id, ...tulip }) => ({ ...tulip, lastWateredAt: null, lastWateredBy: "" })),
     };
-    const mixColors = [SLIME_COLORS[0], SLIME_COLORS[12], SLIME_COLORS[24], SLIME_COLORS[36], SLIME_COLORS[48], SLIME_COLORS[60], SLIME_COLORS[72], SLIME_COLORS[84], SLIME_COLORS[96], "#f39ab8", "#8fc8e8", "#f3d58f"];
     const demoCharacters = [
       { id: "demo-girl", key: "girl", gender: "girl", clothes: "rose", zone: "yard", x: .36, y: .84 },
       { id: "demo-boy", key: "boy", gender: "boy", clothes: "sky", zone: "house", x: .68, y: .84 },
@@ -2533,12 +2978,11 @@ You are loved more than this little game could ever hold.</p>
     let blueDecorSeedPromise = null;
     let blueParkSeeded = false;
     const houseMotion = new Map();
+    const furnitureMotion = new Map();
     const catMotion = new Map();
     const bunnyMotion = new Map();
     const roamMotion = new Map();
-    let houseMotionTicker = null;
-    let bunnyMotionTicker = null;
-    let roamMotionTicker = null;
+    let worldMotionTicker = null;
     let selectedWardrobeCharacter = "girl";
     let placementFurniture = null;
     let activeHouseDrag = null;
@@ -2546,6 +2990,36 @@ You are loved more than this little game could ever hold.</p>
     let mixing = false;
     let crafting = false;
     let selectedProducts = [];
+    const unlockedSlimeColors = new Set(SLIME_BASE_COLORS);
+    try {
+      const savedColors = JSON.parse(localStorage.getItem("birthday-quest-slime-colors") || "[]");
+      if (Array.isArray(savedColors)) savedColors.forEach((color) => { if (SLIME_COLORS.includes(color)) unlockedSlimeColors.add(color); });
+    } catch {}
+    let achievementTimer = null;
+    let dishAchievementTimer = null;
+    let cooking = false;
+    let lastCookedDish = -1;
+    let lastCookedDishWasNew = false;
+    const selectedIngredients = [];
+    const cookedDishes = new Set();
+    const pendingDishSync = new Map();
+    const cafeDrinks = [
+      { id: "espresso", label: "coffeeEspresso", name: "Espresso", color: "#4b2c20", strength: 1.3 },
+      { id: "latte", label: "coffeeLatte", name: "Latte", color: "#a8754e", strength: 1.15 },
+      { id: "mocha", label: "coffeeMocha", name: "Mocha", color: "#76503b", strength: 1.2 },
+    ];
+    const cafeCats = [
+      { id: "mochi", label: "cafeCatMochi", name: "Mochi", color: "#e7d5b5", x: .22, y: .9 },
+      { id: "pepper", label: "cafeCatPepper", name: "Pepper", color: "#68645d", x: .5, y: .86 },
+      { id: "biscuit", label: "cafeCatBiscuit", name: "Biscuit", color: "#b77b4e", x: .76, y: .91 },
+    ];
+    const cafeCatMotion = new Map();
+    let selectedCoffee = "latte";
+    let readyCoffee = null;
+    let brewingCoffee = false;
+    let coffeeBoostUntil = 0;
+    let coffeeBoostMultiplier = 1;
+    let cafeStats = { brewed: 0, drunk: 0 };
     let chatMessages = [];
     let chatUnsubscribe = null;
     let chatOpen = false;
@@ -2650,11 +3124,50 @@ You are loved more than this little game could ever hold.</p>
       };
     }
 
+    function createDragGhost(rect, event, content) {
+      const ghost = document.createElement("div");
+      const scale = Math.min(1, 180 / rect.width, 160 / rect.height);
+      ghost.className = "drag-ghost";
+      ghost.style.width = `${rect.width}px`;
+      ghost.style.height = `${rect.height}px`;
+      ghost.setAttribute("aria-hidden", "true");
+      content.classList.remove("trash-source", "dragging", "walking", "petted");
+      content.removeAttribute("id");
+      content.removeAttribute("tabindex");
+      content.removeAttribute("role");
+      content.querySelectorAll("[id], button, input, textarea, select, [contenteditable]").forEach((node) => {
+        if (node.id) node.removeAttribute("id");
+        if (node.matches("button, input, textarea, select, [contenteditable]")) node.remove();
+      });
+      ghost.append(content);
+      document.body.append(ghost);
+      const position = {
+        ghost,
+        grabOffsetX: event.clientX - rect.left,
+        grabOffsetY: event.clientY - rect.top,
+        ghostScale: scale,
+      };
+      position.ghost.style.transform = `translate3d(${rect.left}px, ${rect.top}px, 0) scale(${scale})`;
+      return position;
+    }
+
     function queueDragPosition(drag, clientX, clientY) {
       drag.clientX = clientX;
       drag.clientY = clientY;
-      drag.ghost.style.left = `${clientX}px`;
-      drag.ghost.style.top = `${clientY}px`;
+      if (drag.renderFrame) return;
+      drag.renderFrame = requestAnimationFrame(() => {
+        drag.renderFrame = null;
+        const left = drag.clientX - drag.grabOffsetX;
+        const top = drag.clientY - drag.grabOffsetY;
+        drag.ghost.style.transform = `translate3d(${left}px, ${top}px, 0) scale(${drag.ghostScale})`;
+      });
+    }
+
+    function dragDropPoint(drag, event) {
+      return {
+        clientX: event.clientX - drag.grabOffsetX + drag.ghost.offsetWidth * drag.ghostScale / 2,
+        clientY: event.clientY - drag.grabOffsetY + drag.ghost.offsetHeight * drag.ghostScale / 2,
+      };
     }
 
     function findTrashSource(key) {
@@ -2768,7 +3281,7 @@ You are loved more than this little game could ever hold.</p>
       currentPage = pageId;
       const index = pages.indexOf(pageId);
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const draggingCharacter = activeHouseDrag?.kind === "character" || activeRoamDrag;
+      const draggingCharacter = activeHouseDrag?.kind === "character" || activeRoamDrag || activeWorldSlimeDrag;
       viewport.scrollTo({ left: index * viewport.clientWidth, behavior: updateHash && !reduceMotion && !draggingCharacter ? "smooth" : "auto" });
       $$(".app-page").forEach((page) => page.classList.toggle("active", page.dataset.page === pageId));
       $$("[data-page-link]").forEach((button) => {
@@ -2818,6 +3331,8 @@ You are loved more than this little game could ever hold.</p>
       if (key.startsWith("slime") || key.startsWith("game")) return "slime";
       if (key.startsWith("garden") || key.startsWith("tulip") || key.startsWith("blooming")) return "garden";
       if (key.startsWith("blue") || key.startsWith("bunny")) return "bunnyBlue";
+      if (/^(kitchen|ingredient|dish)/.test(key)) return "kitchen";
+      if (/^(cafe|coffee)/.test(key)) return "cafe";
       if (/^(house|wardrobe|mix|furniture|outfit|cat)/.test(key)) return "house";
       return "app";
     }
@@ -2827,7 +3342,7 @@ You are loved more than this little game could ever hold.</p>
         app: ["pageAppLabel", "App & navigation"], chat: ["pageChatLabel", "Chat"], home: ["pageHomeLabel", "Home"],
         slime: ["pageSlimeLabel", "Slime lab"], gift: ["pageGiftLabel", "Present"], wedding: ["pageWeddingLabel", "Wedding"],
         gallery: ["pageGalleryLabel", "Gallery"], bunnyBlue: ["pageBlueLabel", "Blue cage"], garden: ["pageGardenLabel", "Garden"],
-        house: ["pageHouseLabel", "House"],
+        house: ["pageHouseLabel", "House"], kitchen: ["pageKitchenLabel", "Kitchen"], cafe: ["pageCafeLabel", "Cat Cafe"],
       };
       const [key, fallback] = labels[pageId] || ["", pageId];
       return key ? copyText(key, fallback) : fallback;
@@ -2955,13 +3470,19 @@ You are loved more than this little game could ever hold.</p>
     function renderGeneratedCopy() {
       const level = String(Math.floor(xp / 100) + 1).padStart(2, "0");
       $("#level-chip").textContent = formatCopy("levelLabel", { level }, `LV. ${level}`);
-      renderColorOptions();
+      updateSlimeProgress();
+      updateCraftPreview();
       updateSlimePreview();
       renderSlimes();
       renderBunnies();
       renderTulips();
       renderHouse();
       updateHouseOptionLabels();
+      renderIngredientOptions();
+      updateKitchenUi();
+      renderCafeCats();
+      updateCafeUi();
+      renderMixColorOptions();
       renderWeddingScene();
       renderGalleryPages();
       renderChatMessages();
@@ -3390,22 +3911,6 @@ You are loved more than this little game could ever hold.</p>
       </g>`;
     }
 
-    function renderColorOptions() {
-      const grid = $("#color-options");
-      grid.replaceChildren();
-      SLIME_COLORS.forEach((color) => {
-        const swatch = document.createElement("button");
-        swatch.className = "color-swatch";
-        swatch.type = "button";
-        swatch.dataset.color = color;
-        swatch.style.setProperty("--swatch", color);
-        swatch.title = color;
-        swatch.setAttribute("aria-label", formatCopy("slimeChooseColorAria", { color }, `Choose color ${color}`));
-        grid.append(swatch);
-      });
-      selectOption("#color-options", "color", selectedColor);
-    }
-
     function animateSlimePreview(className) {
       const preview = $("#slime-preview");
       preview.classList.remove("jelly", "pop");
@@ -3414,10 +3919,11 @@ You are loved more than this little game could ever hold.</p>
     }
 
     function updateSlimePreview(animate = false) {
-      $("#slime-preview").innerHTML = slimeSvg(selectedColor, selectedEyes, selectedAccessory);
-      $("#preview-name").textContent = $("#slime-name").value.trim() || copyText("slimePreviewName", "New slime");
-      $("#selected-color").textContent = selectedColor;
-      selectOption("#color-options", "color", selectedColor);
+      const visibleColor = unlockedSlimeColors.has(selectedColor) ? selectedColor : "#6f7468";
+      $("#slime-preview").innerHTML = slimeSvg(visibleColor, selectedEyes, selectedAccessory);
+      $("#preview-name").textContent = unlockedSlimeColors.has(selectedColor)
+        ? $("#slime-name").value.trim() || copyText("slimePreviewName", "New slime")
+        : copyText("slimeLockedName", "Locked color");
       if (animate) animateSlimePreview("jelly");
     }
 
@@ -3428,7 +3934,36 @@ You are loved more than this little game could ever hold.</p>
       });
     }
 
+    function updateSlimeProgress() {
+      $("#craft-progress").textContent = formatCopy("craftProgress", { count: unlockedSlimeColors.size }, `${unlockedSlimeColors.size} / 100 colors`);
+    }
+
+    function unlockSlimeColor(color) {
+      if (!SLIME_COLORS.includes(color) || unlockedSlimeColors.has(color)) return false;
+      unlockedSlimeColors.add(color);
+      try { localStorage.setItem("birthday-quest-slime-colors", JSON.stringify([...unlockedSlimeColors])); } catch {}
+      updateSlimeProgress();
+      renderMixColorOptions();
+      return true;
+    }
+
+    function showSlimeAchievement(color) {
+      const popup = $("#slime-achievement");
+      const messages = [copyText("achievementNice", "Nice one, baby!"), copyText("achievementWow", "Wow, galing!")];
+      popup.querySelector("svg").innerHTML = slimeSvg(color, selectedEyes, selectedAccessory);
+      $("#achievement-message").textContent = messages[Math.floor(Math.random() * messages.length)];
+      $("#achievement-color").textContent = formatCopy("achievementColor", { color }, `New color unlocked: ${color}`);
+      popup.hidden = false;
+      popup.classList.remove("achievementIn");
+      void popup.offsetWidth;
+      popup.classList.add("achievementIn");
+      clearTimeout(achievementTimer);
+      achievementTimer = setTimeout(() => { popup.hidden = true; }, 3400);
+    }
+
     function renderSlimes() {
+      slimes.forEach((slime) => unlockSlimeColor(slime.color));
+      updateSlimeProgress();
       const grid = $("#slime-grid");
       grid.replaceChildren();
       $("#slime-count").textContent = formatCopy(slimes.length === 1 ? "slimeCountOne" : "slimeCountMany", { count: slimes.length }, `${slimes.length} ${slimes.length === 1 ? "friend" : "friends"}`);
@@ -3472,7 +4007,6 @@ You are loved more than this little game could ever hold.</p>
           selectedEyes = eyeStyles.includes(slime.eyes) ? slime.eyes : "happy";
           selectedAccessory = accessories.includes(slime.accessory) ? slime.accessory : "none";
           $("#slime-name").value = slime.name || "";
-          selectOption("#color-options", "color", selectedColor);
           selectOption("#eye-options", "eyes", selectedEyes);
           selectOption("#accessory-options", "accessory", selectedAccessory);
           updateSlimePreview();
@@ -3499,13 +4033,11 @@ You are loved more than this little game could ever hold.</p>
       }
       const name = $("#slime-name").value.trim() || copyText("slimePreviewName", "New slime");
       const safeProducts = Array.isArray(products)
-        ? products.filter((id) => SLIME_PRODUCTS.some((product) => product.id === id)).slice(0, 3)
+        ? products.filter((id) => SLIME_BASE_PRODUCTS.some((product) => product.id === id)).slice(0, 3)
         : [];
       const newSlime = { name, color: selectedColor, eyes: selectedEyes, accessory: selectedAccessory, products: safeProducts, createdBy: user.uid, createdAt: fs?.serverTimestamp ? fs.serverTimestamp() : Date.now() };
-      const button = $("#create-slime");
       const preview = $("#slime-preview");
       const previewCard = preview.closest(".slime-preview-card");
-      button.disabled = true;
       preview.classList.remove("pop", "jelly");
       preview.classList.add("mixing");
       previewCard.classList.add("mixing");
@@ -3533,7 +4065,6 @@ You are loved more than this little game could ever hold.</p>
       } finally {
         preview.classList.remove("mixing");
         previewCard.classList.remove("mixing");
-        button.disabled = false;
       }
     }
 
@@ -3654,11 +4185,14 @@ You are loved more than this little game could ever hold.</p>
       }
       event.preventDefault();
       const element = event.currentTarget;
-      const shadow = element.previousElementSibling;
+      const rect = element.getBoundingClientRect();
+      const ghostData = createDragGhost(rect, event, element.cloneNode(true));
       activeWorldSlimeDrag = {
-        item: slime, element, shadow, pointerId: event.pointerId,
+        item: slime, element, pointerId: event.pointerId,
         startClientX: event.clientX, startClientY: event.clientY,
-        startPage: slime.page, startX: Number(slime.x), moved: false,
+        startPage: slime.page, startX: Number(slime.x),
+        startWorldX: Math.max(0, pages.indexOf(slime.page)) + Number(slime.x), worldX: null,
+        moved: false, ...ghostData,
       };
       element.classList.add("dragging");
       $("#trash-bin").classList.add("active");
@@ -3669,22 +4203,22 @@ You are loved more than this little game could ever hold.</p>
       if (!activeWorldSlimeDrag || event.pointerId !== activeWorldSlimeDrag.pointerId) return;
       event.preventDefault();
       const drag = activeWorldSlimeDrag;
+      queueDragPosition(drag, event.clientX, event.clientY);
       if (Math.hypot(event.clientX - drag.startClientX, event.clientY - drag.startClientY) > 6) drag.moved = true;
-      const startIndex = Math.max(0, pages.indexOf(drag.startPage));
-      const worldX = startIndex + drag.startX + (event.clientX - drag.startClientX) / Math.max(1, viewport.clientWidth);
-      const pageIndex = Math.max(0, Math.min(pages.length - 1, Math.floor(worldX)));
-      drag.item.page = pages[pageIndex];
-      drag.item.x = Math.max(.08, Math.min(.92, worldX - pageIndex));
-      if (drag.item.page !== currentPage) showPage(drag.item.page);
-      applyWorldSlimePosition(drag.item, drag.element, drag.shadow);
+      drag.worldX = Math.max(.08, Math.min(pages.length - .08, drag.startWorldX + (event.clientX - drag.startClientX) / Math.max(1, viewport.clientWidth)));
+      const pageIndex = Math.max(0, Math.min(pages.length - 1, Math.floor(drag.worldX)));
+      const page = pages[pageIndex];
+      if (page !== currentPage) showPage(page);
       $("#trash-bin").classList.toggle("over", isOverTrash(event.clientX, event.clientY));
     }
 
     function cleanupWorldSlimeDrag() {
       if (!activeWorldSlimeDrag) return;
       const drag = activeWorldSlimeDrag;
+      cancelAnimationFrame(drag.renderFrame);
       try { drag.element.releasePointerCapture(drag.pointerId); } catch {}
       drag.element.classList.remove("dragging");
+      drag.ghost.remove();
       $("#trash-bin").classList.remove("active", "over");
       activeWorldSlimeDrag = null;
     }
@@ -3698,16 +4232,23 @@ You are loved more than this little game could ever hold.</p>
         await deleteWorldSlime(drag.item, drag.element);
         return;
       }
-      const page = drag.item.page;
-      const x = drag.item.x;
+      const worldX = drag.worldX ?? drag.startWorldX;
+      const pageIndex = Math.max(0, Math.min(pages.length - 1, Math.floor(worldX)));
+      const page = pages[pageIndex];
+      const x = Math.max(.08, Math.min(.92, worldX - pageIndex));
       cleanupWorldSlimeDrag();
       if (!drag.moved) return;
+      drag.item.page = page;
+      drag.item.x = x;
+      renderWorldSlimes();
+      showPage(page);
       try {
         if (db) await fs.updateDoc(fs.doc(db, "worldSlimes", drag.item.id), { page, x });
       } catch (error) {
         drag.item.page = drag.startPage;
         drag.item.x = drag.startX;
         renderWorldSlimes();
+        showPage(drag.startPage);
         showAppError("slimeWorldMoveError", "Could not move slime", error);
       }
     }
@@ -3736,87 +4277,116 @@ You are loved more than this little game could ever hold.</p>
       }
     }
 
-    function craftProductIcon(shape) {
-      const icons = {
-        drop: '<path d="M12 2 5 13h14Z"/>',
-        petal: '<path d="M12 3c5 0 8 4 6 8-1 3-4 5-6 3-2-2-3-5 0-11Z"/>',
-        leaf: '<path d="M4 20C3 8 9 3 21 3c0 11-5 17-17 17Zm3-3 9-9"/>',
-        berry: '<path d="M5 9h14v5c0 5-14 5-14 0Zm7-6 4 4h-8Z"/>',
-        cloud: '<path d="M5 18h14v4H5Zm2-4h10v4H7Zm3-5h4v5h-4Zm-3 5H4v-4h3Zm13 0h3v-4h-3ZM10 4h4v4h-4Z"/>',
-        star: '<path d="m12 2 3 7 7 1-5 5 1 7-6-4-6 4 1-7-5-5 7-1Z"/>',
-        square: '<path d="M4 4h16v16H4Z"/>',
-      };
-      return `<svg viewBox="0 0 24 24" shape-rendering="crispEdges" aria-hidden="true">${icons[shape] || icons.square}</svg>`;
-    }
-
     function renderCraftProducts() {
       const grid = $("#craft-products");
       if (!grid) return;
       grid.replaceChildren();
-      SLIME_PRODUCTS.forEach((product) => {
-        const selected = selectedProducts.includes(product.id);
+      SLIME_BASE_PRODUCTS.forEach((product) => {
+        const count = selectedProducts.filter((id) => id === product.id).length;
         const button = document.createElement("button");
         button.type = "button";
-        button.className = `product-button${selected ? " active" : ""}`;
+        button.className = `product-button${count ? " active" : ""}`;
         button.dataset.craftProduct = product.id;
-        button.setAttribute("aria-pressed", String(selected));
-        button.disabled = crafting || (selectedProducts.length >= 3 && !selected);
+        button.setAttribute("aria-pressed", String(count > 0));
+        button.disabled = crafting || selectedProducts.length >= 3;
         const name = copyText(product.label, product.id);
         button.setAttribute("aria-label", formatCopy("craftProductAria", {
           name,
-          selected: selected ? copyText("craftProductSelected", "Selected for the cauldron.") : copyText("craftProductAdd", "Tap to add to the cauldron."),
-        }, `${name}. ${selected ? "Selected for the cauldron." : "Tap to add to the cauldron."}`));
+          selected: copyText("craftProductAdd", "Tap to add to the cauldron."),
+        }, `${name}. Tap to add to the cauldron.`));
         const icon = document.createElement("span");
         icon.className = "product-icon";
-        icon.style.setProperty("--product-color", product.color);
-        icon.innerHTML = craftProductIcon(product.shape);
+        icon.innerHTML = slimeSvg(product.color);
         const label = document.createElement("span");
         label.textContent = name;
         button.append(icon, label);
+        if (count) {
+          const badge = document.createElement("span");
+          badge.className = "product-count";
+          badge.textContent = String(count);
+          button.append(badge);
+        }
         button.addEventListener("click", () => toggleCraftProduct(product.id));
         grid.append(button);
       });
+      const selection = $("#craft-selection");
+      selection.replaceChildren();
+      for (let index = 0; index < 3; index++) {
+        const id = selectedProducts[index];
+        const product = SLIME_BASE_PRODUCTS.find((item) => item.id === id);
+        const slot = document.createElement("button");
+        slot.type = "button";
+        slot.className = `craft-slot${product ? " filled" : ""}`;
+        slot.disabled = crafting;
+        if (product) {
+          slot.innerHTML = slimeSvg(product.color);
+          const label = document.createElement("span");
+          label.textContent = `${index + 1}. ${copyText(product.label, product.id)}`;
+          slot.append(label);
+          slot.setAttribute("aria-label", formatCopy("craftSlotRemove", { name: copyText(product.label, product.id), slot: index + 1 }, `Remove ${copyText(product.label, product.id)} from slot ${index + 1}.`));
+          slot.addEventListener("click", () => removeCraftProduct(index));
+        } else {
+          slot.textContent = `${index + 1}`;
+          slot.setAttribute("aria-label", formatCopy("craftSlotEmpty", { slot: index + 1 }, `Mix slot ${index + 1} is empty.`));
+        }
+        selection.append(slot);
+      }
+      $("#craft-slime").disabled = !(selectedProducts.length === 3 && !crafting);
     }
 
     function toggleCraftProduct(id) {
-      if (crafting) return;
-      if (selectedProducts.includes(id)) {
-        selectedProducts = selectedProducts.filter((productId) => productId !== id);
-      } else if (selectedProducts.length < 3) {
-        selectedProducts.push(id);
-      } else {
-        $("#craft-status").textContent = copyText("craftStatusLimit", "The cauldron can hold three products. Remove one first.");
+      if (crafting || !SLIME_BASE_PRODUCTS.some((product) => product.id === id)) return;
+      if (selectedProducts.length >= 3) {
+        $("#craft-status").textContent = copyText("craftStatusLimit", "All three slots are full. Remove one to change the recipe.");
         return;
       }
+      selectedProducts.push(id);
+      renderCraftProducts();
+      updateCraftPreview();
+    }
+
+    function removeCraftProduct(index) {
+      if (crafting || index < 0 || index >= selectedProducts.length) return;
+      selectedProducts.splice(index, 1);
       renderCraftProducts();
       updateCraftPreview();
     }
 
     function craftResultColor() {
-      const products = selectedProducts.map((id) => SLIME_PRODUCTS.find((product) => product.id === id)).filter(Boolean);
+      const products = selectedProducts.map((id) => SLIME_BASE_PRODUCTS.find((product) => product.id === id)).filter(Boolean);
       if (!products.length) return selectedColor;
+      if (products.length === 3) {
+        const recipe = products.reduce((value, product) => value * 5 + SLIME_BASE_PRODUCTS.indexOf(product), 0);
+        return SLIME_COLORS[recipe % SLIME_COLORS.length];
+      }
       return products.map((product) => product.color).reduce((color, next) => blendHex(color, next));
     }
 
     function updateCraftPreview() {
       const color = craftResultColor();
+      const knownColor = unlockedSlimeColors.has(color);
+      const visibleColor = knownColor ? color : "#6f7468";
       if (selectedProducts.length) {
         selectedColor = color;
-        selectOption("#color-options", "color", selectedColor);
         updateSlimePreview();
       }
       const station = $("#craft-cauldron");
-      station.style.setProperty("--craft-color", color);
-      $("#craft-preview").innerHTML = slimeSvg(color, selectedEyes, selectedAccessory);
-      $("#craft-status").textContent = selectedProducts.length
-        ? formatCopy("craftStatusSelected", { count: selectedProducts.length }, `${selectedProducts.length} of 3 products ready.`)
-        : copyText("craftStatusReady", "Choose the products you want to mix.");
+      station.style.setProperty("--craft-color", visibleColor);
+      $("#craft-preview").innerHTML = slimeSvg(visibleColor, selectedEyes, selectedAccessory);
+      $("#craft-status").textContent = selectedProducts.length === 3
+        ? knownColor
+          ? formatCopy("craftStatusKnownThree", { color }, `Recipe ready! This mix makes ${color}.`)
+          : copyText("craftStatusLockedThree", "Recipe ready! A locked color is waiting to be created.")
+        : selectedProducts.length
+          ? formatCopy("craftStatusSelected", { count: selectedProducts.length, remaining: 3 - selectedProducts.length }, `${selectedProducts.length} of 3 slimes ready. Choose ${3 - selectedProducts.length} more.`)
+          : copyText("craftStatusReady", "Pick any 3 base slimes. Repeats are allowed!");
+      renderCraftProducts();
     }
 
     async function craftSlime() {
       if (crafting) return;
-      if (!selectedProducts.length) {
-        showToast(copyText("craftNeedProducts", "Choose at least one product first."));
+      if (selectedProducts.length !== 3) {
+        showToast(copyText("craftNeedThree", "Choose exactly 3 base slimes first."));
         return;
       }
       if (!user || !role) {
@@ -3831,7 +4401,7 @@ You are loved more than this little game could ever hold.</p>
       const name = $("#slime-name").value.trim() || copyText("slimePreviewName", "New slime");
       const products = [...selectedProducts];
       selectedColor = craftResultColor();
-      selectOption("#color-options", "color", selectedColor);
+      const newColor = !unlockedSlimeColors.has(selectedColor);
       updateSlimePreview();
       button.disabled = true;
       renderCraftProducts();
@@ -3857,12 +4427,17 @@ You are loved more than this little game could ever hold.</p>
         station.classList.add("revealing");
         $("#craft-preview").innerHTML = slimeSvg(selectedColor, selectedEyes, selectedAccessory);
         status.textContent = formatCopy("craftStatusDone", { name }, `${name} is ready to join the collection.`);
+        if (newColor) {
+          unlockSlimeColor(selectedColor);
+          showSlimeAchievement(selectedColor);
+        }
+        updateSlimePreview();
+        station.style.setProperty("--craft-color", selectedColor);
         selectedProducts = [];
         await new Promise((resolve) => setTimeout(resolve, 650));
       } finally {
         station.classList.remove("pouring", "swirling", "bubbling", "revealing");
         crafting = false;
-        button.disabled = false;
         renderCraftProducts();
         updateCraftPreview();
       }
@@ -4004,12 +4579,12 @@ You are loved more than this little game could ever hold.</p>
         if (activeNatureDrag?.kind === "bunny" && activeNatureDrag.item.id === id) return;
         if (
           !Number.isFinite(motion.x) || !Number.isFinite(motion.y)
-          || !Number.isFinite(motion.baseY) || !Number.isFinite(motion.vx) || !Number.isFinite(motion.vy)
+          || !Number.isFinite(motion.baseY) || !Number.isFinite(motion.vx) || !Number.isFinite(motion.vy) || !Number.isFinite(motion.nextHop)
           || motion.x < .09 || motion.x > .91 || motion.y < .28 || motion.y > .86
           || motion.baseY < .28 || motion.baseY > .86
           || Math.abs(motion.vx) > .5 || Math.abs(motion.vy) > 2
         ) {
-          Object.assign(motion, { x: motion.baseX, y: motion.baseY, vx: 0, vy: 0, onGround: true });
+          Object.assign(motion, { x: motion.baseX, y: motion.baseY, vx: 0, vy: 0, onGround: true, nextHop: time + 4000 });
         }
         if (motion.onGround && time >= motion.nextHop) {
           motion.vy = -(.27 + Math.random() * .12);
@@ -4037,12 +4612,27 @@ You are loved more than this little game could ever hold.</p>
       });
     }
 
-    function startBunnyMotion() {
-      if (bunnyMotionTicker) return;
+    function startWorldMotion() {
+      if (worldMotionTicker) return;
+      const step = 1000 / 60;
       let previousTime = performance.now();
-      bunnyMotionTicker = createFrameTicker((time) => {
-        updateBunnyMotion(time, previousTime);
+      let simulationTime = previousTime;
+      let accumulator = 0;
+      worldMotionTicker = createFrameTicker((time) => {
+        accumulator += Math.min(100, Math.max(0, time - previousTime));
         previousTime = time;
+        let steps = 0;
+        while (accumulator >= step && steps < 5) {
+          const previousSimulationTime = simulationTime;
+          simulationTime += step;
+          updateBunnyMotion(simulationTime, previousSimulationTime);
+          updateHouseMotion(simulationTime, previousSimulationTime);
+          updateRoamingMotion(simulationTime, previousSimulationTime);
+          updateCafeMotion(simulationTime, previousSimulationTime);
+          accumulator -= step;
+          steps += 1;
+        }
+        if (steps === 5) accumulator = Math.min(accumulator, step);
       });
     }
 
@@ -4168,21 +4758,9 @@ You are loved more than this little game could ever hold.</p>
       event.preventDefault();
       event.stopPropagation();
       const rect = ghostSource.getBoundingClientRect();
-      const ghost = document.createElement("div");
-      ghost.className = "drag-ghost";
-      ghost.style.width = `${rect.width}px`;
-      ghost.style.height = `${rect.height}px`;
-      ghost.style.left = `${event.clientX}px`;
-      ghost.style.top = `${event.clientY}px`;
-      const scale = Math.min(1, 180 / rect.width, 160 / rect.height);
-      ghost.style.transform = `translate(-50%, -50%) scale(${scale})`;
-      ghost.style.overflow = "hidden";
-      ghost.append(ghostSource.cloneNode(true));
-      ghost.querySelectorAll("[id]").forEach((node) => node.removeAttribute("id"));
-      ghost.querySelectorAll("button, input, textarea, select, [contenteditable]").forEach((node) => node.remove());
-      ghost.setAttribute("aria-hidden", "true");
-      document.body.append(ghost);
-      activeTrashDrag = { key, source, ghost, remove, onTap, pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, moved: false };
+      const ghostData = createDragGhost(rect, event, ghostSource.cloneNode(true));
+      ghostData.ghost.style.overflow = "hidden";
+      activeTrashDrag = { key, source, remove, onTap, pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, moved: false, ...ghostData };
       source.classList.add("trash-drag-source");
       $("#trash-bin").classList.add("active");
       try { source.setPointerCapture(event.pointerId); } catch {}
@@ -4190,6 +4768,7 @@ You are loved more than this little game could ever hold.</p>
 
     function cleanupTrashDrag() {
       if (!activeTrashDrag) return;
+      cancelAnimationFrame(activeTrashDrag.renderFrame);
       try { activeTrashDrag.source.releasePointerCapture(activeTrashDrag.pointerId); } catch {}
       activeTrashDrag.source.classList.remove("trash-drag-source");
       activeTrashDrag.ghost.remove();
@@ -4240,17 +4819,14 @@ You are loved more than this little game could ever hold.</p>
           nextHop: performance.now() + 1000000000,
         });
       }
-      const ghost = document.createElement("div");
-      ghost.className = "drag-ghost";
-      ghost.style.width = `${rect.width}px`;
-      ghost.style.left = `${event.clientX}px`;
-      ghost.style.top = `${event.clientY}px`;
-      ghost.innerHTML = kind === "bunny" ? bunnySvg(item.color) : kind === "decor" ? furnitureSvg(item.type) : tulipSvg(item.color, item.growth);
-      document.body.append(ghost);
+      const content = document.createElement("div");
+      content.innerHTML = kind === "bunny" ? bunnySvg(item.color) : kind === "decor" ? furnitureSvg(item.type) : tulipSvg(item.color, item.growth);
+      const ghostData = createDragGhost(rect, event, content);
       activeNatureDrag = {
-        kind, item, element, ghost, pointerId: event.pointerId,
+        kind, item, element, pointerId: event.pointerId,
         startX: event.clientX, startY: event.clientY, clientX: event.clientX, clientY: event.clientY,
         moved: false, canTrash: kind === "decor" ? canManageHouseItem(item) : canManageNatureItem(item), trashVisible: false,
+        ...ghostData,
       };
       if (activeNatureDrag.canTrash) {
         $("#trash-bin").classList.add("active");
@@ -4313,14 +4889,15 @@ You are loved more than this little game could ever hold.</p>
         return;
       }
       const viewportRect = viewport.getBoundingClientRect();
-      const targetIndex = Math.round((viewport.scrollLeft + event.clientX - viewportRect.left) / viewport.clientWidth);
+      const dropPoint = dragDropPoint(drag, event);
+      const targetIndex = Math.round((viewport.scrollLeft + dropPoint.clientX - viewportRect.left) / viewport.clientWidth);
       const targetPage = pages[targetIndex];
       const habitat = targetPage;
       const validTarget =
         (drag.kind === "bunny" && naturePages.includes(habitat))
         || (drag.kind === "decor" && ["garden", "bunnyBlue"].includes(habitat))
         || (drag.kind === "tulip" && habitat === "garden");
-      const position = validTarget ? normalizeNaturePosition(event.clientX, event.clientY, drag.kind, habitat) : null;
+      const position = validTarget ? normalizeNaturePosition(dropPoint.clientX, dropPoint.clientY, drag.kind, habitat) : null;
       cleanupNatureDrag();
       if (!validTarget || !position) {
         showPage(drag.kind === "tulip" ? "garden" : drag.item.habitat, true);
@@ -4888,6 +5465,23 @@ You are loved more than this little game could ever hold.</p>
       visibleCharacters().forEach((person) => {
         const motion = roamMotion.get(person.id);
         if (!motion || activeRoamDrag?.item.id === person.id || (activeHouseDrag?.kind === "character" && activeHouseDrag.item.id === person.id)) return;
+        if (
+          !Number.isFinite(motion.x) || !Number.isFinite(motion.targetX) || !Number.isFinite(motion.vx) || !Number.isFinite(motion.speed)
+          || !Number.isFinite(motion.nextPlan) || !Number.isFinite(motion.nextHop)
+          || motion.x < .08 || motion.x > pages.length - .08 || Math.abs(motion.vx) > .6 || motion.speed <= 0 || motion.speed > .6
+        ) {
+          const fallbackPage = Math.max(0, Math.min(pages.length - 1, characterWorldPage(person) === "house" ? pages.indexOf("house") : pages.indexOf(characterWorldPage(person))));
+          motion.x = fallbackPage + .5;
+          motion.targetX = motion.x;
+          motion.targetPage = pages[fallbackPage];
+          motion.vx = 0;
+          motion.speed = .22;
+          motion.jumpY = 0;
+          motion.jumpV = 0;
+          motion.onGround = true;
+          motion.nextPlan = time + 1800;
+          motion.nextHop = time + 3200;
+        }
         if (time >= motion.nextPlan && Math.abs(motion.targetX - motion.x) < .02) {
           const currentIndex = Math.max(0, Math.min(pages.length - 1, Math.floor(motion.x)));
           const offset = Math.floor(Math.random() * 5) - 2;
@@ -4899,7 +5493,8 @@ You are loved more than this little game could ever hold.</p>
           motion.nextPlan = time + 4600 + Math.random() * 5200;
         }
         const distance = motion.targetX - motion.x;
-        const desiredVelocity = Math.abs(distance) > .012 ? Math.sign(distance) * motion.speed : 0;
+        const boost = performance.now() < coffeeBoostUntil ? coffeeBoostMultiplier : 1;
+        const desiredVelocity = Math.abs(distance) > .012 ? Math.sign(distance) * motion.speed * boost : 0;
         motion.vx += (desiredVelocity - motion.vx) * Math.min(1, delta * 7);
         motion.x += motion.vx * delta;
         if (Math.abs(distance) < .015) {
@@ -4927,15 +5522,6 @@ You are loved more than this little game could ever hold.</p>
           }
         }
         applyRoamMotion(motion);
-      });
-    }
-
-    function startRoamingMotion() {
-      if (roamMotionTicker) return;
-      let previousTime = performance.now();
-      roamMotionTicker = createFrameTicker((time) => {
-        updateRoamingMotion(time, previousTime);
-        previousTime = time;
       });
     }
 
@@ -5017,10 +5603,14 @@ You are loved more than this little game could ever hold.</p>
       }
       event.preventDefault();
       const motion = ensureRoamMotion(person);
+      const element = event.currentTarget;
+      const rect = element.getBoundingClientRect();
+      const ghostData = createDragGhost(rect, event, element.cloneNode(true));
       activeRoamDrag = {
-        item: person, motion, element: event.currentTarget, pointerId: event.pointerId,
+        item: person, motion, element, pointerId: event.pointerId,
         startClientX: event.clientX, startClientY: event.clientY, startX: motion.x,
-        startPage: pages[Math.floor(motion.x)], moved: false, dropPage: null,
+        startPage: pages[Math.floor(motion.x)], moved: false, dropPage: null, worldX: motion.x,
+        ...ghostData,
       };
       motion.vx = 0;
       motion.targetX = motion.x;
@@ -5034,20 +5624,22 @@ You are loved more than this little game could ever hold.</p>
       if (!activeRoamDrag || event.pointerId !== activeRoamDrag.pointerId) return;
       event.preventDefault();
       const drag = activeRoamDrag;
+      queueDragPosition(drag, event.clientX, event.clientY);
       if (Math.hypot(event.clientX - drag.startClientX, event.clientY - drag.startClientY) > 5) drag.moved = true;
       drag.dropPage = updateCharacterNavTarget(event);
       if (drag.dropPage) return;
-      drag.motion.x = Math.max(.08, Math.min(pages.length - .08, drag.startX + (event.clientX - drag.startClientX) / Math.max(1, viewport.clientWidth)));
-      const pageIndex = Math.max(0, Math.min(pages.length - 1, Math.floor(drag.motion.x)));
+      drag.worldX = Math.max(.08, Math.min(pages.length - .08, drag.startX + (event.clientX - drag.startClientX) / Math.max(1, viewport.clientWidth)));
+      const pageIndex = Math.max(0, Math.min(pages.length - 1, Math.floor(drag.worldX)));
       if (pages[pageIndex] !== currentPage) showPage(pages[pageIndex]);
-      applyRoamMotion(drag.motion);
     }
 
     function cleanupRoamDrag() {
       if (!activeRoamDrag) return;
       const drag = activeRoamDrag;
+      cancelAnimationFrame(drag.renderFrame);
       try { drag.element.releasePointerCapture(drag.pointerId); } catch {}
       drag.element.classList.remove("dragging");
+      drag.ghost.remove();
       clearCharacterNavTarget();
       activeRoamDrag = null;
     }
@@ -5056,20 +5648,21 @@ You are loved more than this little game could ever hold.</p>
       if (!activeRoamDrag || event.pointerId !== activeRoamDrag.pointerId) return;
       const drag = activeRoamDrag;
       drag.element.dataset.draggedAt = String(performance.now());
-      const worldX = drag.motion.x;
+      const worldX = drag.worldX ?? drag.startX;
       const pageIndex = Math.max(0, Math.min(pages.length - 1, Math.floor(worldX)));
       const dropPage = drag.dropPage || characterNavDropPage(event);
       const position = drag.moved
         ? dropPage
-          ? characterNavDropPosition(dropPage, event)
+          ? characterNavDropPosition(dropPage, dragDropPoint(drag, event))
           : characterDropPosition(pages[pageIndex], worldX - pageIndex)
         : null;
+      drag.motion.x = worldX;
       drag.motion.targetX = worldX;
       drag.motion.targetPage = pages[pageIndex];
       drag.motion.nextPlan = performance.now() + 1800 + Math.random() * 2800;
       cleanupRoamDrag();
       if (position) {
-        if (dropPage) showPage(dropPage);
+        showPage(dropPage || pages[pageIndex]);
         await persistCharacterPlacement(drag.item, position);
       }
     }
@@ -5085,10 +5678,101 @@ You are loved more than this little game could ever hold.</p>
       renderHouse();
     }
 
+    function ensureFurnitureMotion(item) {
+      if (item.type === "rug") return null;
+      const zone = item.zone === "house" ? "house" : "yard";
+      const x = Math.max(.06, Math.min(.94, Number(item.x) || .5));
+      const ground = houseGroundY(zone, x);
+      let motion = furnitureMotion.get(item.id);
+      if (!motion) {
+        const storedY = Number(item.y);
+        const y = Number.isFinite(storedY) ? Math.max(.26, Math.min(ground, storedY)) : ground;
+        motion = { x, y, vy: 0, zone, onGround: y >= ground - .002, bounces: 0, savedX: Number(item.x), savedY: ground, savedZone: zone, element: null, shadow: null };
+        furnitureMotion.set(item.id, motion);
+      }
+      if (zone !== motion.savedZone || Math.abs(Number(item.x) - motion.savedX) > .002) {
+        Object.assign(motion, { zone, x, y: ground, vy: 0, onGround: true, bounces: 0, savedX: Number(item.x), savedY: ground, savedZone: zone });
+      }
+      if (!Number.isFinite(motion.y) || !Number.isFinite(motion.vy) || motion.y > ground + .01 || Math.abs(motion.vy) > 2) {
+        Object.assign(motion, { y: ground, vy: 0, onGround: true, bounces: 0 });
+      }
+      return motion;
+    }
+
+    function applyFurnitureMotion(motion) {
+      if (!motion.element) return;
+      const ground = houseGroundY(motion.zone, motion.x);
+      const air = Math.max(0, ground - motion.y);
+      motion.element.style.left = `${motion.x * 100}%`;
+      motion.element.style.top = `${motion.y * 100}%`;
+      motion.element.dataset.grounded = String(motion.onGround);
+      if (motion.shadow) {
+        motion.shadow.style.left = `${motion.x * 100}%`;
+        motion.shadow.style.top = `${ground * 100}%`;
+        motion.shadow.style.opacity = String(Math.max(.18, 1 - air * 2));
+        motion.shadow.style.transform = `translate(-50%, -50%) scale(${Math.max(.5, 1 - air * 1.4)})`;
+      }
+    }
+
+    function updateFurnitureMotion(time, previousTime) {
+      const delta = Math.min(.05, Math.max(.001, (time - previousTime) / 1000));
+      furnitureMotion.forEach((motion, id) => {
+        if (activeHouseDrag?.kind === "furniture" && activeHouseDrag.item.id === id) return;
+        const currentGround = houseGroundY(motion.zone, motion.x);
+        if (
+          !Number.isFinite(motion.x) || !Number.isFinite(motion.y) || !Number.isFinite(motion.vy)
+          || !["house", "yard"].includes(motion.zone) || motion.x < .06 || motion.x > .94
+          || motion.y > currentGround + .01 || motion.y < .22 || Math.abs(motion.vy) > 2
+        ) {
+          motion.x = Number.isFinite(motion.x) ? Math.max(.06, Math.min(.94, motion.x)) : .5;
+          motion.zone = ["house", "yard"].includes(motion.zone) ? motion.zone : "yard";
+          motion.y = houseGroundY(motion.zone, motion.x);
+          motion.vy = 0;
+          motion.onGround = true;
+          motion.bounces = 0;
+          applyFurnitureMotion(motion);
+          return;
+        }
+        if (motion.onGround) {
+          if (Math.abs(motion.y - currentGround) > .002) {
+            motion.y = currentGround;
+            applyFurnitureMotion(motion);
+          }
+          return;
+        }
+        motion.vy += 2.8 * delta;
+        motion.y += motion.vy * delta;
+        const ground = houseGroundY(motion.zone, motion.x);
+        if (motion.y >= ground) {
+          if (Math.abs(motion.vy) > .24 && motion.bounces < 2) {
+            motion.y = ground - .004;
+            motion.vy = -Math.abs(motion.vy) * .2;
+            motion.bounces += 1;
+            motion.onGround = false;
+          } else {
+            motion.y = ground;
+            motion.vy = 0;
+            motion.onGround = true;
+            motion.bounces = 0;
+          }
+        }
+        applyFurnitureMotion(motion);
+      });
+    }
+
     function renderFurniture() {
       const layer = $("#house-furniture");
       layer.replaceChildren();
+      const visibleIds = new Set();
       visibleFurniture().filter((item) => ["house", "yard"].includes(item.zone)).forEach((item) => {
+        visibleIds.add(item.id);
+        const motion = ensureFurnitureMotion(item);
+        const shadow = motion ? document.createElement("span") : null;
+        if (shadow) {
+          shadow.className = "house-furniture-shadow";
+          shadow.dataset.shadowFor = item.id;
+          shadow.setAttribute("aria-hidden", "true");
+        }
         const element = document.createElement("div");
         element.className = "house-item house-furniture";
         element.dataset.houseId = item.id;
@@ -5096,10 +5780,6 @@ You are loved more than this little game could ever hold.</p>
         element.dataset.trashKey = `furniture:${item.id}`;
         element.tabIndex = 0;
         element.setAttribute("role", "button");
-        const x = Math.max(.06, Math.min(.94, Number(item.x) || .5));
-        const y = item.type === "rug" ? Number(item.y) || .84 : houseGroundY(item.zone, x);
-        element.style.left = `${x * 100}%`;
-        element.style.top = `${y * 100}%`;
         element.style.width = item.type === "rug" ? "120px" : ["sofa", "bed", "kitchen", "bench"].includes(item.type) ? "104px" : ["arch", "swing", "fountain"].includes(item.type) ? "92px" : "74px";
         element.setAttribute("aria-label", formatCopy("houseFurnitureAria", { name: furnitureTypeLabel(item.type), manage: canManageHouseItem(item) ? copyText("houseManageAria", " Drop in the trash to delete.") : "" }, `${furnitureTypeLabel(item.type)}. Tap to use or drag to move.${canManageHouseItem(item) ? " Drop in the trash to delete." : ""}`));
         element.innerHTML = furnitureSvg(item.type);
@@ -5110,8 +5790,17 @@ You are loved more than this little game could ever hold.</p>
             useFurniture(item, element);
           }
         });
-        layer.append(element);
+        if (motion) {
+          motion.element = element;
+          motion.shadow = shadow;
+          applyFurnitureMotion(motion);
+        } else {
+          element.style.left = `${Math.max(.06, Math.min(.94, Number(item.x) || .5)) * 100}%`;
+          element.style.top = `${Math.max(.26, Math.min(.9, Number(item.y) || .84)) * 100}%`;
+        }
+        layer.append(...(shadow ? [shadow] : []), element);
       });
+      [...furnitureMotion.keys()].forEach((id) => { if (!visibleIds.has(id)) furnitureMotion.delete(id); });
     }
 
     function renderGardenFurniture() {
@@ -5236,6 +5925,7 @@ You are loved more than this little game could ever hold.</p>
     }
 
     function renderMixes() {
+      mixes.forEach((mix) => unlockSlimeColor(nearestSlimeColor(mix.resultColor)));
       const list = $("#mix-list");
       list.replaceChildren();
       if (!mixes.length) {
@@ -5349,12 +6039,6 @@ You are loved more than this little game could ever hold.</p>
       const pageIndex = Math.max(0, Math.min(pages.length - 1, Math.floor(worldX)));
       drag.worldX = worldX;
       if (pages[pageIndex] !== currentPage) showPage(pages[pageIndex]);
-      const motion = ensureRoamMotion(drag.item);
-      motion.x = worldX;
-      motion.targetX = worldX;
-      motion.targetPage = pages[pageIndex];
-      motion.vx = 0;
-      applyRoamMotion(motion);
     }
 
     function startHouseDrag(kind, item, event) {
@@ -5368,15 +6052,11 @@ You are loved more than this little game could ever hold.</p>
       event.preventDefault();
       const element = event.currentTarget;
       const rect = element.getBoundingClientRect();
-      const ghost = document.createElement("div");
-      ghost.className = "drag-ghost";
-      ghost.style.width = `${rect.width}px`;
-      ghost.style.left = `${event.clientX}px`;
-      ghost.style.top = `${event.clientY}px`;
-      ghost.innerHTML = kind === "character" ? chibiSvg(item) : kind === "cat" ? catSvg(item.color) : furnitureSvg(item.type);
-      document.body.append(ghost);
+      const content = document.createElement("div");
+      content.innerHTML = kind === "character" ? chibiSvg(item) : kind === "cat" ? catSvg(item.color) : furnitureSvg(item.type);
+      const ghostData = createDragGhost(rect, event, content);
       const houseX = houseMotion.get(item.id)?.x ?? Number(item.x) ?? .5;
-      activeHouseDrag = { kind, item, element, ghost, pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, clientX: event.clientX, clientY: event.clientY, moved: false, worldX: null, dropPage: null, startWorldX: pages.indexOf("house") + Math.max(.08, Math.min(.92, houseX)), canTrash: kind !== "character" && canManageHouseItem(item), trashVisible: false };
+      activeHouseDrag = { kind, item, element, pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, clientX: event.clientX, clientY: event.clientY, moved: false, worldX: null, dropPage: null, startWorldX: pages.indexOf("house") + Math.max(.08, Math.min(.92, houseX)), canTrash: kind !== "character" && canManageHouseItem(item), trashVisible: false, ...ghostData };
       if (activeHouseDrag.canTrash) {
         $("#trash-bin").classList.add("active");
         activeHouseDrag.trashVisible = true;
@@ -5432,12 +6112,13 @@ You are loved more than this little game could ever hold.</p>
       }
       if (drag.kind === "character") {
         const dropPage = drag.dropPage || characterNavDropPage(event);
+        const dropPoint = dragDropPoint(drag, event);
         const pageIndex = drag.worldX === null ? null : Math.max(0, Math.min(pages.length - 1, Math.floor(drag.worldX)));
         const position = dropPage
-          ? characterNavDropPosition(dropPage, event)
+          ? characterNavDropPosition(dropPage, dropPoint)
           : pageIndex === null
             ? null
-            : characterDropPosition(pages[pageIndex], drag.worldX - pageIndex, event);
+            : characterDropPosition(pages[pageIndex], drag.worldX - pageIndex, dropPoint);
         cleanupHouseDrag();
         if (!position) {
           renderHouse();
@@ -5449,8 +6130,9 @@ You are loved more than this little game could ever hold.</p>
         return;
       }
       const stageRect = $("#house-stage").getBoundingClientRect();
-      const validTarget = event.clientX >= stageRect.left && event.clientX <= stageRect.right && event.clientY >= stageRect.top && event.clientY <= stageRect.bottom;
-      const dropped = validTarget ? normalizeHousePosition(event.clientX, event.clientY) : null;
+      const dropPoint = dragDropPoint(drag, event);
+      const validTarget = dropPoint.clientX >= stageRect.left && dropPoint.clientX <= stageRect.right && dropPoint.clientY >= stageRect.top && dropPoint.clientY <= stageRect.bottom;
+      const dropped = validTarget ? normalizeHousePosition(dropPoint.clientX, dropPoint.clientY) : null;
       cleanupHouseDrag();
       if (!dropped) {
         renderHouse();
@@ -5485,6 +6167,18 @@ You are loved more than this little game could ever hold.</p>
           Object.assign(motion, { zone: dropped.zone, x, y: ground, vx: 0, vy: 0, targetX: x, onGround: true, savedX: x, savedY: ground, savedZone: dropped.zone });
           applyHouseMotion(motion);
         }
+      } else if (drag.kind === "furniture" && drag.item.type !== "rug") {
+        drag.item.zone = dropped.zone;
+        drag.item.x = x;
+        drag.item.y = ground;
+        const motion = ensureFurnitureMotion(drag.item);
+        Object.assign(motion, { zone: dropped.zone, x, y: Math.min(ground, Math.max(.3, dropped.y)), vy: 0, bounces: 0, lastFrame: null, savedX: x, savedY: ground, savedZone: dropped.zone });
+        motion.onGround = motion.y >= ground - .002;
+        applyFurnitureMotion(motion);
+      } else if (drag.kind === "furniture") {
+        drag.item.zone = dropped.zone;
+        drag.item.x = x;
+        drag.item.y = Math.max(.3, Math.min(.9, dropped.y));
       }
       try {
         const collection = drag.kind === "character" ? "characters" : drag.kind === "cat" ? "cats" : "furniture";
@@ -5543,6 +6237,522 @@ You are loved more than this little game could ever hold.</p>
       return true;
     }
 
+    function dishProgressKey() {
+      return `birthday-quest-dishes:${user?.uid || "guest"}`;
+    }
+
+    function dishSyncKey() {
+      return `birthday-quest-dish-sync:${user?.uid || "guest"}`;
+    }
+
+    function readLocalDishProgress() {
+      cookedDishes.clear();
+      try {
+        const saved = JSON.parse(localStorage.getItem(dishProgressKey()) || "[]");
+        if (Array.isArray(saved)) saved.forEach((id) => { if (DISHES[Number(id) - 1]) cookedDishes.add(String(id)); });
+        const pending = JSON.parse(localStorage.getItem(dishSyncKey()) || "[]");
+        if (Array.isArray(pending)) pendingDishSync.set(user?.uid || "guest", new Set(pending.filter((id) => DISHES[Number(id) - 1]).map(String)));
+      } catch {}
+    }
+
+    function saveLocalDishProgress() {
+      try {
+        localStorage.setItem(dishProgressKey(), JSON.stringify([...cookedDishes]));
+        localStorage.setItem(dishSyncKey(), JSON.stringify([...(pendingDishSync.get(user?.uid || "guest") || [])]));
+      } catch {}
+    }
+
+    async function persistDishToCloud(dishId) {
+      const accountKey = user?.uid || "guest";
+      if (!user || !role || !db || !fs?.setDoc) {
+        if (!pendingDishSync.has(accountKey)) pendingDishSync.set(accountKey, new Set());
+        pendingDishSync.get(accountKey).add(dishId);
+        saveLocalDishProgress();
+        return false;
+      }
+      try {
+        await fs.setDoc(fs.doc(db, "dishProgress", `${user.uid}_${dishId}`), {
+          dishId,
+          cookedBy: user.uid,
+          createdAt: fs.serverTimestamp(),
+        });
+        pendingDishSync.get(accountKey)?.delete(dishId);
+        saveLocalDishProgress();
+        return true;
+      } catch {
+        if (!pendingDishSync.has(accountKey)) pendingDishSync.set(accountKey, new Set());
+        pendingDishSync.get(accountKey).add(dishId);
+        saveLocalDishProgress();
+        return false;
+      }
+    }
+
+    async function loadDishProgress() {
+      readLocalDishProgress();
+      if (user && role && db && fs?.getDocs) {
+        try {
+          const snapshot = await fs.getDocs(fs.collection(db, "dishProgress"));
+          snapshot.forEach((entry) => {
+            const dishId = String(entry.data().dishId || "");
+            if (DISHES[Number(dishId) - 1]) cookedDishes.add(dishId);
+            if (entry.data().cookedBy === user.uid) pendingDishSync.get(user.uid)?.delete(dishId);
+          });
+          saveLocalDishProgress();
+        } catch (error) {
+          showAppError("dishLoadError", "Could not load the shared cookbook", error);
+        }
+      }
+      renderIngredientOptions();
+      renderKitchenCookbook();
+      for (const dishId of [...(pendingDishSync.get(user?.uid || "guest") || [])]) await persistDishToCloud(dishId);
+      updateKitchenUi();
+    }
+
+    function ingredientSvg(id, color) {
+      const dark = shadeHex(color, -42);
+      const light = shadeHex(color, 34);
+      const pixels = {
+        flour: `<rect x="6" y="6" width="12" height="15" fill="${light}"/><path d="M5 6h14v3H5z" fill="${dark}"/><rect x="9" y="11" width="6" height="6" fill="${dark}"/>`,
+        sugar: `<rect x="5" y="6" width="14" height="14" fill="${light}"/><path d="M5 6h14v3H5zM7 20h10" stroke="${dark}" stroke-width="2"/>`,
+        rice: `<path d="M5 8h14l-2 12H7L5 8Z" fill="${light}"/><path d="M8 11h8M9 14h6M10 17h4" stroke="${dark}" stroke-width="2"/>`,
+        egg: `<ellipse cx="12" cy="13" rx="7" ry="9" fill="${light}"/><ellipse cx="12" cy="14" rx="4" ry="5" fill="${color}"/>`,
+        milk: `<path d="M8 3h8v4l3 3v11H5V10l3-3V3Z" fill="${light}"/><path d="M5 12h14v4H5z" fill="${color}"/><rect x="8" y="3" width="8" height="3" fill="${dark}"/>`,
+        butter: `<path d="m5 8 11-3 3 4v10H5V8Z" fill="${light}"/><path d="M5 13h14M10 8v10" stroke="${dark}" stroke-width="2"/>`,
+        berry: `<circle cx="9" cy="14" r="5" fill="${color}"/><circle cx="15" cy="14" r="5" fill="${light}"/><path d="M11 8V4h3v4" stroke="#6e8c52" stroke-width="2"/>`,
+        apple: `<path d="M11 6h2v3h-2z" fill="#6d4933"/><path d="M5 10c0-4 4-5 7-2 3-3 7-2 7 2 0 6-4 10-7 10S5 16 5 10Z" fill="${color}"/><rect x="8" y="9" width="2" height="4" fill="${light}"/>`,
+        chocolate: `<rect x="5" y="4" width="14" height="17" fill="${dark}"/><path d="M9 4v17M15 4v17M5 11h14M5 17h14" stroke="${light}" stroke-width="1"/>`,
+        vanilla: `<path d="m7 20 10-16M9 21l9-16" stroke="${dark}" stroke-width="3"/><path d="m11 14 4 2M9 17l4 2" stroke="${light}" stroke-width="2"/>`,
+        tomato: `<circle cx="12" cy="13" r="8" fill="${color}"/><path d="m12 6 3-3 1 4 4 1-4 2-4-4Z" fill="#6e8c52"/><rect x="8" y="9" width="2" height="4" fill="${light}"/>`,
+        cheese: `<path d="M4 9h16v11H4z" fill="${light}"/><path d="M4 9 20 4v5H4Z" fill="${color}"/><circle cx="10" cy="14" r="2" fill="${dark}"/><circle cx="16" cy="17" r="1.5" fill="${dark}"/>`,
+        bread: `<path d="M5 9c0-5 3-6 7-6s7 1 7 6v11H5V9Z" fill="${light}"/><path d="M8 9c0-2 1-3 3-3M13 9c0-2 1-3 3-3" stroke="${dark}" stroke-width="2"/>`,
+        potato: `<ellipse cx="12" cy="13" rx="9" ry="7" fill="${color}"/><rect x="8" y="7" width="2" height="2" fill="${dark}"/><rect x="14" y="14" width="2" height="2" fill="${dark}"/>`,
+        pasta: `<path d="M7 4v16M11 4v16M15 4v16M19 4v16M5 8h16M5 14h16" stroke="${color}" stroke-width="2"/>`,
+        chicken: `<path d="M7 5h10v9c0 5-10 5-10 0V5Z" fill="${light}"/><path d="M17 9h3v6h-3" fill="${dark}"/>`,
+        fish: `<path d="m4 12 5-6h8c3 0 4 3 3 6-1 3 0 6-3 6H9l-5-6Z" fill="${color}"/><rect x="13" y="10" width="2" height="2" fill="${dark}"/><path d="m17 8 4-4v16l-4-4" fill="${light}"/>`,
+        beef: `<path d="M5 7c3-4 10-4 14 0 3 4 0 11-4 12H8C4 18 2 11 5 7Z" fill="${color}"/><path d="m8 9 4 3-3 4M14 8l-2 5 4 3" stroke="${light}" stroke-width="2"/>`,
+        pork: `<ellipse cx="12" cy="13" rx="8" ry="7" fill="${color}"/><ellipse cx="12" cy="13" rx="4" ry="3" fill="${light}"/><ellipse cx="12" cy="13" rx="2" ry="1.5" fill="${dark}"/>`,
+        mushroom: `<path d="M9 12h6v8H9z" fill="${light}"/><path d="M4 13C4 5 20 5 20 13H4Z" fill="${color}"/><rect x="8" y="8" width="3" height="2" fill="${light}"/>`,
+        vegetable: `<path d="m8 8 8 13h-5L5 9l3-1Z" fill="${color}"/><path d="M9 7V3h3v4M12 6V2h3v5" stroke="${light}" stroke-width="2"/>`,
+        fruit: `<circle cx="12" cy="14" r="8" fill="${color}"/><path d="M12 7c0-4 3-5 5-4-1 3-3 4-5 4Z" fill="#6e8c52"/>`,
+        tortilla: `<ellipse cx="12" cy="13" rx="10" ry="7" fill="${light}"/><rect x="6" y="9" width="3" height="3" fill="${dark}"/><rect x="14" y="13" width="2" height="2" fill="${dark}"/>`,
+        avocado: `<path d="M12 3c-5 0-8 6-8 10 0 4 3 7 8 7s8-3 8-7c0-4-3-10-8-10Z" fill="${dark}"/><path d="M12 7c-3 0-5 4-5 7 0 2 2 4 5 4s5-2 5-4c0-3-2-7-5-7Z" fill="${light}"/><circle cx="12" cy="15" r="3" fill="${color}"/>`,
+        cinnamon: `<path d="m5 18 12-13M8 21l12-13" stroke="${dark}" stroke-width="4"/><path d="m5 15 10-11M9 20l10-11" stroke="${light}" stroke-width="2"/>`,
+        lemon: `<ellipse cx="12" cy="13" rx="9" ry="7" fill="${color}" transform="rotate(-20 12 13)"/><path d="m18 6 2-2M16 4l1-2" stroke="#6e8c52" stroke-width="2"/>`,
+        tea: `<path d="M5 19C2 8 11 4 20 4c0 9-5 16-15 15Z" fill="${color}"/><path d="M5 20 16 9" stroke="${light}" stroke-width="2"/>`,
+      };
+      return `<svg viewBox="0 0 24 24" aria-hidden="true">${pixels[id] || `<rect x="5" y="5" width="14" height="14" fill="${color}"/>`}</svg>`;
+    }
+
+    function matchingDishIndex() {
+      if (!selectedIngredients.length) return -1;
+      return DISH_LOOKUP.get([...selectedIngredients].sort().join("|")) ?? -1;
+    }
+
+    function renderIngredientOptions() {
+      const grid = $("#kitchen-ingredients");
+      if (!grid) return;
+      if (grid.children.length !== INGREDIENTS.length) {
+        grid.replaceChildren(...INGREDIENTS.map((ingredient) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "ingredient-button";
+          button.dataset.ingredient = ingredient.id;
+          return button;
+        }));
+      }
+      [...grid.children].forEach((button, index) => {
+        const ingredient = INGREDIENTS[index];
+        button.innerHTML = `${ingredientSvg(ingredient.id, ingredient.color)}<span></span>`;
+        button.querySelector("span").textContent = ingredientName(ingredient.id);
+        button.setAttribute("aria-label", ingredientName(ingredient.id));
+        button.disabled = cooking;
+      });
+    }
+
+    function renderIngredientSlots() {
+      const slots = $("#ingredient-slots");
+      if (!slots) return;
+      slots.replaceChildren(...Array.from({ length: 4 }, (_, index) => {
+        const id = selectedIngredients[index];
+        const element = document.createElement(id ? "button" : "span");
+        element.className = `ingredient-slot${id ? " filled" : ""}`;
+        if (id) {
+          const ingredient = INGREDIENTS.find((item) => item.id === id);
+          element.type = "button";
+          element.dataset.ingredientSlot = String(index);
+          element.innerHTML = `${ingredientSvg(id, ingredient.color)}<span></span>`;
+          element.querySelector("span").textContent = ingredientName(id);
+          element.setAttribute("aria-label", formatCopy("ingredientSlotRemove", { name: ingredientName(id), slot: index + 1 }, `Remove ${ingredientName(id)} from slot ${index + 1}.`));
+        } else {
+          element.textContent = formatCopy("ingredientSlotEmpty", { slot: index + 1 }, `Empty slot ${index + 1}`);
+        }
+        return element;
+      }));
+    }
+
+    function renderKitchenCookbook() {
+      const list = $("#kitchen-cookbook-list");
+      if (!list || list.children.length !== DISHES.length) {
+        list.replaceChildren(...DISHES.map((_, index) => {
+          const card = document.createElement("div");
+          card.className = "cookbook-dish";
+          card.dataset.dishId = String(index + 1);
+          return card;
+        }));
+      }
+      [...list.children].forEach((card, index) => {
+        const cooked = cookedDishes.has(String(index + 1));
+        card.classList.toggle("cooked", cooked);
+        const state = copyText(cooked ? "kitchenDishCooked" : "kitchenDishNew", cooked ? "Cooked" : "New");
+        card.innerHTML = `<span></span><small>${DISH_RECIPES[index].ingredients.map(ingredientName).join(" · ")}</small>`;
+        card.querySelector("span").textContent = `${dishName(index)} — ${state}`;
+      });
+    }
+
+    function updateKitchenUi() {
+      renderIngredientSlots();
+      renderKitchenCookbook();
+      const dishIndex = matchingDishIndex();
+      const hint = $("#kitchen-recipe-hint");
+      const status = $("#dish-status");
+      const station = $("#kitchen-station");
+      $("#dish-progress").textContent = formatCopy("kitchenProgress", { count: cookedDishes.size }, `${cookedDishes.size} / 50 dishes`);
+      $("#cook-dish").disabled = cooking || dishIndex < 0;
+      $("#clear-ingredients").disabled = cooking || selectedIngredients.length === 0;
+      $$("#kitchen-ingredients [data-ingredient]").forEach((button) => { button.disabled = cooking; });
+      const firstIngredient = INGREDIENTS.find((item) => item.id === selectedIngredients[0]);
+      station.style.setProperty("--craft-color", firstIngredient?.color || "#b8784e");
+      hint.textContent = dishIndex >= 0
+        ? formatCopy("kitchenHintMatch", { name: dishName(dishIndex) }, `Recipe found: ${dishName(dishIndex)}`)
+        : selectedIngredients.length
+          ? formatCopy("kitchenHintNoMatch", {}, "No recipe yet. Change an ingredient and try again.")
+          : copyText("kitchenHintEmpty", "The stove is warm and ready.");
+      if (lastCookedDish >= 0) {
+        const result = $("#kitchen-result");
+        result.classList.add("visible");
+        $("#kitchen-result-art").innerHTML = dishSvg(lastCookedDish);
+        $("#kitchen-result-name").textContent = dishName(lastCookedDish);
+        $("#kitchen-result-note").textContent = copyText(lastCookedDishWasNew ? "dishResultFirst" : "dishResultAgain", lastCookedDishWasNew ? "First time cooked" : "Family favorite");
+        if (!cooking) status.textContent = formatCopy("kitchenCooked", { name: dishName(lastCookedDish) }, `${dishName(lastCookedDish)} is ready. Enjoy!`);
+      } else {
+        $("#kitchen-result").classList.remove("visible");
+        if (!cooking) status.textContent = dishIndex >= 0
+          ? formatCopy("kitchenHintMatch", { name: dishName(dishIndex) }, `Recipe found: ${dishName(dishIndex)}`)
+          : copyText("kitchenStatusReady", "Choose ingredients to discover a dish.");
+      }
+    }
+
+    function selectIngredient(id) {
+      if (cooking || !INGREDIENTS.some((item) => item.id === id)) return;
+      if (selectedIngredients.length >= 4) {
+        $("#dish-status").textContent = formatCopy("kitchenSlotsFull", {}, "All four ingredient slots are full. Remove one to change the recipe.");
+        return;
+      }
+      selectedIngredients.push(id);
+      lastCookedDish = -1;
+      updateKitchenUi();
+    }
+
+    function removeIngredient(index) {
+      if (cooking || !Number.isInteger(index) || index < 0 || index >= selectedIngredients.length) return;
+      selectedIngredients.splice(index, 1);
+      lastCookedDish = -1;
+      updateKitchenUi();
+    }
+
+    function clearIngredients() {
+      if (cooking) return;
+      selectedIngredients.length = 0;
+      lastCookedDish = -1;
+      updateKitchenUi();
+    }
+
+    function dishSvg(index) {
+      const recipe = DISH_RECIPES[index];
+      if (!recipe) return "";
+      const colors = recipe.ingredients.map((id) => INGREDIENTS.find((item) => item.id === id)?.color || "#d8bd83");
+      const main = colors[0] || "#d8bd83";
+      const accent = colors[1] || "#b96f55";
+      const garnish = colors[2] || "#799451";
+      return `<svg viewBox="0 0 80 64" aria-hidden="true"><ellipse cx="40" cy="50" rx="31" ry="7" fill="#252c23"/><path d="M8 29h64v18H8z" fill="#e1dcc8"/><path d="M12 33h56v10H12z" fill="#b9c0ad"/><path d="M18 39c3-13 17-18 28-11 8 5 13 13 17 16H18Z" fill="${main}"/><rect x="27" y="25" width="8" height="7" fill="${accent}"/><rect x="42" y="28" width="10" height="6" fill="${accent}"/><rect x="34" y="35" width="7" height="5" fill="${garnish}"/><path d="M13 31h54" stroke="#f5f0dc" stroke-width="3"/></svg>`;
+    }
+
+    function showDishAchievement(dish) {
+      const popup = $("#dish-achievement");
+      $("#dish-achievement-message").textContent = copyText("dishAchievementMessage", "Delicious discovery!");
+      $("#dish-achievement-name").textContent = dish.name;
+      popup.hidden = false;
+      popup.classList.remove("achievementIn");
+      void popup.offsetWidth;
+      popup.classList.add("achievementIn");
+      clearTimeout(dishAchievementTimer);
+      dishAchievementTimer = setTimeout(() => { popup.hidden = true; }, 3400);
+    }
+
+    function openKitchen() {
+      showPage("kitchen");
+      updateKitchenUi();
+    }
+
+    async function cookSelectedDish() {
+      if (cooking || !requireHouseAccess()) return;
+      if (!selectedIngredients.length) {
+        $("#dish-status").textContent = copyText("kitchenNeedIngredients", "Choose at least one ingredient first.");
+        return;
+      }
+      const dishIndex = matchingDishIndex();
+      if (dishIndex < 0) {
+        $("#dish-status").textContent = copyText("kitchenNeedMatch", "Those ingredients do not make a recipe yet.");
+        return;
+      }
+      const dish = { id: String(dishIndex + 1), name: dishName(dishIndex) };
+      const newDish = !cookedDishes.has(dish.id);
+      let resultStatus = "";
+      cooking = true;
+      const button = $("#cook-dish");
+      const station = $("#kitchen-station");
+      const status = $("#dish-status");
+      button.disabled = true;
+      station.classList.add("cooking");
+      status.textContent = formatCopy("kitchenCooking", { name: dish.name }, `Cooking ${dish.name}...`);
+      updateKitchenUi();
+      try {
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+        cookedDishes.add(dish.id);
+        saveLocalDishProgress();
+        const cloudSaved = newDish || pendingDishSync.get(user?.uid || "guest")?.has(dish.id)
+          ? await persistDishToCloud(dish.id)
+          : true;
+        if (newDish) showDishAchievement(dish);
+        gainXp(newDish ? 12 : 3);
+        resultStatus = formatCopy(newDish ? "kitchenCooked" : "kitchenCookedAgain", { name: dish.name }, newDish ? `${dish.name} is ready. Enjoy!` : `${dish.name} cooked again. A family favorite!`);
+        showToast(copyText(cloudSaved ? "kitchenSavedCloud" : "kitchenSavedLocal", cloudSaved ? "Dish added to your shared cookbook." : "Dish saved on this device. Cloud sync is unavailable."));
+        selectedIngredients.length = 0;
+        lastCookedDish = dishIndex;
+        lastCookedDishWasNew = newDish;
+      } finally {
+        station.classList.remove("cooking");
+        cooking = false;
+        updateKitchenUi();
+        if (resultStatus) status.textContent = resultStatus;
+      }
+    }
+
+    function cafeProgressKey() {
+      return `birthday-quest-cafe:${user?.uid || "guest"}`;
+    }
+
+    function readCafeProgress() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(cafeProgressKey()) || "{}");
+        cafeStats = {
+          brewed: Math.max(0, Math.min(9999, Number(saved.brewed) || 0)),
+          drunk: Math.max(0, Math.min(9999, Number(saved.drunk) || 0)),
+        };
+      } catch {
+        cafeStats = { brewed: 0, drunk: 0 };
+      }
+    }
+
+    function saveCafeProgress() {
+      try {
+        localStorage.setItem(cafeProgressKey(), JSON.stringify(cafeStats));
+      } catch {}
+    }
+
+    function coffeeName(id) {
+      const drink = cafeDrinks.find((item) => item.id === id) || cafeDrinks[1];
+      return copyText(drink.label, drink.name);
+    }
+
+    function coffeeSvg(drink) {
+      const color = drink?.color || "#a8754e";
+      return `<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M6 10h16v11a6 6 0 0 1-6 6h-4a6 6 0 0 1-6-6V10Z" fill="#e7dec7"/><path d="M7 12h14v5H7z" fill="${color}"/><path d="M22 13h3a4 4 0 0 1 0 8h-3" fill="none" stroke="#e7dec7" stroke-width="3"/><path d="M3 29h22" stroke="#4b392b" stroke-width="2"/><path d="M11 7V4M16 7V3M20 7V4" stroke="#d7cfb6" stroke-width="2"/></svg>`;
+    }
+
+    function renderCoffeeOptions() {
+      const options = $("#coffee-options");
+      if (!options || options.children.length !== cafeDrinks.length) {
+        options.replaceChildren(...cafeDrinks.map((drink) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "coffee-option";
+          button.dataset.coffee = drink.id;
+          return button;
+        }));
+      }
+      [...options.children].forEach((button, index) => {
+        const drink = cafeDrinks[index];
+        button.classList.toggle("active", selectedCoffee === drink.id);
+        button.setAttribute("aria-pressed", String(selectedCoffee === drink.id));
+        button.disabled = brewingCoffee;
+        button.innerHTML = `${coffeeSvg(drink)}<span></span>`;
+        button.querySelector("span").textContent = coffeeName(drink.id);
+      });
+    }
+
+    function updateCafeUi() {
+      renderCoffeeOptions();
+      const drink = cafeDrinks.find((item) => item.id === selectedCoffee) || cafeDrinks[1];
+      $("#brew-coffee").disabled = brewingCoffee;
+      $("#drink-coffee").disabled = brewingCoffee || !readyCoffee;
+      $("#coffee-cup").classList.toggle("ready", Boolean(readyCoffee));
+      $("#coffee-cup").style.setProperty("--coffee-color", readyCoffee?.color || drink.color);
+      $("#coffee-brewed").textContent = formatCopy("cafeBrewedStat", { count: cafeStats.brewed }, `${cafeStats.brewed} brewed`);
+      $("#coffee-drunk").textContent = formatCopy("cafeDrunkStat", { count: cafeStats.drunk }, `${cafeStats.drunk} enjoyed`);
+    }
+
+    async function brewCoffee() {
+      if (brewingCoffee || !requireHouseAccess()) return;
+      const drink = cafeDrinks.find((item) => item.id === selectedCoffee) || cafeDrinks[1];
+      brewingCoffee = true;
+      readyCoffee = null;
+      $("#coffee-cup").classList.add("brewing");
+      $("#cafe-status").textContent = formatCopy("cafeBrewing", { name: coffeeName(drink.id) }, `Brewing ${coffeeName(drink.id)}...`);
+      updateCafeUi();
+      try {
+        await new Promise((resolve) => setTimeout(resolve, 1200));
+        cafeStats.brewed += 1;
+        saveCafeProgress();
+        readyCoffee = drink;
+        $("#cafe-status").textContent = formatCopy("cafeReady", { name: coffeeName(drink.id) }, `${coffeeName(drink.id)} is ready. Drink it while it is warm!`);
+      } finally {
+        brewingCoffee = false;
+        $("#coffee-cup").classList.remove("brewing");
+        updateCafeUi();
+      }
+    }
+
+    function drinkCoffee() {
+      if (brewingCoffee || !requireHouseAccess()) return;
+      if (!readyCoffee) {
+        $("#cafe-status").textContent = copyText("cafeDrinkEmpty", "Brew a coffee before drinking.");
+        return;
+      }
+      const drink = readyCoffee;
+      cafeStats.drunk += 1;
+      saveCafeProgress();
+      coffeeBoostUntil = performance.now() + 30000;
+      coffeeBoostMultiplier = drink.strength;
+      gainXp(8);
+      $("#cafe-status").textContent = formatCopy("cafeDrinking", { name: coffeeName(drink.id) }, `You enjoy a warm ${coffeeName(drink.id)}. Speed boost active for 30 seconds!`);
+      readyCoffee = null;
+      updateCafeUi();
+    }
+
+    function cafeCatSvg(cat) {
+      const color = cat.color;
+      const dark = shadeHex(color, -45);
+      const light = shadeHex(color, 30);
+      return `<svg viewBox="0 0 64 52" aria-hidden="true"><path d="M10 38H2V20h8" fill="none" stroke="${dark}" stroke-width="7"/><rect x="15" y="27" width="34" height="19" fill="${color}"/><rect x="20" y="44" width="7" height="5" fill="${dark}"/><rect x="39" y="44" width="7" height="5" fill="${dark}"/><path d="M17 10 21 2l9 8 9-8 4 8v20H17V10Z" fill="${color}"/><path d="m20 8 2 7h4l-4-7M42 8l-2 7h-4l4-7" fill="${light}"/><rect x="22" y="20" width="5" height="5" fill="#263024"/><rect x="39" y="20" width="5" height="5" fill="#263024"/><path d="M30 27h5l-2 3h-2l-1-3Z" fill="#b86f72"/><path d="M24 13h7M34 13h7" stroke="${dark}" stroke-width="3"/><rect x="25" y="32" width="16" height="8" fill="${light}"/></svg>`;
+    }
+
+    function ensureCafeCatMotion(cat) {
+      let motion = cafeCatMotion.get(cat.id);
+      if (!motion) {
+        motion = {
+          x: cat.x, baseX: cat.x, targetX: cat.x, y: cat.y, baseY: cat.y,
+          vx: 0, vy: 0, onGround: true,
+          nextMove: performance.now() + 1200 + Math.random() * 2400,
+          nextHop: performance.now() + 3200 + Math.random() * 5200,
+          element: null, shadow: null,
+        };
+        cafeCatMotion.set(cat.id, motion);
+      }
+      return motion;
+    }
+
+    function renderCafeCats() {
+      const layer = $("#cafe-cats");
+      if (!layer) return;
+      if (layer.children.length !== cafeCats.length * 2) {
+        layer.replaceChildren();
+        cafeCats.forEach((cat) => {
+          const shadow = document.createElement("span");
+          shadow.className = "cafe-cat-shadow";
+          shadow.setAttribute("aria-hidden", "true");
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "cafe-cat";
+          button.dataset.cafeCat = cat.id;
+          button.innerHTML = cafeCatSvg(cat);
+          layer.append(shadow, button);
+          const motion = ensureCafeCatMotion(cat);
+          motion.shadow = shadow;
+          motion.element = button;
+        });
+      }
+      cafeCats.forEach((cat) => {
+        const motion = ensureCafeCatMotion(cat);
+        motion.element.setAttribute("aria-label", formatCopy("cafeCatAria", { name: copyText(cat.label, cat.name) }, `Pet ${cat.name}`));
+        applyCafeCatMotion(motion);
+      });
+    }
+
+    function applyCafeCatMotion(motion) {
+      motion.element.style.left = `${motion.x * 100}%`;
+      motion.element.style.top = `${motion.y * 100}%`;
+      motion.element.dataset.grounded = String(motion.onGround);
+      motion.shadow.style.left = `${motion.x * 100}%`;
+      motion.shadow.style.top = `${motion.baseY * 100}%`;
+      motion.shadow.style.transform = `translate(-50%, -50%) scale(${Math.max(.55, 1 - (motion.baseY - motion.y) * 1.5)})`;
+    }
+
+    function updateCafeMotion(time, previousTime) {
+      if (currentPage !== "cafe" || chatOpen || editMode || $$(".modal-backdrop").some((modal) => !modal.hidden)) return;
+      const delta = Math.min(.05, Math.max(.001, (time - previousTime) / 1000));
+      cafeCats.forEach((cat) => {
+        const motion = ensureCafeCatMotion(cat);
+        if (!motion.element || !motion.shadow) return;
+        if (
+          !Number.isFinite(motion.x) || !Number.isFinite(motion.y) || !Number.isFinite(motion.vx) || !Number.isFinite(motion.vy)
+          || !Number.isFinite(motion.targetX) || !Number.isFinite(motion.nextMove) || !Number.isFinite(motion.nextHop)
+          || motion.x < .08 || motion.x > .92 || motion.y > motion.baseY + .01 || Math.abs(motion.vx) > .5 || Math.abs(motion.vy) > 1
+        ) Object.assign(motion, { x: motion.baseX, y: motion.baseY, targetX: motion.baseX, vx: 0, vy: 0, onGround: true, nextMove: time + 1200, nextHop: time + 3200 });
+        if (motion.onGround && time >= motion.nextMove) {
+          motion.targetX = .1 + Math.random() * .8;
+          motion.nextMove = time + 2600 + Math.random() * 4200;
+          if (Math.random() < .18) {
+            motion.vy = -.22;
+            motion.onGround = false;
+          }
+        }
+        const distance = motion.targetX - motion.x;
+        const desiredVelocity = Math.abs(distance) > .01 ? Math.sign(distance) * .045 : 0;
+        motion.vx += (desiredVelocity - motion.vx) * Math.min(1, delta * 6);
+        motion.x = Math.max(.08, Math.min(.92, motion.x + motion.vx * delta));
+        if (!motion.onGround) {
+          motion.vy += 1.15 * delta;
+          motion.y += motion.vy * delta;
+          if (motion.y >= motion.baseY) {
+            motion.y = motion.baseY;
+            motion.vy = 0;
+            motion.onGround = true;
+          }
+        }
+        applyCafeCatMotion(motion);
+      });
+    }
+
+    function petCafeCat(id) {
+      const cat = cafeCats.find((item) => item.id === id);
+      if (!cat) return;
+      const name = copyText(cat.label, cat.name);
+      const motion = ensureCafeCatMotion(cat);
+      motion.element.dataset.pet = "true";
+      clearTimeout(motion.element.petTimer);
+      motion.element.petTimer = setTimeout(() => { delete motion.element.dataset.pet; }, 500);
+      const heart = document.createElement("span");
+      heart.className = "cafe-cat-heart";
+      heart.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 3h4v2h4V3h4v6h-2v2h-2v2H6v-2H4V9H2V3Z" fill="currentColor"/></svg>`;
+      heart.style.left = `${motion.x * 100}%`;
+      heart.style.top = `${(motion.y - .08) * 100}%`;
+      $("#cafe-cats").append(heart);
+      setTimeout(() => heart.remove(), 850);
+      $("#cafe-status").textContent = formatCopy("cafePetMessage", { name }, `${name} purrs happily!`);
+      gainXp(2);
+    }
+
     function useFurniture(item, element) {
       if (item.zone === "garden") {
         useGardenDecor(item, element);
@@ -5561,8 +6771,12 @@ You are loved more than this little game could ever hold.</p>
         showToast(copyText("housePlantWatered", "A little water helps the plant grow."));
         return;
       }
+      if (item.type === "kitchen") {
+        openKitchen();
+        return;
+      }
       const action = ["bed", "sofa", "armchair"].includes(item.type) ? "rest"
-        : ["table", "kitchen"].includes(item.type) ? "eat"
+        : item.type === "table" ? "eat"
           : ["shelf", "desk", "tv", "dresser", "clock"].includes(item.type) ? "read" : null;
       if (action) triggerCharacterAction(action);
       else showToast(copyText("houseFurnitureCozy", "A cozy new piece for the house."));
@@ -5596,6 +6810,7 @@ You are loved more than this little game could ever hold.</p>
     async function placeFurniture(event) {
       if (!placementFurniture || !requireHouseAccess() || event.target.closest(".house-item")) return;
       const position = normalizeHousePosition(event.clientX, event.clientY);
+      if (placementFurniture !== "rug") position.y = Math.min(position.y, houseGroundY(position.zone, position.x));
       try {
         await fs.addDoc(fs.collection(db, "furniture"), { type: placementFurniture, ...position, createdBy: user.uid, createdAt: fs.serverTimestamp() });
         gainXp(8);
@@ -5632,15 +6847,42 @@ You are loved more than this little game could ever hold.</p>
       return `#${a.map((value, index) => Math.round((value + b[index]) / 2).toString(16).padStart(2, "0")).join("")}`;
     }
 
+    function nearestSlimeColor(color) {
+      if (SLIME_COLORS.includes(color)) return color;
+      const target = color.match(/[a-f\d]{2}/gi).map((value) => parseInt(value, 16));
+      return SLIME_COLORS.reduce((closest, candidate) => {
+        const channels = candidate.match(/[a-f\d]{2}/gi).map((value) => parseInt(value, 16));
+        const distance = channels.reduce((sum, value, index) => sum + (value - target[index]) ** 2, 0);
+        return distance < closest.distance ? { color: candidate, distance } : closest;
+      }, { color: SLIME_COLORS[0], distance: Infinity }).color;
+    }
+
+    function renderMixColorOptions() {
+      const colors = SLIME_COLORS.filter((color) => unlockedSlimeColors.has(color));
+      [$("#mix-color-a"), $("#mix-color-b")].forEach((select) => {
+        const previous = select.value;
+        select.replaceChildren(...colors.map((color, index) => {
+          const option = document.createElement("option");
+          option.value = color;
+          option.dataset.colorNumber = String(index + 1);
+          option.textContent = formatCopy("mixColorOption", { number: index + 1 }, `Color ${index + 1}`);
+          return option;
+        }));
+        select.value = colors.includes(previous) ? previous : colors[0];
+      });
+      updateMixerPreview();
+    }
+
     function updateMixerPreview() {
-      const first = $("#mix-color-a").value;
-      const second = $("#mix-color-b").value;
-      const result = blendHex(first, second);
+      const first = $("#mix-color-a").value || SLIME_BASE_COLORS[0];
+      const second = $("#mix-color-b").value || SLIME_BASE_COLORS[1];
+      const result = nearestSlimeColor(blendHex(first, second));
+      const visibleColor = unlockedSlimeColors.has(result) ? result : "#6f7468";
       const station = $("#mixer-station");
       station.style.setProperty("--mix-a", first);
       station.style.setProperty("--mix-b", second);
-      station.style.setProperty("--mix-color", result);
-      $("#mix-result").innerHTML = slimeSvg(result, $("#mix-eyes").value, $("#mix-accessory").value);
+      station.style.setProperty("--mix-color", visibleColor);
+      $("#mix-result").innerHTML = slimeSvg(visibleColor, $("#mix-eyes").value, $("#mix-accessory").value);
     }
 
     async function mixSlime() {
@@ -5651,7 +6893,8 @@ You are loved more than this little game could ever hold.</p>
       const status = $("#mix-status");
       const first = $("#mix-color-a").value;
       const second = $("#mix-color-b").value;
-      const resultColor = blendHex(first, second);
+      const resultColor = nearestSlimeColor(blendHex(first, second));
+      const newColor = !unlockedSlimeColors.has(resultColor);
       const name = $("#mix-name").value.trim() || copyText("mixDefaultMixName", "Bubble mix");
       button.disabled = true;
       station.classList.remove("pouring", "swirling", "bubbling", "revealing");
@@ -5673,6 +6916,10 @@ You are loved more than this little game could ever hold.</p>
         station.classList.add("revealing");
         $("#mix-result").innerHTML = slimeSvg(resultColor, mixture.eyes, mixture.accessory);
         status.textContent = formatCopy("mixAlive", { name }, `${name} is alive!`);
+        if (newColor) {
+          unlockSlimeColor(resultColor);
+          showSlimeAchievement(resultColor);
+        }
         if (!db) {
           mixes.unshift({ ...mixture, id: `local-${Date.now()}` });
           renderMixes();
@@ -5695,11 +6942,10 @@ You are loved more than this little game could ever hold.</p>
     }
 
     function loadMixInLab(mix) {
-      selectedColor = mix.resultColor;
+      selectedColor = nearestSlimeColor(mix.resultColor);
       selectedEyes = eyeStyles.includes(mix.eyes) ? mix.eyes : "happy";
       selectedAccessory = accessories.includes(mix.accessory) ? mix.accessory : "none";
       $("#slime-name").value = mix.name || "";
-      selectOption("#color-options", "color", selectedColor);
       selectOption("#eye-options", "eyes", selectedEyes);
       selectOption("#accessory-options", "accessory", selectedAccessory);
       updateSlimePreview(true);
@@ -5728,9 +6974,27 @@ You are loved more than this little game could ever hold.</p>
 
     function updateHouseMotion(time, previousTime) {
       const delta = Math.min(.05, Math.max(.001, (time - previousTime) / 1000));
-      if (currentPage !== "house" || activeHouseDrag) return;
+      if (currentPage !== "house") return;
+      updateFurnitureMotion(time, previousTime);
+      if (activeHouseDrag) return;
       const advance = (motion, kind, item, speed, canJump) => {
         if (activeHouseDrag?.kind === kind && activeHouseDrag.item.id === item.id) return;
+        const guardBounds = houseBounds(motion.zone);
+        const guardGround = houseGroundY(motion.zone, motion.x);
+        if (
+          !Number.isFinite(motion.x) || !Number.isFinite(motion.y) || !Number.isFinite(motion.vx) || !Number.isFinite(motion.vy)
+          || !Number.isFinite(motion.targetX) || !Number.isFinite(motion.nextMove)
+          || motion.x < guardBounds.minX - .01 || motion.x > guardBounds.maxX + .01 || motion.y < .26 || motion.y > guardGround + .01
+          || Math.abs(motion.vx) > .5 || Math.abs(motion.vy) > 2
+        ) {
+          motion.x = Math.max(guardBounds.minX, Math.min(guardBounds.maxX, Number.isFinite(motion.x) ? motion.x : .5));
+          motion.y = houseGroundY(motion.zone, motion.x);
+          motion.targetX = motion.x;
+          motion.vx = 0;
+          motion.vy = 0;
+          motion.onGround = true;
+          motion.nextMove = time + 1200;
+        }
         if (time >= motion.nextMove) {
           const bounds = houseBounds(motion.zone);
           motion.targetX = Math.round((bounds.minX + Math.random() * (bounds.maxX - bounds.minX)) * 10000) / 10000;
@@ -5772,15 +7036,6 @@ You are loved more than this little game could ever hold.</p>
       visibleCats().forEach((cat) => {
         const motion = catMotion.get(cat.id);
         if (motion) advance(motion, "cat", cat, .075, false);
-      });
-    }
-
-    function startHouseMotion() {
-      if (houseMotionTicker) return;
-      let previousTime = performance.now();
-      houseMotionTicker = createFrameTicker((time) => {
-        updateHouseMotion(time, previousTime);
-        previousTime = time;
       });
     }
 
@@ -6413,18 +7668,30 @@ You are loved more than this little game could ever hold.</p>
         }
       }
       updateRoleUi();
+      readCafeProgress();
+      renderCafeCats();
+      updateCafeUi();
       await loadGalleryPages();
+      await loadDishProgress();
       if (account && role) {
         try { await ensureNatureSeeds(); } catch (error) { showAppError("natureSeedError", "Could not prepare the garden", error); }
         try { await ensureHouseSeeds(); } catch (error) { showAppError("houseSeedError", "Could not prepare the house", error); }
         try { await ensureGardenDecorSeeds(); } catch (error) { showAppError("gardenDecorSeedError", "Could not prepare garden toys", error); }
         try { await ensureBlueDecorSeeds(); } catch (error) { showAppError("blueDecorSeedError", "Could not prepare blue cage toys", error); }
       }
-      if (role === "admin" && !contentExists && !seedingContent) {
+      if (role === "admin" && !seedingContent) {
         seedingContent = true;
         try {
-          await fs.setDoc(contentRef(), defaultContent);
-          showToast(copyText("defaultCopySeeded", "Default birthday copy added to Firestore."));
+          const snapshot = await fs.getDoc(contentRef());
+          if (!snapshot.exists()) {
+            await fs.setDoc(contentRef(), defaultContent);
+            showToast(copyText("defaultCopySeeded", "Default birthday copy added to Firestore."));
+          } else {
+            const stored = snapshot.data();
+            const missingDefaults = Object.fromEntries(Object.entries(defaultContent).filter(([key]) => !(key in stored)));
+            if (Object.keys(missingDefaults).length) await fs.setDoc(contentRef(), missingDefaults, { merge: true });
+          }
+          contentExists = true;
         } catch (error) {
           showAppError("editorSeedError", "Could not add default copy", error);
         } finally {
@@ -6493,18 +7760,7 @@ You are loved more than this little game could ever hold.</p>
         button.addEventListener("click", () => setFurniturePlacement(type));
         furnitureOptions.append(button);
       });
-      [$("#mix-color-a"), $("#mix-color-b")].forEach((select, index) => {
-        mixColors.forEach((color, colorIndex) => {
-          const option = document.createElement("option");
-          option.value = color;
-          option.dataset.colorNumber = String(colorIndex + 1);
-          option.textContent = formatCopy("mixColorOption", { number: colorIndex + 1 }, `Color ${colorIndex + 1}`);
-          option.style.background = color;
-          select.append(option);
-        });
-        select.selectedIndex = index === 0 ? 0 : 1;
-      });
-      updateMixerPreview();
+      renderMixColorOptions();
       $$("[data-wardrobe-character]").forEach((button) => button.addEventListener("click", () => {
         selectedWardrobeCharacter = button.dataset.wardrobeCharacter;
         updateWardrobe();
@@ -6518,6 +7774,28 @@ You are loved more than this little game could ever hold.</p>
       $("#mix-eyes").addEventListener("change", updateMixerPreview);
       $("#mix-accessory").addEventListener("change", updateMixerPreview);
       $("#mix-slime").addEventListener("click", mixSlime);
+      $("#cook-dish").addEventListener("click", cookSelectedDish);
+      $("#clear-ingredients").addEventListener("click", clearIngredients);
+      $("#kitchen-ingredients").addEventListener("click", (event) => {
+        const button = event.target.closest("[data-ingredient]");
+        if (button) selectIngredient(button.dataset.ingredient);
+      });
+      $("#ingredient-slots").addEventListener("click", (event) => {
+        const button = event.target.closest("[data-ingredient-slot]");
+        if (button) removeIngredient(Number(button.dataset.ingredientSlot));
+      });
+      $("#coffee-options").addEventListener("click", (event) => {
+        const button = event.target.closest("[data-coffee]");
+        if (!button || brewingCoffee) return;
+        selectedCoffee = button.dataset.coffee;
+        updateCafeUi();
+      });
+      $("#brew-coffee").addEventListener("click", brewCoffee);
+      $("#drink-coffee").addEventListener("click", drinkCoffee);
+      $("#cafe-cats").addEventListener("click", (event) => {
+        const button = event.target.closest("[data-cafe-cat]");
+        if (button) petCafeCat(button.dataset.cafeCat);
+      });
       $$("[data-house-action]").forEach((button) => button.addEventListener("click", () => triggerCharacterAction(button.dataset.houseAction)));
       $("#garden-decor-toggle").addEventListener("click", () => {
         $("#garden-palette").hidden = !$("#garden-palette").hidden;
@@ -6556,10 +7834,6 @@ You are loved more than this little game could ever hold.</p>
         const type = button.dataset.furnitureType || button.dataset.decorType;
         const label = button.querySelector("span");
         if (type && label) label.textContent = furnitureTypeLabel(type);
-      });
-      $$("#mix-color-a option, #mix-color-b option").forEach((option) => {
-        const number = Number(option.dataset.colorNumber);
-        if (number) option.textContent = formatCopy("mixColorOption", { number }, `Color ${number}`);
       });
     }
 
@@ -6844,12 +8118,6 @@ You are loved more than this little game could ever hold.</p>
     $("#revoke-role").addEventListener("click", revokeRole);
 
     $("#slime-name").addEventListener("input", () => updateSlimePreview());
-    $("#color-options").addEventListener("click", (event) => {
-      const button = event.target.closest("button[data-color]");
-      if (!button) return;
-      selectedColor = button.dataset.color;
-      updateSlimePreview(true);
-    });
     $$("#eye-options [data-eyes]").forEach((button) => button.addEventListener("click", () => {
       selectedEyes = button.dataset.eyes;
       selectOption("#eye-options", "eyes", selectedEyes);
@@ -6860,13 +8128,6 @@ You are loved more than this little game could ever hold.</p>
       selectOption("#accessory-options", "accessory", selectedAccessory);
       updateSlimePreview(true);
     }));
-    $("#random-color").addEventListener("click", () => {
-      const currentIndex = SLIME_COLORS.indexOf(selectedColor);
-      const nextIndex = (currentIndex + 1 + Math.floor(Math.random() * 99)) % SLIME_COLORS.length;
-      selectedColor = SLIME_COLORS[nextIndex];
-      updateSlimePreview(true);
-    });
-    $("#create-slime").addEventListener("click", () => createSlime());
     $("#craft-slime").addEventListener("click", craftSlime);
     $("#unwrap-gift").addEventListener("click", unwrapGift);
     $("#rewrap-gift").addEventListener("click", rewrapGift);
@@ -6967,7 +8228,6 @@ You are loved more than this little game could ever hold.</p>
     initWeddingControls();
     renderWeddingScene();
     renderContent();
-    renderColorOptions();
     renderCraftProducts();
     updateSlimePreview();
     updateCraftPreview();
@@ -6977,9 +8237,13 @@ You are loved more than this little game could ever hold.</p>
     renderBunnies();
     renderTulips();
     renderHouse();
-    startHouseMotion();
-    startBunnyMotion();
-    startRoamingMotion();
+    readLocalDishProgress();
+    readCafeProgress();
+    renderIngredientOptions();
+    updateKitchenUi();
+    renderCafeCats();
+    updateCafeUi();
+    startWorldMotion();
     updateInstallUi();
     updateChatUi();
     registerServiceWorker();

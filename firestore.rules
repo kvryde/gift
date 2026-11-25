@@ -135,7 +135,7 @@ service cloud.firestore {
         && (
           (!('worldPage' in data) && !('worldX' in data))
           || (
-            data.worldPage in ['home', 'slime', 'gift', 'wedding', 'gallery', 'bunnyBlue', 'garden', 'house']
+            data.worldPage in ['home', 'slime', 'gift', 'wedding', 'gallery', 'bunnyBlue', 'garden', 'house', 'kitchen', 'cafe']
             && data.worldX is number
             && data.worldX >= 0.08 && data.worldX <= 0.92
             && (data.zone == 'yard' || data.worldPage == 'house')
@@ -199,6 +199,26 @@ service cloud.firestore {
         && data.accessory in ['none', 'crown', 'flower', 'glasses']
         && data.createdBy == request.auth.uid
         && data.createdAt == request.time;
+    }
+
+    function validDishProgress(data) {
+      return data.keys().hasOnly(['dishId', 'cookedBy', 'createdAt'])
+        && data.dishId is string
+        && data.dishId.matches('^([1-9]|[1-4][0-9]|50)$')
+        && data.cookedBy == request.auth.uid
+        && data.createdAt == request.time;
+    }
+
+    match /dishProgress/{progressId} {
+      allow read: if isAdmin() || isViewer();
+      allow create: if (isAdmin() || isViewer())
+        && validDishProgress(request.resource.data)
+        && progressId == request.auth.uid + '_' + request.resource.data.dishId;
+      allow update: if (isAdmin() || isViewer())
+        && validDishProgress(request.resource.data)
+        && progressId == request.auth.uid + '_' + request.resource.data.dishId
+        && resource.data.cookedBy == request.auth.uid
+        && resource.data.dishId == request.resource.data.dishId;
     }
 
     match /site/content {
@@ -398,7 +418,7 @@ service cloud.firestore {
         && data.color.matches('^#[0-9a-fA-F]{6}$')
         && data.eyes in ['happy', 'sleepy', 'star']
         && data.accessory in ['none', 'crown', 'flower', 'glasses']
-        && data.page in ['home', 'slime', 'gift', 'wedding', 'gallery', 'bunnyBlue', 'garden', 'house']
+        && data.page in ['home', 'slime', 'gift', 'wedding', 'gallery', 'bunnyBlue', 'garden', 'house', 'kitchen', 'cafe']
         && data.x is number
         && data.x >= 0.08
         && data.x <= 0.92
@@ -416,7 +436,7 @@ service cloud.firestore {
         isViewer()
         && resource.data.createdBy == request.auth.uid
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['page', 'x', 'y'])
-        && request.resource.data.page in ['home', 'slime', 'gift', 'wedding', 'gallery', 'bunnyBlue', 'garden', 'house']
+        && request.resource.data.page in ['home', 'slime', 'gift', 'wedding', 'gallery', 'bunnyBlue', 'garden', 'house', 'kitchen', 'cafe']
         && request.resource.data.x is number
         && request.resource.data.x >= 0.08
         && request.resource.data.x <= 0.92
