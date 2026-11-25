@@ -3,8 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#141329">
+  <meta name="theme-color" content="#1d2b24">
   <meta name="description" content="A little birthday quest with slimes, letters, and memories.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
   <title>Birthday Quest</title>
   <style>
     :root {
@@ -298,6 +301,27 @@
     @keyframes jelly { 0%, 100% { transform: scale(1); } 30% { transform: scale(1.07, .93) rotate(-2deg); } 60% { transform: scale(.96, 1.04) rotate(2deg); } }
     @keyframes pop { 0% { transform: scale(.75); opacity: .3; } 55% { transform: scale(1.1, .9); } 100% { transform: scale(1); opacity: 1; } }
     @keyframes cardIn { from { opacity: 0; transform: translateY(10px) scale(.96); } to { opacity: 1; transform: none; } }
+
+    .download-slime { min-height: 34px; margin-top: .7rem; padding: .45rem .7rem; font-size: .65rem; }
+    .slime-arcade { margin-top: 1.1rem; padding: 1rem; }
+    .arcade-header { display: flex; align-items: center; justify-content: space-between; gap: .8rem; margin-bottom: .8rem; }
+    .arcade-header h2 { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: 1.5rem; font-weight: 400; }
+    .arcade-header .eyebrow { margin-bottom: .2rem; }
+    .arcade-stats { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .4rem; }
+    .arcade-stats span { padding: .35rem .5rem; border: 1px solid var(--line); border-radius: 8px; color: var(--muted); background: rgba(0, 0, 0, .16); font-size: .62rem; }
+    .arcade-stats strong { color: var(--gold); }
+    .arcade-layout { display: grid; grid-template-columns: minmax(0, 1fr) 190px; gap: .8rem; }
+    .arcade-screen-wrap { min-width: 0; }
+    #slime-game { display: block; width: 100%; height: auto; aspect-ratio: 16 / 7; border: 1px solid rgba(255, 255, 255, .16); border-radius: 10px; background: #8fc2d8; image-rendering: pixelated; touch-action: none; }
+    #slime-game:focus-visible { outline-offset: 4px; }
+    .arcade-touch { display: flex; gap: .45rem; margin-top: .5rem; }
+    .arcade-touch button { min-width: 58px; min-height: 40px; padding: .45rem .7rem; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: rgba(255, 255, 255, .07); font-weight: 900; touch-action: none; user-select: none; }
+    .arcade-touch button[data-game-control="jump"] { flex: 1; color: #23372c; background: var(--mint); }
+    .arcade-touch button.pressed { transform: translateY(2px); filter: brightness(.85); }
+    .arcade-help { display: flex; align-items: flex-start; flex-direction: column; gap: .65rem; padding: .8rem; border: 1px solid var(--line); border-radius: 10px; background: rgba(0, 0, 0, .14); }
+    .arcade-help p { margin: 0; color: var(--muted); font-size: .7rem; line-height: 1.55; }
+    .arcade-help .arcade-keys { font-size: .6rem; }
+    .arcade-help .button { width: 100%; min-height: 36px; font-size: .65rem; }
 
     .gallery-toolbar { display: flex; min-height: 54px; align-items: center; justify-content: space-between; gap: .7rem; margin: .7rem 0 1rem; padding: .65rem .8rem; border: 1px solid var(--line); border-radius: 16px; background: rgba(255, 255, 255, .035); }
     .upload-status { color: var(--muted); font-size: .7rem; text-align: right; }
@@ -599,6 +623,163 @@
     [contenteditable="true"] { border-radius: 5px; background: rgba(243, 213, 143, .08); box-shadow: 0 0 0 1px rgba(243, 213, 143, .35); cursor: text; }
     [contenteditable="true"]:empty::before { color: #8d849d; content: "Type something..."; }
 
+    :root {
+      --bg: #16251d;
+      --panel: #263a2c;
+      --panel-2: #344b35;
+      --ink: #f5efd9;
+      --muted: #b8c6ad;
+      --line: #4b6248;
+      --mint: #93cf75;
+      --pink: #e7aaa1;
+      --purple: #b5c98d;
+      --gold: #f0cf76;
+      --blue: #9cc7da;
+      --danger: #f08a78;
+      --shadow: 0 6px 0 #0d1712, 0 12px 24px rgba(5, 12, 7, .22);
+    }
+    body {
+      background-color: var(--bg);
+      background-image:
+        linear-gradient(45deg, rgba(255, 255, 255, .018) 25%, transparent 25%, transparent 75%, rgba(255, 255, 255, .018) 75%),
+        linear-gradient(45deg, rgba(0, 0, 0, .05) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, .05) 75%);
+      background-position: 0 0, 16px 16px;
+      background-size: 32px 32px;
+      font-family: "Pixelify Sans", "Courier New", monospace;
+    }
+    button, input, select, textarea { font-family: "Pixelify Sans", "Courier New", monospace; }
+    .game-app { background: rgba(22, 37, 29, .94); }
+    .hud { border-bottom: 3px solid #101b14; background: #22362a; box-shadow: inset 0 3px #3c533a; }
+    .brand { font-family: "Silkscreen", monospace; font-size: .78rem; }
+    .brand-mark { border: 2px solid #78985d; border-radius: 2px; background: #314b31; box-shadow: inset 0 3px #47613d, inset 0 -3px #203523; }
+    .player-chip, .level-chip, .hud-button, .role-badge { border-radius: 2px; }
+    .player-chip { border: 2px solid #40573c; background: #192a20; box-shadow: inset 0 2px #304632; }
+    .player-dot { border-radius: 0; box-shadow: none; }
+    .xp-track { border: 1px solid #0e1b13; border-radius: 0; background: #101d15; }
+    .xp-fill { border-radius: 0; background: var(--mint); }
+    .hud-button { border: 2px solid #4a6244; background: #2c4330; box-shadow: inset 0 2px #405b3c, 0 2px #101b14; }
+    .hud-button.primary { color: #1c2d20; border-color: #b2dd8c; background: var(--mint); }
+    .editor-toolbar { border: 2px solid #8c7747; border-radius: 3px; background: #2d3e2d; box-shadow: 0 5px 0 #101a13; }
+    .toolbar-button { border: 2px solid #506345; border-radius: 2px; background: #213326; box-shadow: inset 0 2px #3c5136, 0 2px #132016; }
+    .app-page { scrollbar-color: #678454 #17271d; }
+    .page-heading h1, .page-heading h2, .home-copy h1, .gift-copy h2, .collection-head h3, .arcade-header h2, .house-panel-title, .modal-header h2, .rotate-card h2 {
+      font-family: "Silkscreen", monospace;
+      font-weight: 700;
+      letter-spacing: -.045em;
+      line-height: 1.25;
+    }
+    .page-heading h1, .page-heading h2, .gift-copy h2 { font-size: clamp(1.45rem, 3vw, 2.7rem); }
+    .home-copy h1 { font-size: clamp(2rem, 4.3vw, 4rem); }
+    .eyebrow, .control-label, .role-badge { font-family: "Silkscreen", monospace; letter-spacing: .02em; }
+    .home-footer { color: #93a487; }
+    .button { border: 2px solid; border-radius: 2px; box-shadow: inset 0 3px rgba(255, 255, 255, .18), inset 0 -4px rgba(0, 0, 0, .2), 0 3px #0e1912; }
+    .button:hover { transform: translateY(-2px); }
+    .button:active { transform: translateY(2px); box-shadow: inset 0 2px rgba(0, 0, 0, .18); }
+    .button-mint { color: #1d3020; border-color: #b2dd8c; background: var(--mint); }
+    .button-gold { color: #3c311b; border-color: #ffe3a0; background: var(--gold); }
+    .button-ghost { border-color: #60764f; background: #2b412e; }
+    .button-danger { color: #3c201b; border-color: #ffc0a9; background: var(--danger); }
+    .hero-orbit { display: none; }
+    .hero-wrap { border: 3px solid #405c3d; background: linear-gradient(180deg, #8fb9c6 0 68%, #668f4c 68%); box-shadow: inset 0 4px #b5d1cf, inset 0 -8px #456c39, var(--shadow); }
+    .spark { width: 10px; height: 10px; clip-path: none; background: #f5dc83; box-shadow: 3px 3px #8d7137; }
+    .game-card { border: 2px solid #506647; border-radius: 3px; background: #293e2e; box-shadow: inset 0 3px #3a5237, inset 0 -4px #1b2d21, var(--shadow); }
+    .slime-preview-card { background: linear-gradient(180deg, #8fb9c6 0 70%, #789f52 70%, #5c803f 70%); }
+    .preview-name { padding: .2rem .5rem; color: #fff5d6; background: #29402d; font-family: "Silkscreen", monospace; font-size: .78rem; }
+    .download-slime { background: #263d2c; }
+    .text-input, .select-input, .color-grid, .gallery-page-copy textarea { border: 2px solid #4d6345; border-radius: 2px; background: #17291e; box-shadow: inset 0 3px #102016; }
+    .option-button, .random-color, .photo-action, .house-small-button, .house-choice { border: 2px solid #526849; border-radius: 2px; background: #223728; box-shadow: inset 0 2px #3a5035, 0 2px #132117; }
+    .option-button.active, .house-choice.active { color: #24321e; border-color: #d9e6a5; background: #b5c98d; }
+    .color-dot { border: 2px solid #1b2b20; border-radius: 0; }
+    .color-swatch { border: 2px solid #16261b; border-radius: 0; box-shadow: inset 0 2px rgba(255, 255, 255, .25), inset 0 -2px rgba(0, 0, 0, .2); }
+    .color-swatch.active { border-color: #fff4c8; box-shadow: 0 0 0 2px #17271d, 0 0 0 4px #f0cf76; }
+    .slime-card { border: 2px solid #4e6547; border-radius: 2px; background: #203427; box-shadow: inset 0 3px #314a34, 0 3px #122016; }
+    .slime-card:hover { border-color: #a6cb82; }
+    .card-delete, .photo-delete, .nature-delete, .modal-close { border: 2px solid #943f32; border-radius: 2px; color: #fff0d7; background: #a84f3e; box-shadow: 0 2px #17251b; }
+    .empty-state { border: 2px dashed #58704b; border-radius: 2px; background: rgba(15, 29, 19, .3); }
+    .slime-arcade { background: #263c2b; }
+    .arcade-stats span { border: 2px solid #536b47; border-radius: 2px; background: #172a1e; box-shadow: inset 0 2px #2d452f; }
+    #slime-game { border: 3px solid #17291d; border-radius: 0; box-shadow: 0 4px #101c14; }
+    .arcade-touch button { border: 2px solid #698452; border-radius: 2px; background: #314b34; box-shadow: inset 0 3px #476240, 0 3px #132117; }
+    .arcade-touch button[data-game-control="jump"] { color: #24351f; border-color: #c2e29c; background: var(--mint); }
+    .arcade-help { border: 2px solid #4e6644; border-radius: 2px; background: #1a2d20; box-shadow: inset 0 3px #2b432d; }
+    .gift-box { filter: drop-shadow(0 8px 0 rgba(18, 30, 20, .35)); }
+    .gift-lid, .gift-base { border: 4px solid #673e35; border-radius: 0; background: #b95f4f; box-shadow: inset 0 5px #d88162, inset 0 -6px #8f4439; }
+    .gift-ribbon-v, .gift-ribbon-h { background: #e8c767; box-shadow: inset 3px 0 #f6dd8b, inset -3px 0 #b8943f; }
+    .bow { width: 42px; height: 30px; border: 0; border-radius: 0; background: #e8c767; clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 65%, 0 100%); box-shadow: none; }
+    .bow.second { left: calc(50% - 34px); transform: scaleX(-1); }
+    .letter-reveal { border: 4px solid #795b38; border-radius: 2px; color: #35422f; background: #eee3c4; box-shadow: inset 0 0 0 3px #d2c39e, var(--shadow); }
+    .letter-body, .letter-signature, .gallery-page-text, .gallery-page-copy textarea { font-family: "Pixelify Sans", monospace; }
+    .letter-body { color: #3f4937; }
+    .letter-signature { color: #875b42; }
+    .gallery-toolbar { border: 2px solid #4f6745; border-radius: 2px; background: #293f2d; box-shadow: inset 0 3px #395235; }
+    .gallery-sheet { border: 4px solid #725838; border-radius: 2px; color: #34422e; background: #e9dfc2; box-shadow: inset 0 0 0 3px #cbbb92, var(--shadow); }
+    .gallery-flip-button { border: 2px solid #698252; border-radius: 2px; color: #f3e8c5; background: #344e34; box-shadow: inset 0 3px #4a673f, 0 3px #142218; }
+    .photo-slot { border: 3px solid #8b805e; border-radius: 0; background: #c9bea0; }
+    .photo-slot.empty { border-style: dashed; color: #5b624c; background: #dcd2b5; }
+    .gallery-page-copy textarea { color: #35422e; background: #f4ecd5; }
+    .gallery-page-text { color: #3e4936; }
+    .nature-page { background: #8fb9c6; }
+    .rose-habitat .habitat-scene, .blue-habitat .habitat-scene, .garden-page .habitat-scene {
+      background-color: #8fb9c6;
+      background-image: linear-gradient(180deg, transparent 0 67%, #6f9e4d 67% 100%);
+    }
+    .rose-habitat .habitat-scene { background-image: linear-gradient(180deg, #c6d9d4 0 67%, #80a95b 67% 100%); }
+    .blue-habitat .habitat-scene { background-image: linear-gradient(180deg, #9fc6d5 0 67%, #739b52 67% 100%); }
+    .garden-page .habitat-scene { background-image: linear-gradient(180deg, #a8ced2 0 67%, #6e9a49 67% 100%); }
+    .habitat-sun { border: 5px solid #e7d48d; border-radius: 0; background: #f5e5a5; box-shadow: 5px 5px rgba(111, 126, 78, .25); }
+    .habitat-hill { border-radius: 0; background: #608a50; clip-path: polygon(0 100%, 0 55%, 18% 55%, 18% 30%, 40% 30%, 40% 10%, 65% 10%, 65% 35%, 85% 35%, 85% 65%, 100% 65%, 100% 100%); }
+    .habitat-fence { height: 25%; opacity: .9; transform: none; }
+    .habitat-fence span { width: 12px; border: 2px solid #705337; border-radius: 0; background: #bd9660; box-shadow: inset 3px 0 #d7b47a; }
+    .habitat-fence::before, .habitat-fence::after { left: -6%; width: 112%; height: 9px; border: 2px solid #705337; border-radius: 0; background: #bd9660; }
+    .nature-heading h1 { font-family: "Silkscreen", monospace; font-size: clamp(1.3rem, 2.7vw, 2.5rem); }
+    .nature-heading p { color: #263c2b; text-shadow: 0 2px #d7e4cf; }
+    .nature-counter, .nature-hint, .nature-empty, .bunny-name, .tulip-stage, .house-item-label { border: 2px solid #536a45; border-radius: 2px; background: #edf0d2; box-shadow: 0 2px #32462d; }
+    .nature-hint { color: #33472d; }
+    .garden-row { border-radius: 0; background: repeating-linear-gradient(90deg, #5c883e 0 28px, #668f45 28px 30px); transform: none; }
+    .house-page { background: #1d3022; }
+    .house-stage { border: 4px solid #314c32; border-radius: 2px; background: linear-gradient(180deg, #9fc6d5 0 61%, #6f9c4c 61% 100%); box-shadow: inset 0 4px #c2dbd7, var(--shadow); }
+    .house-cloud { height: 22px; border-radius: 0; background: #dce9df; box-shadow: 8px 8px rgba(92, 131, 128, .2); }
+    .house-cloud::before, .house-cloud::after { border-radius: 0; }
+    .house-tree::before { width: 20px; border-radius: 0; background: #765336; box-shadow: inset 5px 0 #966b42; }
+    .house-tree::after { width: 86px; height: 86px; border-radius: 0; background: #4f7d3f; box-shadow: -12px 18px #416c36, 14px 22px #365e30, inset 12px 12px #639449; clip-path: polygon(0 20%, 20% 20%, 20% 0, 70% 0, 70% 15%, 100% 15%, 100% 80%, 80% 80%, 80% 100%, 15% 100%, 15% 85%, 0 85%); }
+    .house-path { border-radius: 0; background: repeating-linear-gradient(90deg, #b9a474 0 26px, #a59165 26px 30px); transform: none; }
+    .house-building { border: 4px solid #58442e; border-radius: 0; background: linear-gradient(180deg, #c9b07b 0 70%, #8d673e 70% 100%); box-shadow: inset 6px 0 #dcc28b, inset -6px 0 #9f7d4d, 6px 7px #344d2e; }
+    .house-roof { top: -26%; left: -9%; width: 118%; height: 34%; background: #795039; clip-path: polygon(0 100%, 0 70%, 18% 70%, 18% 40%, 38% 40%, 38% 15%, 62% 15%, 62% 40%, 82% 40%, 82% 70%, 100% 70%, 100% 100%); filter: none; box-shadow: inset 0 7px #a36d45; }
+    .house-window { border: 4px solid #604b31; border-radius: 0; background: #9ed2d7; box-shadow: inset 4px 4px #c8e7df; }
+    .house-window::before, .house-window::after { background: #604b31; }
+    .house-door { border: 4px solid #58422e; border-radius: 0; background: #8c633c; box-shadow: inset 5px 0 #ad7c49; }
+    .house-door::after { border-radius: 0; background: #e8ca6b; }
+    .house-rug { border: 3px solid #755338; border-radius: 0; background: repeating-conic-gradient(#a85c49 0 25%, #c77a55 0 50%) 0 0 / 20px 20px; opacity: 1; }
+    .house-interior { border-radius: 0; }
+    .house-label { border: 2px solid #405b38; border-radius: 2px; color: #2d402b; background: #e7ebcd; backdrop-filter: none; }
+    .house-hint { border: 2px solid #526b44; border-radius: 2px; color: #33472d; background: #e7ebcd; backdrop-filter: none; }
+    .house-panel { border: 3px solid #624b31; border-radius: 2px; background: #3c3325; box-shadow: inset 0 4px #57452d, inset 0 -5px #2d291e, var(--shadow); }
+    .house-panel-section { border-bottom: 2px solid #625034; }
+    .house-panel-title { color: #f0cf76; font-size: .82rem; }
+    .house-panel-note { color: #c9bea0; }
+    .house-choice { color: #d9d1b6; border-color: #75613e; background: #2f3525; box-shadow: inset 0 2px #4a4e33, 0 2px #1c2419; }
+    .house-choice.active { color: #2f3824; border-color: #e0d39b; background: #c9bd82; }
+    .outfit-preview i { border: 1px solid #293022; border-radius: 0; }
+    .house-small-button { color: #d9d1b6; border-color: #75613e; background: #2f3525; }
+    .mixer-station { border: 3px solid #4d6242; border-radius: 2px; background: linear-gradient(180deg, #233b2b 0 75%, #506f3e 75%); }
+    .mixer-cauldron { border: 3px solid #202d25; border-radius: 0; background: #3e4b3d; box-shadow: inset 5px 0 #56634c, inset -5px 0 #29382c, 0 5px #17251b; clip-path: polygon(0 0, 100% 0, 88% 75%, 70% 100%, 30% 100%, 12% 75%); }
+    .mixer-cauldron::before { border: 3px solid #263329; border-radius: 0; }
+    .mixer-cauldron::after { border: 4px solid #263329; border-radius: 0; }
+    .mix-bubble { border: 2px solid #b9d7a1; border-radius: 0; }
+    .mix-card { border: 2px solid #665638; border-radius: 2px; background: #2d3525; }
+    .tab-bar { border-top: 3px solid #101b14; background: #22362a; box-shadow: inset 0 3px #3c533a; }
+    .tab-button { border: 2px solid transparent; border-radius: 2px; color: #9cad8e; }
+    .tab-button.active { color: #f1e9c9; border-color: #5a744a; background: #314a33; box-shadow: inset 0 3px #45603b, inset 0 -3px #263d29; }
+    .tab-button.active::after { width: 20px; height: 3px; border-radius: 0; background: #f0cf76; }
+    .rotate-gate { background: #16251d; }
+    .modal { border: 3px solid #65764c; border-radius: 2px; background: #293d2c; box-shadow: inset 0 4px #3c5337, 0 8px 0 #0e1811; }
+    .modal-header { border-bottom: 2px solid #4c6242; }
+    .modal-header h2 { font-size: 1rem; }
+    .uid-box { border: 2px solid #526747; border-radius: 2px; background: #182a1e; }
+    .toast { border: 2px solid #79935b; border-radius: 2px; background: #2c432f; box-shadow: 0 4px 0 #101b13; }
+    .trash-lid, .trash-body { border-radius: 0; }
+    [contenteditable="true"] { border-radius: 0; background: rgba(240, 207, 118, .12); box-shadow: 0 0 0 2px rgba(240, 207, 118, .55); }
+
     @media (max-width: 800px) {
       .hud-center .xp-track { display: none; }
       .home-layout, .slime-layout, .gift-layout, .house-layout { grid-template-columns: 1fr; }
@@ -609,12 +790,16 @@
       .slime-preview-card { min-height: 260px; }
       .gift-stage { min-height: 280px; }
       .gift-box { width: min(250px, 70%); }
+      .arcade-layout { grid-template-columns: 1fr; }
+      .arcade-help { display: grid; grid-template-columns: 1fr auto auto; align-items: center; }
+      .arcade-help .arcade-keys { display: none; }
+      .arcade-help .button { width: auto; }
     }
 
     @media (orientation: landscape) and (max-height: 600px) {
       .hud { min-height: 54px; padding-top: .4rem; padding-bottom: .4rem; }
-      .brand-mark { width: 32px; height: 32px; border-radius: 10px; }
-      .brand { font-size: .9rem; }
+      .brand-mark { width: 32px; height: 32px; border-radius: 2px; }
+      .brand { font-size: .68rem; }
       .player-chip { padding: .3rem .55rem; }
       .hud-button { min-height: 31px; padding: .35rem .55rem; }
       .tab-bar { min-height: 54px; padding-top: .25rem; padding-bottom: max(.25rem, env(safe-area-inset-bottom)); }
@@ -622,8 +807,8 @@
       .editor-toolbar { top: 60px; }
       .app-page { padding: .85rem clamp(.85rem, 3vw, 2rem); }
       .page-heading { margin-bottom: .7rem; }
-      .page-heading h1, .page-heading h2, .home-copy h1, .gift-copy h2 { font-size: clamp(1.8rem, 4vw, 3rem); }
-      .home-copy h1 { font-size: clamp(2.2rem, 5vw, 4rem); }
+      .page-heading h1, .page-heading h2, .gift-copy h2 { font-size: clamp(1.25rem, 2.8vw, 2rem); }
+      .home-copy h1 { font-size: clamp(1.8rem, 4vw, 3rem); }
       .hero-wrap { min-height: 240px; }
       .hero-slime { width: min(260px, 75%); }
       .slime-preview-card { min-height: 250px; }
@@ -638,7 +823,7 @@
 
     @media (max-width: 540px) {
       .hud { gap: .5rem; padding-left: .65rem; padding-right: .65rem; }
-      .brand { font-size: .85rem; }
+      .brand { font-size: .62rem; }
       .brand-mark { width: 32px; height: 32px; }
       .player-chip { display: none; }
       .hud-actions { gap: .3rem; }
@@ -647,6 +832,9 @@
       .tab-button .icon { width: 19px; height: 19px; }
       .editor-toolbar { top: 64px; }
       .gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .arcade-touch button { min-height: 44px; }
+      .arcade-help { grid-template-columns: 1fr; }
+      .arcade-help .button { width: 100%; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -721,15 +909,15 @@
           </div>
           <div class="hero-wrap">
             <span class="hero-orbit"></span><span class="hero-orbit second"></span><span class="spark one"></span><span class="spark two"></span>
-            <svg class="hero-slime" id="hero-slime" viewBox="0 0 240 190" aria-label="A friendly birthday slime">
-              <defs><linearGradient id="hero-gradient" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffffff" stop-opacity=".55"/><stop offset=".45" stop-color="#bce8d7"/><stop offset="1" stop-color="#8fcdb6"/></linearGradient></defs>
-              <ellipse cx="120" cy="163" rx="76" ry="13" fill="#080713" opacity=".3"/>
-              <path d="M38 153c0-27 18-41 24-70 7-37 27-57 59-57s53 20 59 57c6 29 23 43 23 70 0 19-74 28-165 0Z" fill="url(#hero-gradient)"/>
-              <path d="M71 90c2-18 8-30 18-38" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" opacity=".42"/>
-              <ellipse cx="96" cy="114" rx="6" ry="8" fill="#26233e"/><ellipse cx="145" cy="114" rx="6" ry="8" fill="#26233e"/>
-              <path d="M109 132c7 7 16 7 23 0" fill="none" stroke="#26233e" stroke-width="4" stroke-linecap="round"/>
-              <ellipse cx="78" cy="130" rx="10" ry="5" fill="#f3c6d7" opacity=".6"/><ellipse cx="163" cy="130" rx="10" ry="5" fill="#f3c6d7" opacity=".6"/>
-              <path d="m191 39 3 8 8 3-8 3-3 8-3-8-8-3 8-3Z" fill="#f3d58f"/>
+            <svg class="hero-slime" id="hero-slime" viewBox="0 0 240 190" shape-rendering="crispEdges" aria-label="A friendly birthday slime">
+              <ellipse cx="120" cy="164" rx="76" ry="12" fill="#29442d" opacity=".35"/>
+              <path d="M48 152H40v-24h8v-16h16v-8h16V88h16V64h16V40h24v8h16v16h16v16h16v8h16v16h16v48Z" fill="#93cf75" stroke="#263b2c" stroke-width="4" stroke-linejoin="miter"/>
+              <path d="M168 48h16v16h16v16h16v8h16v16h16v48h-16v-24h-16v-16h-16v-8h-16V96h-16V72h-16V48Z" fill="#6aa653"/>
+              <path d="M72 64h16V56h16v8h16v16H96V72H80v8H72Z" fill="#c0e69b"/>
+              <path d="M88 104h16v16H88ZM136 104h16v16h-16Z" fill="#26362d"/>
+              <path d="M104 128h32v8h-32Z" fill="#26362d"/>
+              <path d="M72 128h16v8H72ZM152 128h16v8h-16Z" fill="#e7aaa1"/>
+              <path d="M184 32h8v8h8v8h-8v8h-8v-8h-8v-8h8Z" fill="#f0cf76"/>
             </svg>
           </div>
         </div>
@@ -745,6 +933,7 @@
           <div class="game-card slime-preview-card">
             <svg class="slime-preview" id="slime-preview" viewBox="0 0 240 190" aria-label="Slime preview"></svg>
             <span class="preview-name" id="preview-name">New slime</span>
+            <button class="button button-ghost download-slime" type="button" id="download-slime">Download slime PNG</button>
           </div>
           <div class="game-card slime-controls">
             <label><span class="control-label" data-field="slimeNameLabel">Slime name</span><input class="text-input" id="slime-name" maxlength="40" placeholder="Name your slime"></label>
@@ -763,6 +952,33 @@
             <button class="button button-mint" type="button" id="create-slime"><svg class="icon"><use href="#i-star"></use></svg><span data-field="slimeCreateButton">Create slime</span></button>
           </div>
         </div>
+        <section class="game-card slime-arcade" aria-labelledby="slime-game-title">
+          <div class="arcade-header">
+            <div><span class="eyebrow">Playable side quest</span><h2 id="slime-game-title">Slime Run</h2></div>
+            <div class="arcade-stats">
+              <span>Score <strong id="game-score">0</strong></span>
+              <span>Hearts <strong id="game-hearts">♥♥♥</strong></span>
+              <span>Level <strong id="game-level">1 / 3</strong></span>
+              <span>Crystals <strong id="game-crystals">0 / 5</strong></span>
+            </div>
+          </div>
+          <div class="arcade-layout">
+            <div class="arcade-screen-wrap">
+              <canvas id="slime-game" width="960" height="420" tabindex="0" aria-label="Slime Run game. Move with arrow keys or A and D. Jump with Space, W, or the up arrow.">Your browser needs Canvas to play Slime Run.</canvas>
+              <div class="arcade-touch" aria-label="Touch game controls">
+                <button type="button" data-game-control="left" aria-label="Move left">←</button>
+                <button type="button" data-game-control="right" aria-label="Move right">→</button>
+                <button type="button" data-game-control="jump" aria-label="Jump">Jump ↑</button>
+              </div>
+            </div>
+            <aside class="arcade-help">
+              <p id="game-status" aria-live="polite">Collect every crystal, dodge the spikes, then hop into the portal.</p>
+              <p class="arcade-keys">Keyboard: A / D or ← / → to move · Space / W / ↑ to jump</p>
+              <button class="button button-mint" type="button" id="start-slime-game">Start game</button>
+              <button class="button button-ghost" type="button" id="pause-slime-game" hidden>Pause</button>
+            </aside>
+          </div>
+        </section>
         <div class="collection-head"><h3 data-field="slimeCollectionTitle">Slime collection</h3><span class="role-badge" id="slime-count">0 friends</span></div>
         <div class="slime-grid" id="slime-grid"></div>
       </section>
@@ -954,7 +1170,7 @@ You are loved more than this little game could ever hold.</p>
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="auth-title">
       <div class="modal-header"><h2 id="auth-title">Player sign in</h2><button class="modal-close" type="button" data-close="auth-modal" aria-label="Close">×</button></div>
       <form class="modal-body" id="auth-form">
-        <p class="modal-note">Admins can edit every text and publish gallery pages. Viewers can make slimes, create four-photo pages, add page notes, and edit their own allowed birthday content.</p>
+        <p class="modal-note">Admins can edit every text and publish gallery pages. Viewers can make slimes, save four compressed photos per page without paid storage, add page notes, and edit their own allowed birthday content.</p>
         <p class="modal-note" id="auth-setup" hidden>Firebase is not configured yet. Paste your web config in the firebaseConfig block near the bottom of this file.</p>
         <label><span class="control-label">Email</span><input class="text-input" id="auth-email" type="email" autocomplete="username" required></label>
         <label><span class="control-label">Password</span><input class="text-input" id="auth-password" type="password" autocomplete="current-password" required></label>
@@ -1042,6 +1258,12 @@ You are loved more than this little game could ever hold.</p>
       return `#${rgb.map((value) => Math.round((value + offset) * 255).toString(16).padStart(2, "0")).join("")}`;
     }
 
+    function shadeHex(color, amount) {
+      const value = /^#[0-9a-fA-F]{6}$/.test(color || "") ? color : "#bce8d7";
+      const channels = value.match(/[a-f\d]{2}/gi).map((channel) => parseInt(channel, 16));
+      return `#${channels.map((channel) => Math.max(0, Math.min(255, Math.round(channel + amount))).toString(16).padStart(2, "0")).join("")}`;
+    }
+
     const SLIME_COLORS = Array.from({ length: 100 }, (_, index) =>
       hslToHex((18 + index * 137.508) % 360, 58 + (index % 4) * 7, 56 + (index % 5) * 3)
     );
@@ -1102,6 +1324,7 @@ You are loved more than this little game could ever hold.</p>
     let galleryPages = [];
     let galleryIndex = 0;
     let galleryFlipping = false;
+    let photoUploading = false;
     let bunnies = [];
     let tulips = [];
     let natureLoaded = false;
@@ -1121,6 +1344,7 @@ You are loved more than this little game could ever hold.</p>
     let placementFurniture = null;
     let activeHouseDrag = null;
     let mixing = false;
+    let slimeGame = null;
     const houseWriteTimes = new Map();
     let toastTimer = null;
     let seedingContent = false;
@@ -1130,10 +1354,8 @@ You are loved more than this little game could ever hold.</p>
     let app = null;
     let auth = null;
     let db = null;
-    let storage = null;
     let authApi = null;
     let fs = null;
-    let storageApi = null;
 
     const $ = (selector) => document.querySelector(selector);
     const $$ = (selector) => [...document.querySelectorAll(selector)];
@@ -1304,6 +1526,7 @@ You are loved more than this little game could ever hold.</p>
       });
       if (updateHash) history.replaceState(null, "", `#${pageId}`);
       document.title = `${content.appName || "Birthday Quest"} · ${pageTitles[pageId] || pageId[0].toUpperCase() + pageId.slice(1)}`;
+      if (pageId !== "slime" && ["running", "transition"].includes(slimeGame?.state.mode)) pauseSlimeGame();
       if (pageId === "gallery") loadGalleryPages();
     }
 
@@ -1416,18 +1639,27 @@ You are loved more than this little game could ever hold.</p>
       const safeEyes = eyeStyles.includes(eyes) ? eyes : "happy";
       const safeAccessory = accessories.includes(accessory) ? accessory : "none";
       const face = safeEyes === "sleepy"
-        ? '<path d="M87 116c6 4 12 4 18 0M135 116c6 4 12 4 18 0" fill="none" stroke="#26233e" stroke-width="4" stroke-linecap="round"/>'
+        ? '<path d="M88 112h8v4h8v-4h8M128 112h8v4h8v-4h8" fill="none" stroke="#26362d" stroke-width="4"/>'
         : safeEyes === "star"
-          ? '<path d="m96 105 3 6 6 1-4 5 1 6-6-3-6 3 1-6-4-5 6-1ZM145 105l3 6 6 1-4 5 1 6-6-3-6 3 1-6-4-5 6-1Z" fill="#26233e"/>'
-          : '<ellipse cx="96" cy="114" rx="6" ry="8" fill="#26233e"/><ellipse cx="145" cy="114" rx="6" ry="8" fill="#26233e"/>';
+          ? '<path d="M96 100h8v8h8v8h-8v8h-8v-8h-8v-8h8ZM144 100h8v8h8v8h-8v8h-8v-8h-8v-8h8Z" fill="#26362d"/>'
+          : '<path d="M88 104h16v16H88ZM136 104h16v16h-16Z" fill="#26362d"/><path d="M88 104h8v8h-8ZM136 104h8v8h-8Z" fill="#f5efd9"/>';
       const extras = safeAccessory === "crown"
-        ? '<path d="m91 41 10-24 20 15 20-15 10 24Z" fill="#f3d58f" stroke="#fff0bd" stroke-width="2"/><circle cx="121" cy="31" r="4" fill="#f3c6d7"/>'
+        ? '<path d="M88 44V24h8v12h16V16h16v20h16V24h8v20Z" fill="#f0cf76" stroke="#66502c" stroke-width="3"/><path d="M96 36h48v8H96Z" fill="#ffe3a0"/><path d="M116 20h8v8h-8Z" fill="#e7aaa1"/>'
         : safeAccessory === "flower"
-          ? '<g transform="translate(161 48)"><circle cx="0" cy="-10" r="8" fill="#f3c6d7"/><circle cx="10" cy="0" r="8" fill="#f3c6d7"/><circle cx="0" cy="10" r="8" fill="#f3c6d7"/><circle cx="-10" cy="0" r="8" fill="#f3c6d7"/><circle r="6" fill="#f3d58f"/></g>'
+          ? '<g transform="translate(168 52)"><path d="M-8-16h16v16h16v16H8v16H-8V16h-16V0h16Z" fill="#e7aaa1" stroke="#70483d" stroke-width="3"/><path d="M-8-8h16v16H-8Z" fill="#f0cf76"/></g>'
           : safeAccessory === "glasses"
-            ? '<g fill="none" stroke="#26233e" stroke-width="4"><circle cx="96" cy="114" r="15"/><circle cx="145" cy="114" r="15"/><path d="M111 114h19M81 109l-12-4M160 109l12-4"/></g>'
+            ? '<g fill="none" stroke="#26362d" stroke-width="4"><path d="M80 104h32v24H80ZM128 104h32v24h-32ZM112 112h16M80 108l-12-4M160 108l12-4"/></g>'
             : "";
-      return `<defs><linearGradient id="preview-gradient" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffffff" stop-opacity=".5"/><stop offset=".45" stop-color="${safeColor}"/><stop offset="1" stop-color="${safeColor}"/></linearGradient></defs><ellipse cx="120" cy="163" rx="76" ry="13" fill="#080713" opacity=".25"/><path d="M38 153c0-27 18-41 24-70 7-37 27-57 59-57s53 20 59 57c6 29 23 43 23 70 0 19-74 28-165 0Z" fill="url(#preview-gradient)"/><path d="M71 90c2-18 8-30 18-38" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" opacity=".4"/>${face}<path d="M109 132c7 7 16 7 23 0" fill="none" stroke="#26233e" stroke-width="4" stroke-linecap="round"/><ellipse cx="78" cy="130" rx="10" ry="5" fill="#f3c6d7" opacity=".55"/><ellipse cx="163" cy="130" rx="10" ry="5" fill="#f3c6d7" opacity=".55"/>${extras}`;
+      return `<g shape-rendering="crispEdges">
+        <ellipse cx="120" cy="164" rx="76" ry="12" fill="#20372a" opacity=".28"/>
+        <path d="M48 152H40v-24h8v-16h16v-8h16V88h16V64h16V40h24v8h16v16h16v16h16v8h16v16h16v48Z" fill="${safeColor}" stroke="#263b2c" stroke-width="4"/>
+        <path d="M168 48h16v16h16v16h16v8h16v16h16v48h-16v-24h-16v-16h-16v-8h-16V96h-16V72h-16V48Z" fill="${shadeHex(safeColor, -30)}"/>
+        <path d="M72 64h16V56h16v8h16v16H96V72H80v8H72Z" fill="${shadeHex(safeColor, 38)}"/>
+        ${face}
+        <path d="M104 128h8v8h16v-8h8v8h-8v8h-16v-8h-8Z" fill="#26362d"/>
+        <path d="M72 128h16v8H72ZM152 128h16v8h-16Z" fill="${shadeHex(safeColor, 55)}"/>
+        ${extras}
+      </g>`;
     }
 
     function renderColorOptions() {
@@ -1569,21 +1801,502 @@ You are loved more than this little game could ever hold.</p>
       }
     }
 
+    const SLIME_LEVELS = [
+      {
+        platforms: [[120, 292, 150], [340, 236, 130], [540, 294, 150], [760, 246, 120]],
+        crystals: [[195, 258], [405, 202], [615, 260], [820, 212], [72, 326]],
+        spikes: [[282, 336, 38], [704, 336, 44]],
+        critters: [[465, 340, 430, 525, 62]],
+      },
+      {
+        platforms: [[70, 300, 120], [245, 244, 110], [420, 184, 120], [620, 254, 120], [800, 204, 110]],
+        crystals: [[130, 266], [300, 210], [480, 150], [680, 220], [855, 170]],
+        spikes: [[205, 336, 42], [560, 336, 42], [430, 154, 28]],
+        critters: [[365, 340, 340, 420, 74], [745, 340, 710, 790, 58]],
+      },
+      {
+        platforms: [[60, 286, 110], [220, 226, 100], [370, 166, 110], [540, 236, 110], [700, 176, 100], [840, 276, 70]],
+        crystals: [[115, 252], [270, 192], [425, 132], [595, 202], [750, 142], [875, 242]],
+        spikes: [[188, 336, 36], [500, 336, 48], [650, 336, 36], [380, 136, 26]],
+        critters: [[315, 340, 290, 370, 70], [595, 340, 565, 635, 84], [810, 340, 775, 830, 66]],
+      },
+    ];
+
+    function resetSlimeLevel() {
+      const state = slimeGame.state;
+      const level = SLIME_LEVELS[state.level - 1];
+      state.platforms = [{ x: 0, y: 366, w: 960, h: 54 }, ...level.platforms.map(([x, y, w]) => ({ x, y, w, h: 24 }))];
+      state.crystals = level.crystals.map(([x, y]) => ({ x, y, collected: false }));
+      state.spikes = level.spikes.map(([x, y, w]) => ({ x, y, w, h: 30 }));
+      state.critters = level.critters.map(([x, y, minX, maxX, speed]) => ({ x, y, w: 32, h: 26, minX, maxX, speed, direction: 1 }));
+      state.player = { x: 36, y: 330, w: 34, h: 36, vx: 0, vy: 0, onGround: false };
+      state.collected = 0;
+      state.jumpBuffer = 0;
+      state.coyote = 0;
+      state.invincible = 0;
+      state.transition = 0;
+      state.messageCooldown = 0;
+      updateSlimeGameStats();
+    }
+
+    function newSlimeGameState() {
+      return {
+        mode: "ready", level: 1, score: 0, hearts: 3, elapsed: 0, lastFrame: 0,
+        collected: 0, particles: [], keys: new Set(), pointers: new Map(), pausedFrom: null,
+      };
+    }
+
+    function updateSlimeGameStats() {
+      if (!slimeGame) return;
+      const state = slimeGame.state;
+      $("#game-score").textContent = state.score;
+      $("#game-hearts").textContent = "♥".repeat(state.hearts) + "♡".repeat(Math.max(0, 3 - state.hearts));
+      $("#game-level").textContent = `${state.level} / ${SLIME_LEVELS.length}`;
+      $("#game-crystals").textContent = `${state.collected} / ${state.crystals.length}`;
+    }
+
+    function setSlimeGameStatus(message) {
+      $("#game-status").textContent = message;
+    }
+
+    function updateSlimeGameButtons() {
+      const state = slimeGame.state;
+      $("#start-slime-game").textContent = state.mode === "paused" ? "Resume game" : state.mode === "running" || state.mode === "transition" ? "Restart game" : state.mode === "ready" ? "Start game" : "Play again";
+      $("#pause-slime-game").hidden = state.mode !== "running";
+    }
+
+    function slimeGameInput(state, action) {
+      if (state.keys.has(action)) return true;
+      return [...state.pointers.values()].includes(action);
+    }
+
+    function addSlimeParticles(x, y, color, count = 10) {
+      for (let index = 0; index < count; index += 1) {
+        slimeGame.state.particles.push({
+          x, y, vx: (Math.random() - .5) * 180, vy: -60 - Math.random() * 150,
+          life: .45 + Math.random() * .35, color, size: 4 + Math.floor(Math.random() * 5),
+        });
+      }
+    }
+
+    function hurtSlimePlayer() {
+      const state = slimeGame.state;
+      if (state.invincible > 0 || state.mode !== "running") return;
+      state.hearts -= 1;
+      state.invincible = 1.25;
+      addSlimeParticles(state.player.x + 17, state.player.y + 18, "#ff9fae", 14);
+      updateSlimeGameStats();
+      if (state.hearts <= 0) {
+        state.mode = "gameover";
+        slimeGame.stop?.();
+        setSlimeGameStatus("Out of hearts. Your slime is ready for another run!");
+        updateSlimeGameButtons();
+        drawSlimeGame();
+        return;
+      }
+      state.player.x = 36;
+      state.player.y = 330;
+      state.player.vx = 0;
+      state.player.vy = 0;
+      setSlimeGameStatus("Ouch! Jump over spikes and blocky critters.");
+    }
+
+    function completeSlimeLevel() {
+      const state = slimeGame.state;
+      state.score += 250;
+      updateSlimeGameStats();
+      if (state.level >= SLIME_LEVELS.length) {
+        state.mode = "won";
+        slimeGame.stop?.();
+        setSlimeGameStatus(`Course complete! Final score: ${state.score}.`);
+        showToast(`Slime Run complete — ${state.score} points!`);
+      } else {
+        state.mode = "transition";
+        state.transition = 1.15;
+        setSlimeGameStatus("Level clear! +250 points");
+      }
+      updateSlimeGameButtons();
+    }
+
+    function updateSlimeGame(time) {
+      const state = slimeGame.state;
+      const dt = state.lastFrame ? Math.min(.05, (time - state.lastFrame) / 1000) : 0;
+      state.lastFrame = time;
+      state.elapsed += dt;
+      state.messageCooldown = Math.max(0, state.messageCooldown - dt);
+      state.particles.forEach((particle) => {
+        particle.x += particle.vx * dt;
+        particle.y += particle.vy * dt;
+        particle.vy += 420 * dt;
+        particle.life -= dt;
+      });
+      state.particles = state.particles.filter((particle) => particle.life > 0);
+
+      if (state.mode === "transition") {
+        state.transition -= dt;
+        if (state.transition <= 0) {
+          state.level += 1;
+          resetSlimeLevel();
+          state.mode = "running";
+          setSlimeGameStatus("Collect every crystal, then reach the portal.");
+          updateSlimeGameButtons();
+        }
+        drawSlimeGame();
+        return;
+      }
+      if (state.mode !== "running") return;
+
+      const player = state.player;
+      const left = slimeGameInput(state, "left");
+      const right = slimeGameInput(state, "right");
+      const jump = slimeGameInput(state, "jump");
+      if (jump && !state.jumpHeld) state.jumpBuffer = .14;
+      state.jumpHeld = jump;
+      state.jumpBuffer = Math.max(0, state.jumpBuffer - dt);
+      state.coyote = player.onGround ? .1 : Math.max(0, state.coyote - dt);
+      state.invincible = Math.max(0, state.invincible - dt);
+      player.vx = (Number(right) - Number(left)) * 250;
+      if (state.jumpBuffer > 0 && state.coyote > 0) {
+        player.vy = -620;
+        player.onGround = false;
+        state.jumpBuffer = 0;
+        state.coyote = 0;
+        addSlimeParticles(player.x + 17, player.y + 36, "#d8c79e", 5);
+      }
+      if (!jump && player.vy < -220) player.vy += 1500 * dt;
+      player.vy += 1500 * dt;
+      player.x = Math.max(8, Math.min(960 - player.w - 8, player.x + player.vx * dt));
+      const previousBottom = player.y + player.h;
+      player.y += player.vy * dt;
+      player.onGround = false;
+      if (player.vy >= 0) {
+        for (const platform of state.platforms) {
+          if (player.x + player.w > platform.x && player.x < platform.x + platform.w && previousBottom <= platform.y + 5 && player.y + player.h >= platform.y) {
+            player.y = platform.y - player.h;
+            player.vy = 0;
+            player.onGround = true;
+            break;
+          }
+        }
+      }
+
+      state.critters.forEach((critter) => {
+        critter.x += critter.speed * critter.direction * dt;
+        if (critter.x <= critter.minX || critter.x >= critter.maxX) critter.direction *= -1;
+      });
+
+      const overlaps = (a, b) => a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+      state.crystals.forEach((crystal) => {
+        if (!crystal.collected && overlaps(player, { x: crystal.x - 13, y: crystal.y - 13, w: 26, h: 26 })) {
+          crystal.collected = true;
+          state.collected += 1;
+          state.score += 100;
+          addSlimeParticles(crystal.x, crystal.y, "#f7dc74", 12);
+          updateSlimeGameStats();
+          setSlimeGameStatus(state.collected === state.crystals.length ? "All crystals found! The portal is open." : "Crystal collected! +100 points");
+        }
+      });
+      if (state.invincible <= 0) {
+        const hitbox = { x: player.x + 4, y: player.y + 5, w: player.w - 8, h: player.h - 7 };
+        if (state.spikes.some((spike) => overlaps(hitbox, { x: spike.x + 4, y: spike.y + 8, w: spike.w - 8, h: spike.h - 8 })) || state.critters.some((critter) => overlaps(hitbox, critter))) hurtSlimePlayer();
+      }
+      if (player.y > 460) hurtSlimePlayer();
+      if (state.mode !== "running") return;
+
+      const portal = { x: 902, y: 294, w: 42, h: 72 };
+      if (overlaps(player, portal)) {
+        if (state.collected === state.crystals.length) completeSlimeLevel();
+        else if (state.messageCooldown <= 0) {
+          state.messageCooldown = 1.5;
+          setSlimeGameStatus(`The portal needs ${state.crystals.length - state.collected} more crystal${state.crystals.length - state.collected === 1 ? "" : "s"}.`);
+        }
+      }
+      drawSlimeGame();
+    }
+
+    function drawSlimeGame() {
+      const state = slimeGame.state;
+      const context = slimeGame.context;
+      const width = 960;
+      const height = 420;
+      slimeGame.canvas.dataset.mode = state.mode;
+      slimeGame.canvas.dataset.playerX = String(Math.round(state.player.x));
+      slimeGame.canvas.dataset.playerY = String(Math.round(state.player.y));
+      slimeGame.canvas.dataset.onGround = String(state.player.onGround);
+      context.imageSmoothingEnabled = false;
+      context.fillStyle = "#8fc2d8";
+      context.fillRect(0, 0, width, height);
+      context.fillStyle = "#d9edf0";
+      [[70, 54, 92, 24], [310, 88, 70, 20], [660, 46, 108, 26]].forEach(([x, y, w, h]) => {
+        context.fillRect(x + 18, y, w - 36, h);
+        context.fillRect(x, y + h * .45, w, h * .55);
+      });
+      context.fillStyle = "#6e9e70";
+      context.beginPath();
+      context.moveTo(0, 300);
+      for (let x = 0; x <= width; x += 60) context.lineTo(x, 300 - ((x / 60) % 3) * 24);
+      context.lineTo(width, 366);
+      context.lineTo(0, 366);
+      context.fill();
+      context.fillStyle = "#416f4a";
+      context.fillRect(0, 336, width, 30);
+
+      state.platforms.forEach((platform) => {
+        context.fillStyle = "#76543a";
+        context.fillRect(platform.x, platform.y, platform.w, platform.h);
+        context.fillStyle = "#a37b50";
+        for (let x = platform.x + 12; x < platform.x + platform.w; x += 30) context.fillRect(x, platform.y + 12, 10, 7);
+        context.fillStyle = "#5d9b45";
+        context.fillRect(platform.x, platform.y, platform.w, 10);
+        context.fillStyle = "#83bd57";
+        context.fillRect(platform.x, platform.y, platform.w, 4);
+      });
+
+      state.spikes.forEach((spike) => {
+        context.fillStyle = "#303942";
+        context.beginPath();
+        context.moveTo(spike.x, spike.y + spike.h);
+        context.lineTo(spike.x + spike.w * .25, spike.y + 8);
+        context.lineTo(spike.x + spike.w * .5, spike.y + spike.h);
+        context.lineTo(spike.x + spike.w * .75, spike.y + 8);
+        context.lineTo(spike.x + spike.w, spike.y + spike.h);
+        context.fill();
+        context.fillStyle = "#aab7b5";
+        context.fillRect(spike.x + spike.w * .25, spike.y + 12, 5, 12);
+        context.fillRect(spike.x + spike.w * .75, spike.y + 12, 5, 12);
+      });
+
+      state.critters.forEach((critter) => {
+        const bob = Math.sin(state.elapsed * 8 + critter.x) * 2;
+        context.fillStyle = "#313b35";
+        context.fillRect(critter.x + 3, critter.y + 8 + bob, critter.w - 6, critter.h - 8);
+        context.fillStyle = "#d7784d";
+        context.fillRect(critter.x + 6, critter.y + 5 + bob, critter.w - 12, critter.h - 7);
+        context.fillStyle = "#f0a05f";
+        context.fillRect(critter.x + 10, critter.y + 7 + bob, critter.w - 20, 6);
+        context.fillStyle = "#202c28";
+        context.fillRect(critter.x + 10, critter.y + 15 + bob, 4, 5);
+        context.fillRect(critter.x + 22, critter.y + 15 + bob, 4, 5);
+      });
+
+      state.crystals.forEach((crystal) => {
+        if (crystal.collected) return;
+        const y = crystal.y + Math.sin(state.elapsed * 4 + crystal.x) * 4;
+        context.fillStyle = "#735b2d";
+        context.fillRect(crystal.x - 10, y - 12, 20, 24);
+        context.fillStyle = "#f7dc74";
+        context.beginPath();
+        context.moveTo(crystal.x, y - 16);
+        context.lineTo(crystal.x + 12, y);
+        context.lineTo(crystal.x, y + 16);
+        context.lineTo(crystal.x - 12, y);
+        context.fill();
+        context.fillStyle = "#fff3bd";
+        context.fillRect(crystal.x - 3, y - 9, 5, 10);
+      });
+
+      const unlocked = state.collected === state.crystals.length;
+      context.fillStyle = "#293b36";
+      context.fillRect(898, 288, 50, 78);
+      context.fillStyle = unlocked ? (Math.floor(state.elapsed * 6) % 2 ? "#72d6b1" : "#b9a7ee") : "#718079";
+      context.fillRect(904, 294, 38, 72);
+      context.fillStyle = unlocked ? "#d8fff0" : "#9eaaa1";
+      context.fillRect(910, 302, 26, 60);
+      if (!unlocked) {
+        context.fillStyle = "#46564c";
+        context.fillRect(918, 324, 10, 14);
+        context.fillRect(915, 320, 16, 6);
+      }
+
+      if (!(state.invincible > 0 && Math.floor(state.elapsed * 14) % 2)) {
+        const player = state.player;
+        const color = selectedColor;
+        context.fillStyle = "rgba(31, 48, 35, .25)";
+        context.fillRect(player.x - 2, player.y + player.h - 4, player.w + 4, 7);
+        context.fillStyle = "#26362d";
+        context.fillRect(player.x + 3, player.y + 9, player.w - 6, player.h - 9);
+        context.fillStyle = color;
+        context.fillRect(player.x + 6, player.y + 5, player.w - 12, player.h - 8);
+        context.fillRect(player.x + 2, player.y + 17, player.w - 4, player.h - 20);
+        context.fillStyle = shadeHex(color, 30);
+        context.fillRect(player.x + 8, player.y + 7, 13, 6);
+        context.fillStyle = shadeHex(color, -28);
+        context.fillRect(player.x + player.w - 9, player.y + 17, 5, player.h - 23);
+        context.fillStyle = "#20312a";
+        context.fillRect(player.x + 9, player.y + 18, 5, 7);
+        context.fillRect(player.x + 22, player.y + 18, 5, 7);
+        context.fillRect(player.x + 15, player.y + 28, 7, 3);
+      }
+
+      state.particles.forEach((particle) => {
+        context.globalAlpha = Math.min(1, particle.life * 2);
+        context.fillStyle = particle.color;
+        context.fillRect(Math.round(particle.x), Math.round(particle.y), particle.size, particle.size);
+      });
+      context.globalAlpha = 1;
+
+      if (state.mode !== "running") {
+        context.fillStyle = "rgba(20, 31, 27, .7)";
+        context.fillRect(0, 0, width, height);
+        context.textAlign = "center";
+        context.fillStyle = "#fff4ce";
+        context.font = "bold 42px Silkscreen, monospace";
+        const title = state.mode === "paused" ? "PAUSED" : state.mode === "gameover" ? "GAME OVER" : state.mode === "won" ? "COURSE CLEAR!" : state.mode === "transition" ? "LEVEL CLEAR!" : "SLIME RUN";
+        context.fillText(title, width / 2, 180);
+        context.font = "22px Pixelify Sans, monospace";
+        context.fillStyle = "#e5f1df";
+        const subtitle = state.mode === "ready" ? "Collect crystals. Dodge danger. Reach the portal." : state.mode === "paused" ? "Press Resume when you are ready." : state.mode === "gameover" ? `Score: ${state.score}` : state.mode === "won" ? `Final score: ${state.score}` : "+250 points";
+        context.fillText(subtitle, width / 2, 222);
+      }
+    }
+
+    function startSlimeGame() {
+      if (!slimeGame) initSlimeGame();
+      if (slimeGame.state.mode === "paused") {
+        slimeGame.state.mode = slimeGame.state.pausedFrom || "running";
+        slimeGame.state.pausedFrom = null;
+        slimeGame.state.lastFrame = 0;
+        slimeGame.stop = createFrameTicker(updateSlimeGame);
+        setSlimeGameStatus("Back in the run!");
+        updateSlimeGameButtons();
+        slimeGame.canvas.focus({ preventScroll: true });
+        return;
+      }
+      slimeGame.stop?.();
+      slimeGame.state = newSlimeGameState();
+      slimeGame.state.mode = "running";
+      resetSlimeLevel();
+      slimeGame.stop = createFrameTicker(updateSlimeGame);
+      setSlimeGameStatus("Collect every crystal, then reach the portal.");
+      updateSlimeGameButtons();
+      slimeGame.canvas.focus({ preventScroll: true });
+      drawSlimeGame();
+    }
+
+    function pauseSlimeGame() {
+      if (!slimeGame || !["running", "transition"].includes(slimeGame.state.mode)) return;
+      slimeGame.state.pausedFrom = slimeGame.state.mode;
+      slimeGame.state.mode = "paused";
+      slimeGame.stop?.();
+      slimeGame.state.keys.clear();
+      slimeGame.state.pointers.clear();
+      $$("[data-game-control]").forEach((button) => button.classList.remove("pressed"));
+      setSlimeGameStatus("Game paused.");
+      updateSlimeGameButtons();
+      drawSlimeGame();
+    }
+
+    function initSlimeGame() {
+      const canvas = $("#slime-game");
+      slimeGame = { canvas, context: canvas.getContext("2d"), state: newSlimeGameState(), stop: null };
+      resetSlimeLevel();
+      drawSlimeGame();
+      $("#start-slime-game").addEventListener("click", startSlimeGame);
+      $("#pause-slime-game").addEventListener("click", pauseSlimeGame);
+      $$("[data-game-control]").forEach((button) => {
+        button.addEventListener("pointerdown", (event) => {
+          event.preventDefault();
+          if (slimeGame.state.mode !== "running") return;
+          button.setPointerCapture(event.pointerId);
+          slimeGame.state.pointers.set(event.pointerId, button.dataset.gameControl);
+          button.classList.add("pressed");
+        });
+        const release = (event) => {
+          slimeGame.state.pointers.delete(event.pointerId);
+          button.classList.remove("pressed");
+        };
+        button.addEventListener("pointerup", release);
+        button.addEventListener("pointercancel", release);
+        button.addEventListener("lostpointercapture", release);
+      });
+      canvas.addEventListener("pointerdown", (event) => {
+        if (slimeGame.state.mode === "running") {
+          event.preventDefault();
+          canvas.setPointerCapture(event.pointerId);
+          slimeGame.state.pointers.set("canvas", "jump");
+          canvas.focus({ preventScroll: true });
+        }
+      });
+      canvas.addEventListener("pointerup", () => slimeGame.state.pointers.delete("canvas"));
+      canvas.addEventListener("pointercancel", () => slimeGame.state.pointers.delete("canvas"));
+    }
+
+    async function downloadSlimePng() {
+      const button = $("#download-slime");
+      button.disabled = true;
+      try {
+        const svg = $("#slime-preview").cloneNode(true);
+        svg.removeAttribute("class");
+        svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+        svg.setAttribute("width", "720");
+        svg.setAttribute("height", "570");
+        const source = new Blob([new XMLSerializer().serializeToString(svg)], { type: "image/svg+xml;charset=utf-8" });
+        const sourceUrl = URL.createObjectURL(source);
+        const image = new Image();
+        try {
+          await new Promise((resolve, reject) => {
+            image.onload = resolve;
+            image.onerror = () => reject(new Error("Could not prepare the slime image."));
+            image.src = sourceUrl;
+          });
+        } finally {
+          URL.revokeObjectURL(sourceUrl);
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = 720;
+        canvas.height = 570;
+        const context = canvas.getContext("2d");
+        context.imageSmoothingEnabled = false;
+        context.fillStyle = "#8fc2d8";
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        context.fillStyle = "#d9edf0";
+        context.fillRect(54, 70, 150, 34);
+        context.fillRect(82, 48, 92, 30);
+        context.fillRect(520, 96, 128, 30);
+        context.fillRect(548, 74, 72, 28);
+        context.fillStyle = "#6e9e70";
+        context.fillRect(0, 430, 720, 140);
+        context.fillStyle = "#5d9b45";
+        context.fillRect(0, 430, 720, 20);
+        context.fillStyle = "#83bd57";
+        for (let x = 0; x < 720; x += 36) context.fillRect(x, 430, 18, 8);
+        context.drawImage(image, 0, 0, 720, 570);
+        const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
+        if (!blob) throw new Error("Could not create the PNG.");
+        const downloadUrl = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        const name = ($("#preview-name").textContent || "my-slime").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "my-slime";
+        link.href = downloadUrl;
+        link.download = `${name}.png`;
+        document.body.append(link);
+        link.click();
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(downloadUrl), 1000);
+        showToast("Slime PNG downloaded.");
+      } catch (error) {
+        showToast(error.message);
+      } finally {
+        button.disabled = false;
+      }
+    }
+
     function bunnySvg(color) {
       const safeColor = bunnyColors.includes(color) ? color : bunnyColors[0];
-      return `<svg viewBox="0 0 100 120" aria-hidden="true">
-        <ellipse cx="50" cy="108" rx="31" ry="7" fill="#35263f" opacity=".18"/>
+      const shade = shadeHex(safeColor, -28);
+      return `<svg viewBox="0 0 100 120" shape-rendering="crispEdges" aria-hidden="true">
+        <path d="M28 108h44v8H28Z" fill="#31442e" opacity=".25"/>
         <g class="bunny-idle" style="--wander-time:${6 + Math.random() * 4}s;--wander-delay:-${Math.random() * 6}s">
-          <g class="bunny-ear"><ellipse cx="34" cy="25" rx="10" ry="25" fill="${safeColor}" stroke="#6e526f" stroke-width="1.5" transform="rotate(-9 34 25)"/><ellipse cx="34" cy="25" rx="4" ry="17" fill="#f3b9c9" opacity=".7" transform="rotate(-9 34 25)"/></g>
-          <g class="bunny-ear"><ellipse cx="66" cy="25" rx="10" ry="25" fill="${safeColor}" stroke="#6e526f" stroke-width="1.5" transform="rotate(9 66 25)"/><ellipse cx="66" cy="25" rx="4" ry="17" fill="#f3b9c9" opacity=".7" transform="rotate(9 66 25)"/></g>
-          <circle cx="74" cy="83" r="12" fill="${safeColor}" stroke="#6e526f" stroke-width="1.5"/>
-          <ellipse cx="50" cy="78" rx="28" ry="30" fill="${safeColor}" stroke="#6e526f" stroke-width="1.5"/>
-          <ellipse cx="50" cy="52" rx="27" ry="24" fill="${safeColor}" stroke="#6e526f" stroke-width="1.5"/>
-          <ellipse cx="41" cy="50" rx="2.6" ry="3.4" fill="#3d3046"/><ellipse cx="59" cy="50" rx="2.6" ry="3.4" fill="#3d3046"/>
-          <path d="M47 57q3 4 6 0" fill="none" stroke="#3d3046" stroke-width="2" stroke-linecap="round"/>
-          <path d="m50 56-3 4h6Z" fill="#d98fa7"/>
-          <ellipse cx="31" cy="58" rx="6" ry="3.5" fill="#f3b9c9" opacity=".7"/><ellipse cx="69" cy="58" rx="6" ry="3.5" fill="#f3b9c9" opacity=".7"/>
-          <ellipse cx="31" cy="103" rx="13" ry="7" fill="${safeColor}" stroke="#6e526f" stroke-width="1.5"/><ellipse cx="65" cy="103" rx="13" ry="7" fill="${safeColor}" stroke="#6e526f" stroke-width="1.5"/>
+          <g class="bunny-ear"><path d="M26 8h16v44H26Z" fill="${safeColor}" stroke="#5b493c" stroke-width="3"/><path d="M31 14h6v30h-6Z" fill="#e7aaa1"/></g>
+          <g class="bunny-ear"><path d="M58 8h16v44H58Z" fill="${safeColor}" stroke="#5b493c" stroke-width="3"/><path d="M63 14h6v30h-6Z" fill="#e7aaa1"/></g>
+          <path d="M76 72h16v16H76Z" fill="${shade}" stroke="#5b493c" stroke-width="3"/>
+          <path d="M24 68h52v38H24Z" fill="${safeColor}" stroke="#5b493c" stroke-width="3"/>
+          <path d="M26 40h48v40H26Z" fill="${safeColor}" stroke="#5b493c" stroke-width="3"/>
+          <path d="M26 68h48v10H26Z" fill="${shade}"/>
+          <path d="M34 50h8v8h-8ZM58 50h8v8h-8Z" fill="#30392d"/>
+          <path d="M46 60h8v6h-8Z" fill="#c77e72"/>
+          <path d="M50 66v6M50 72h8M50 72h-8" fill="none" stroke="#5b493c" stroke-width="2"/>
+          <path d="M30 62h8v4h-8ZM62 62h8v4h-8Z" fill="#e7aaa1"/>
+          <path d="M20 100h24v10H20ZM56 100h24v10H56Z" fill="${safeColor}" stroke="#5b493c" stroke-width="3"/>
         </g>
       </svg>`;
     }
@@ -1591,19 +2304,16 @@ You are loved more than this little game could ever hold.</p>
     function tulipSvg(color, growth) {
       const safeColor = tulipColors.includes(color) ? color : tulipColors[0];
       const stage = Math.max(0, Math.min(4, Number(growth) || 0));
-      if (stage === 0) {
-        return `<svg viewBox="0 0 80 150" aria-hidden="true"><g class="tulip-bloom"><path d="M40 140V99" stroke="#4f7f45" stroke-width="5" stroke-linecap="round"/><path d="M40 119Q20 119 20 102q20 0 20 17ZM40 111q20 0 20-17-20 0-20 17Z" fill="#6d9e58"/><ellipse cx="40" cy="139" rx="17" ry="5" fill="#355b35" opacity=".2"/></g></svg>`;
-      }
       const stemHeight = 49 + stage * 15;
       const top = 137 - stemHeight;
       const bloom = stage === 1
-        ? `<path d="M-9 15Q-10-3 0-14Q10-3 9 15Q0 9-9 15Z" fill="${safeColor}" stroke="#6e526f" stroke-width="1.3"/><path d="M0 12V-9" stroke="#6e526f" stroke-width="1.2" opacity=".45"/>`
-        : `<path d="M-19 10Q-22-8-11-22Q-8-8 0-12Q8-8 11-22Q22-8 19 10Q9 3 0 10Q-9 3-19 10Z" fill="${safeColor}" stroke="#6e526f" stroke-width="1.3"/><path d="M0 9V-11" stroke="#6e526f" stroke-width="1.2" opacity=".35"/>`;
-      return `<svg viewBox="0 0 80 150" aria-hidden="true">
-        <ellipse cx="40" cy="140" rx="19" ry="5" fill="#355b35" opacity=".2"/>
-        <path d="M40 140Q${38 - stage} ${top + 38} 40 ${top + 12}" fill="none" stroke="#4f7f45" stroke-width="5" stroke-linecap="round"/>
-        <path d="M40 119Q17 117 17 95q23 2 23 24ZM41 105q23-2 23-24-23 2-23 24Z" fill="#6d9e58"/>
-        <g transform="translate(40 ${top})"><g class="tulip-bloom" style="--sway-time:${4 + Math.random() * 3}s;--sway-delay:-${Math.random() * 5}s">${bloom}</g></g>
+        ? `<path d="M-8 16V4h6v-8h4v8h6V4h6v12Z" fill="${safeColor}" stroke="#4d6238" stroke-width="3"/>`
+        : `<path d="M-18 16V4h6V-8h6V-16h6v8h6v8h6V4h6v12Z" fill="${safeColor}" stroke="#4d6238" stroke-width="3"/><path d="M-12 4h6v12h-6ZM6 4h6v12H6Z" fill="${shadeHex(safeColor, -28)}"/>`;
+      return `<svg viewBox="0 0 80 150" shape-rendering="crispEdges" aria-hidden="true">
+        <path d="M24 136h32v8H24Z" fill="#355b35" opacity=".25"/>
+        <path d="M37 ${top + 12}h6v${140 - top - 12}h-6Z" fill="#4f7f45"/>
+        <path d="M40 112H24v-8h-6v16h22ZM42 100h16v-8h6v16H42Z" fill="#6d9e58"/>
+        <g transform="translate(40 ${top})"><g class="tulip-bloom" style="--sway-time:${4 + Math.random() * 3}s;--sway-delay:-${Math.random() * 5}s">${stage ? bloom : '<path d="M-10 16V4H0v-8h6V4h10v12Z" fill="#78a952" stroke="#4d6238" stroke-width="3"/>'}</g></g>
       </svg>`;
     }
 
@@ -1979,69 +2689,71 @@ You are loved more than this little game could ever hold.</p>
       const hair = girl ? "#654654" : "#40384d";
       const skin = girl ? "#f4c9b6" : "#e8b99f";
       const pattern = outfit.pattern === "hearts"
-        ? '<path d="M38 79c-7-8-15 2 0 11 15-9 7-19 0-11ZM62 94c-7-8-15 2 0 11 15-9 7-19 0-11Z" fill="' + outfit.secondary + '"/>'
+        ? '<path d="M34 84h6v6h6v-6h6v6h6v12h-6v-6h-6v6h-6v-6h-6ZM58 96h6v6h6v-6h6v6h6v10h-6v-6h-6v6h-6v-6h-6Z" fill="' + outfit.secondary + '"/>'
         : outfit.pattern === "stars"
-          ? '<path d="m38 82 2 4 5 1-4 3 1 5-4-2-4 2 1-5-4-3 5-1ZM62 96l2 4 5 1-4 3 1 5-4-2-4 2 1-5-4-3 5-1Z" fill="' + outfit.secondary + '"/>'
+          ? '<g fill="' + outfit.secondary + '"><path d="M36 78h6v8h8v6h-8v8h-6v-8h-8v-6h8ZM62 94h6v8h8v6h-8v8h-6v-8h-8v-6h8Z"/></g>'
           : outfit.pattern === "stripes"
-            ? '<path d="M31 77h38M31 91h38M31 105h38" stroke="' + outfit.secondary + '" stroke-width="5" opacity=".75"/>'
+            ? '<path d="M32 80h36v6H32ZM32 94h36v6H32ZM32 108h36v6H32Z" fill="' + outfit.secondary + '" opacity=".8"/>'
             : outfit.pattern === "dots"
-              ? '<g fill="' + outfit.secondary + '"><circle cx="38" cy="82" r="4"/><circle cx="61" cy="96" r="4"/><circle cx="39" cy="103" r="3"/><circle cx="62" cy="78" r="3"/></g>'
+              ? '<g fill="' + outfit.secondary + '"><path d="M36 82h6v6h-6ZM58 96h6v6h-6ZM36 104h6v6h-6ZM58 80h6v6h-6Z"/></g>'
               : outfit.pattern === "moons"
-                ? '<path d="M42 76a8 8 0 1 0 7 11 9 9 0 0 1-7-11ZM61 98a7 7 0 1 0 6 9 8 8 0 0 1-6-9Z" fill="' + outfit.secondary + '"/>'
+                ? '<path d="M40 78h8v6h6v6h-6v6h-8v-6h-6v-6h6ZM62 96h8v6h6v6h-6v6h-8v-6h-6v-6h6Z" fill="' + outfit.secondary + '"/>'
                 : outfit.pattern === "checks"
-                  ? '<path d="M34 76h8v8h-8ZM50 88h8v8h-8ZM34 100h8v8h-8ZM58 76h8v8h-8Z" fill="' + outfit.secondary + '" opacity=".8"/>'
+                  ? '<path d="M34 78h8v8h-8ZM50 90h8v8h-8ZM34 102h8v8h-8ZM58 78h8v8h-8Z" fill="' + outfit.secondary + '"/>'
                   : outfit.pattern === "flakes"
-                    ? '<g stroke="' + outfit.secondary + '" stroke-width="2"><path d="M38 74v12m-5-9 10 6m-10 0 10-6M62 96v12m-5-9 10 6m-10 0 10-6"/></g>'
-                    : '<g fill="' + outfit.secondary + '"><circle cx="50" cy="80" r="3"/><circle cx="50" cy="94" r="3"/><circle cx="50" cy="108" r="3"/></g>';
-      return `<svg viewBox="0 0 100 145" aria-hidden="true">
-        <ellipse cx="50" cy="136" rx="29" ry="7" fill="#282139" opacity=".2"/>
-        ${girl ? '<path d="M27 48q-8 26 1 45l18-5 8-39Z" fill="' + hair + '"/><path d="M73 48q8 26-1 45L54 88l-8-39Z" fill="' + hair + '"/>' : ''}
-        <rect x="34" y="108" width="14" height="24" rx="7" fill="${outfit.secondary}" stroke="#5a465d" stroke-width="1.5"/>
-        <rect x="52" y="108" width="14" height="24" rx="7" fill="${outfit.secondary}" stroke="#5a465d" stroke-width="1.5"/>
-        <ellipse cx="41" cy="133" rx="11" ry="6" fill="#fff0df"/><ellipse cx="59" cy="133" rx="11" ry="6" fill="#fff0df"/>
-        <path d="M31 72q-9 4-8 22 1 13 10 12l5-24ZM69 72q9 4 8 22-1 13-10 12l-5-24Z" fill="${outfit.primary}" stroke="#5a465d" stroke-width="1.5"/>
-        <circle cx="26" cy="104" r="6" fill="${skin}"/><circle cx="74" cy="104" r="6" fill="${skin}"/>
-        <path d="M34 70q16-8 32 0l5 43q-21 10-42 0Z" fill="${outfit.primary}" stroke="#5a465d" stroke-width="1.8"/>
+                    ? '<g fill="' + outfit.secondary + '"><path d="M36 76h4v8h8v4h-8v8h-4v-8h-8v-4h8ZM62 96h4v8h8v4h-8v8h-4v-8h-8v-4h8Z"/></g>'
+                    : '<g fill="' + outfit.secondary + '"><path d="M46 80h8v8h-8ZM46 94h8v8h-8ZM46 108h8v8h-8Z"/></g>';
+      return `<svg viewBox="0 0 100 145" shape-rendering="crispEdges" aria-hidden="true">
+        <path d="M26 136h48v7H26Z" fill="#263b2a" opacity=".25"/>
+        ${girl ? '<path d="M22 34h10v58H22ZM68 34h10v58H68Z" fill="' + hair + '"/>' : ''}
+        <path d="M34 108h14v24H34ZM52 108h14v24H52Z" fill="${outfit.secondary}" stroke="#493d32" stroke-width="3"/>
+        <path d="M28 130h22v8H28ZM50 130h22v8H50Z" fill="#eee3c6" stroke="#493d32" stroke-width="3"/>
+        <path d="M22 80h10v30H22ZM68 80h10v30H68Z" fill="${outfit.primary}" stroke="#493d32" stroke-width="3"/>
+        <path d="M22 104h10v8H22ZM68 104h10v8H68Z" fill="${skin}" stroke="#493d32" stroke-width="3"/>
+        <path d="M30 74h40v44H30Z" fill="${outfit.primary}" stroke="#493d32" stroke-width="3"/>
         ${pattern}
-        <path d="m43 69 7 9 7-9" fill="none" stroke="${outfit.secondary}" stroke-width="3" stroke-linejoin="round"/>
-        <rect x="45" y="60" width="10" height="13" rx="5" fill="${skin}"/>
-        <circle cx="50" cy="48" r="28" fill="${skin}" stroke="#5a465d" stroke-width="1.5"/>
+        <path d="M44 74h6v6h-6ZM50 74h6v6h-6Z" fill="${outfit.secondary}"/>
+        <path d="M44 66h12v12H44Z" fill="${skin}" stroke="#493d32" stroke-width="3"/>
+        <path d="M26 24h48v48H26Z" fill="${skin}" stroke="#493d32" stroke-width="3"/>
         ${girl
-          ? '<path d="M23 45q1-31 27-31 27 0 28 31-10-4-15-16-10 11-25 12-5 0-15 4Z" fill="' + hair + '"/><circle cx="22" cy="50" r="9" fill="' + hair + '"/><circle cx="78" cy="50" r="9" fill="' + hair + '"/><path d="m19 43 7-2M74 41l7 2" stroke="#f3a9bd" stroke-width="4" stroke-linecap="round"/>'
-          : '<path d="M23 43q-2-27 25-30 9 9 11 14 7-7 18-4 7 15 2 24-10-8-17-13-7 9-23 10-6 0-16-1Z" fill="' + hair + '"/><path d="m35 22 8-7 5 7 9-5" fill="none" stroke="#56465e" stroke-width="3" stroke-linecap="round"/>'}
-        <ellipse cx="40" cy="50" rx="3" ry="4" fill="#382e43"/><ellipse cx="60" cy="50" rx="3" ry="4" fill="#382e43"/>
-        <circle cx="37" cy="57" r="2" fill="#fff" opacity=".8"/><circle cx="57" cy="57" r="2" fill="#fff" opacity=".8"/>
-        <ellipse cx="32" cy="59" rx="6" ry="3" fill="#ed9fa9" opacity=".45"/><ellipse cx="68" cy="59" rx="6" ry="3" fill="#ed9fa9" opacity=".45"/>
-        <path d="M45 61q5 6 10 0" fill="none" stroke="#8c5360" stroke-width="2" stroke-linecap="round"/>
+          ? '<path d="M22 24h56v12H22ZM22 36h10v32H22ZM68 36h10v32H68Z" fill="' + hair + '"/><path d="M32 16h36v12H32Z" fill="' + hair + '"/><path d="M18 42h8v8h-8ZM74 42h8v8h-8Z" fill="#e7aaa1"/>'
+          : '<path d="M22 24h56v14H22ZM26 16h48v12H26ZM30 10h36v8H30Z" fill="' + hair + '"/><path d="M32 18h8v6h-8ZM48 14h8v8h-8ZM62 18h8v6h-8Z" fill="#564d43"/>'}
+        <path d="M36 44h8v8h-8ZM56 44h8v8h-8Z" fill="#382f2a"/>
+        <path d="M32 58h10v6H32ZM58 58h10v6H58Z" fill="#e7aaa1"/>
+        <path d="M44 60h12v6H44Z" fill="#9c6254"/>
+        <path d="M46 66h8v4h-8Z" fill="#9c6254"/>
       </svg>`;
     }
 
     function furnitureSvg(type) {
       const drawings = {
-        sofa: '<rect x="8" y="38" width="84" height="42" rx="13" fill="#c78da3" stroke="#684e67" stroke-width="3"/><rect x="16" y="25" width="68" height="35" rx="12" fill="#e5afc1" stroke="#684e67" stroke-width="3"/><path d="M50 28v31" stroke="#b97996" stroke-width="3"/><rect x="13" y="74" width="10" height="14" rx="3" fill="#684e67"/><rect x="77" y="74" width="10" height="14" rx="3" fill="#684e67"/><rect x="22" y="37" width="20" height="18" rx="5" fill="#f7d58f" transform="rotate(-8 32 46)"/>',
-        bed: '<rect x="10" y="30" width="80" height="58" rx="8" fill="#a981a7" stroke="#5e4b68" stroke-width="3"/><rect x="15" y="48" width="70" height="35" rx="7" fill="#ddd0ef"/><rect x="18" y="37" width="26" height="20" rx="7" fill="#fff7e8"/><path d="M15 75h70" stroke="#bda3d2" stroke-width="4"/><rect x="8" y="20" width="10" height="75" rx="4" fill="#806580"/>',
-        table: '<ellipse cx="50" cy="35" rx="39" ry="15" fill="#d6aa7e" stroke="#745446" stroke-width="3"/><path d="M23 40v48M77 40v48M50 45v45" stroke="#745446" stroke-width="8" stroke-linecap="round"/><ellipse cx="50" cy="28" rx="9" ry="5" fill="#f6e7cc"/><path d="M47 27v-12h6v12" fill="#8fb6a2"/>',
-        plant: '<path d="M50 75V33M50 58Q22 58 23 35q27 0 27 23ZM51 49q28 0 27-24-27 0-27 24Z" fill="#6d9e64" stroke="#456c48" stroke-width="3"/><path d="M31 68h38l-5 28H36Z" fill="#d58f7d" stroke="#754f50" stroke-width="3"/><path d="M29 68h42" stroke="#f3c1a6" stroke-width="6" stroke-linecap="round"/>',
-        lamp: '<path d="M50 43v49M31 94h38" stroke="#6d5870" stroke-width="7" stroke-linecap="round"/><path d="M27 12h46l-8 35H35Z" fill="#f3d58f" stroke="#806a58" stroke-width="3"/><path d="M39 49h22" stroke="#fff2bf" stroke-width="4" stroke-linecap="round"/>',
-        shelf: '<rect x="16" y="12" width="68" height="78" rx="5" fill="#b9876d" stroke="#684c45" stroke-width="3"/><path d="M19 42h62M19 71h62" stroke="#7d5a4f" stroke-width="5"/><rect x="25" y="23" width="10" height="17" rx="2" fill="#e5afc1"/><rect x="38" y="20" width="9" height="20" rx="2" fill="#a8c9dd"/><rect x="62" y="24" width="12" height="16" rx="2" fill="#f3d58f"/><circle cx="35" cy="59" r="10" fill="#9ac4a5"/><rect x="55" y="51" width="17" height="18" rx="3" fill="#c4a5d4"/>',
-        rug: '<ellipse cx="50" cy="50" rx="46" ry="34" fill="#dca4b8" stroke="#fff0dc" stroke-width="4"/><ellipse cx="50" cy="50" rx="32" ry="22" fill="none" stroke="#b8789b" stroke-width="4"/><path d="m50 34 4 9 10 1-8 7 2 10-8-5-9 5 2-10-7-7 10-1Z" fill="#f7dca4"/>',
+        sofa: '<path d="M8 38h84v40H8Z" fill="#a85f50" stroke="#493d32" stroke-width="4"/><path d="M16 24h68v34H16Z" fill="#c77a5d" stroke="#493d32" stroke-width="4"/><path d="M48 28v26" stroke="#8f4d40" stroke-width="4"/><path d="M12 74h12v14H12ZM76 74h12v14H76Z" fill="#493d32"/><path d="M22 38h18v16H22Z" fill="#e8c767"/>',
+        bed: '<path d="M12 28h76v62H12Z" fill="#765b3c" stroke="#493d32" stroke-width="4"/><path d="M18 46h64v38H18Z" fill="#d9d2ad" stroke="#493d32" stroke-width="4"/><path d="M22 34h26v18H22Z" fill="#f2e9cb" stroke="#493d32" stroke-width="3"/><path d="M18 68h64v8H18Z" fill="#9aaf78"/><path d="M6 20h10v74H6Z" fill="#765b3c" stroke="#493d32" stroke-width="3"/>',
+        table: '<path d="M14 24h72v22H14Z" fill="#b88a52" stroke="#493d32" stroke-width="4"/><path d="M22 46h10v44H22ZM68 46h10v44H68Z" fill="#765b3c" stroke="#493d32" stroke-width="3"/><path d="M44 16h12v12H44Z" fill="#9cc7da" stroke="#493d32" stroke-width="3"/><path d="M48 8h4v10h-4Z" fill="#5d8b4c"/>',
+        plant: '<path d="M46 30h8v46h-8ZM30 42h16v10H30ZM22 32h10v12H22ZM54 50h16v10H54ZM62 38h12v14H62Z" fill="#5d8b4c" stroke="#3d5d35" stroke-width="3"/><path d="M32 68h36v24H32Z" fill="#b66c4e" stroke="#493d32" stroke-width="4"/><path d="M28 66h44v8H28Z" fill="#d58b62" stroke="#493d32" stroke-width="3"/>',
+        lamp: '<path d="M46 44h8v46h-8ZM28 90h44v8H28Z" fill="#66563c" stroke="#493d32" stroke-width="3"/><path d="M28 12h44v34H28Z" fill="#e8c767" stroke="#493d32" stroke-width="4"/><path d="M34 18h32v8H34Z" fill="#fff0ad"/>',
+        shelf: '<path d="M16 10h68v82H16Z" fill="#9b7146" stroke="#493d32" stroke-width="4"/><path d="M20 40h60v6H20ZM20 70h60v6H20Z" fill="#654c34"/><path d="M26 22h10v16H26ZM40 18h10v20H40ZM62 24h12v14H62Z" fill="#c77a5d"/><path d="M26 50h16v18H26Z" fill="#7fa35b"/><path d="M56 48h18v20H56Z" fill="#9cc7da"/>',
+        rug: '<path d="M8 18h84v64H8Z" fill="#a85f50" stroke="#493d32" stroke-width="4"/><path d="M16 26h68v48H16Z" fill="#c77a5d"/><path d="M42 32h16v8H42ZM34 40h32v8H34ZM42 48h16v24H42Z" fill="#e8c767"/>',
       };
-      return `<svg viewBox="0 0 100 100" aria-hidden="true">${drawings[type] || drawings.plant}</svg>`;
+      return `<svg viewBox="0 0 100 100" shape-rendering="crispEdges" aria-hidden="true">${drawings[type] || drawings.plant}</svg>`;
     }
 
     function catSvg(color) {
       const safeColor = /^#[0-9a-fA-F]{6}$/.test(color || "") ? color : catColors[0];
-      return `<svg viewBox="0 0 110 90" aria-hidden="true">
-        <ellipse cx="55" cy="81" rx="37" ry="6" fill="#282139" opacity=".18"/>
-        <path d="M78 55q26-20 19 5-3 12-17 8" fill="none" stroke="${safeColor}" stroke-width="11" stroke-linecap="round"/>
-        <ellipse cx="51" cy="57" rx="32" ry="24" fill="${safeColor}" stroke="#5b4a5d" stroke-width="2"/>
-        <path d="M24 36 22 12l20 15M62 27l20-15-2 25" fill="${safeColor}" stroke="#5b4a5d" stroke-width="2" stroke-linejoin="round"/>
-        <path d="m27 20 3 13 9-7M79 20l-3 13-9-7" fill="#e8a7b5"/>
-        <circle cx="45" cy="35" r="25" fill="${safeColor}" stroke="#5b4a5d" stroke-width="2"/>
-        <ellipse cx="36" cy="34" rx="3" ry="4" fill="#382e43"/><ellipse cx="54" cy="34" rx="3" ry="4" fill="#382e43"/>
-        <path d="m41 42 4 4 4-4Z" fill="#c77e8d"/><path d="M45 46q-5 6-9 1M45 46q5 6 9 1" fill="none" stroke="#6b4b59" stroke-width="1.5"/>
-        <path d="M29 43 14 40M29 48 14 50M61 43l15-3M61 48l15 2" stroke="#6b4b59" stroke-width="1.5" stroke-linecap="round"/>
-        <ellipse cx="33" cy="76" rx="10" ry="6" fill="${safeColor}" stroke="#5b4a5d" stroke-width="2"/><ellipse cx="62" cy="76" rx="10" ry="6" fill="${safeColor}" stroke="#5b4a5d" stroke-width="2"/>
+      const shade = shadeHex(safeColor, -28);
+      return `<svg viewBox="0 0 110 90" shape-rendering="crispEdges" aria-hidden="true">
+        <path d="M24 80h64v7H24Z" fill="#263b2a" opacity=".25"/>
+        <path d="M80 48h8v-8h8v-8h8v24h-8v12H84V64h-4Z" fill="${safeColor}" stroke="#493d32" stroke-width="3"/>
+        <path d="M28 46h58v32H28Z" fill="${safeColor}" stroke="#493d32" stroke-width="3"/>
+        <path d="M28 68h58v10H28Z" fill="${shade}"/>
+        <path d="M22 18h12v24H22ZM46 10h12v30H46ZM70 18h12v24H70Z" fill="${safeColor}" stroke="#493d32" stroke-width="3"/>
+        <path d="M26 22h6v10h-6ZM50 14h6v12h-6ZM74 22h6v10h-6Z" fill="#e7aaa1"/>
+        <path d="M20 32h62v34H20Z" fill="${safeColor}" stroke="#493d32" stroke-width="3"/>
+        <path d="M32 42h8v8h-8ZM60 42h8v8h-8Z" fill="#30392d"/>
+        <path d="M46 52h10v6H46Z" fill="#c77e72"/>
+        <path d="M50 58v6M50 64h8M50 64h-8" fill="none" stroke="#493d32" stroke-width="2"/>
+        <path d="M24 54h12v3H24ZM66 54h12v3H66Z" fill="${shadeHex(safeColor, 35)}"/>
+        <path d="M30 74h16v8H30ZM60 74h16v8H60Z" fill="${safeColor}" stroke="#493d32" stroke-width="3"/>
       </svg>`;
     }
 
@@ -2543,6 +3255,16 @@ You are loved more than this little game could ever hold.</p>
       return Boolean(page) && (role === "admin" || page.createdBy === user?.uid);
     }
 
+    function galleryPhotoKey(photo) {
+      if (photo.path) return photo.path;
+      let hash = 2166136261;
+      for (let index = 0; index < photo.url.length; index += 1) {
+        hash ^= photo.url.charCodeAt(index);
+        hash = Math.imul(hash, 16777619);
+      }
+      return `image-${(hash >>> 0).toString(36)}`;
+    }
+
     function currentGalleryPage() {
       return galleryPages[galleryIndex];
     }
@@ -2612,7 +3334,7 @@ You are loved more than this little game could ever hold.</p>
         const photo = pagePhotos[index];
         const slot = document.createElement("div");
         slot.className = `photo-slot${photo ? "" : " empty"}`;
-        if (photo) slot.dataset.trashKey = `gallery-photo:${page.id}:${photo.path || photo.url}`;
+        if (photo) slot.dataset.trashKey = `gallery-photo:${page.id}:${galleryPhotoKey(photo)}`;
         if (photo) {
           const image = document.createElement("img");
           image.src = photo.url;
@@ -2726,68 +3448,110 @@ You are loved more than this little game could ever hold.</p>
       }
     }
 
+    function byteLength(value) {
+      return new TextEncoder().encode(value).length;
+    }
+
+    async function compressGalleryPhoto(file, maxCharacters) {
+      const bitmap = await createImageBitmap(file);
+      const sizes = [[960, 720], [800, 600], [640, 480], [512, 384]];
+      const qualities = [.82, .72, .62, .52, .42, .32];
+      try {
+        for (const [maxWidth, maxHeight] of sizes) {
+          const scale = Math.min(1, maxWidth / bitmap.width, maxHeight / bitmap.height);
+          const canvas = document.createElement("canvas");
+          canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+          canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+          const context = canvas.getContext("2d");
+          context.fillStyle = "#f4efe4";
+          context.fillRect(0, 0, canvas.width, canvas.height);
+          context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+          for (const quality of qualities) {
+            const encoded = canvas.toDataURL("image/webp", quality);
+            const url = encoded.startsWith("data:image/webp") ? encoded : canvas.toDataURL("image/jpeg", quality);
+            if (url.length <= maxCharacters) return url;
+          }
+        }
+      } finally {
+        bitmap.close();
+      }
+      throw new Error("This photo is too large to save safely. Try a smaller or simpler image.");
+    }
+
+    async function deleteLegacyGalleryFile(path) {
+      if (!path) return;
+      try {
+        const storageModule = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js");
+        const legacyStorage = storageModule.getStorage(app);
+        await storageModule.deleteObject(storageModule.ref(legacyStorage, path));
+      } catch {}
+    }
+
     async function uploadPhoto(file) {
-      if (!file) return;
+      if (!file || photoUploading) return;
+      const input = $("#photo-input");
+      const status = $("#upload-status");
       const page = currentGalleryPage();
       if (!user || !role) {
         showToast("Sign in as a viewer or admin to add photos.");
-        $("#photo-input").value = "";
+        input.value = "";
         openAuth();
+        return;
+      }
+      if (!db) {
+        showToast("Connect Firebase to save photos.");
+        input.value = "";
         return;
       }
       if (!page || !canManageGalleryPage(page)) {
         showToast("Create or open your own gallery page first.");
-        $("#photo-input").value = "";
+        input.value = "";
         return;
       }
       const pagePhotos = Array.isArray(page.photos) ? page.photos : [];
       if (pagePhotos.length >= 4) {
         showToast("This page already has four photos. Create another page.");
-        $("#photo-input").value = "";
+        input.value = "";
         return;
       }
-      if (!file.type.startsWith("image/")) {
-        showToast("Choose an image file.");
-        $("#photo-input").value = "";
+      if (!file.type.startsWith("image/") || file.type.includes("svg")) {
+        showToast("Choose a JPG, PNG, WebP, or another supported photo.");
+        input.value = "";
         return;
       }
-      if (file.size > 5 * 1024 * 1024) {
-        showToast("Photos must be smaller than 5 MB.");
-        $("#photo-input").value = "";
+      if (file.size > 20 * 1024 * 1024) {
+        showToast("Choose a photo smaller than 20 MB. It will be compressed before saving.");
+        input.value = "";
         return;
       }
-      if (!storage || !db) {
-        showToast("Connect Firebase Storage to upload photos.");
-        $("#photo-input").value = "";
+      const currentBytes = pagePhotos.reduce((total, photo) => total + byteLength(JSON.stringify(photo)), 0);
+      const availableCharacters = Math.floor((900000 - currentBytes - 2000) / (4 - pagePhotos.length));
+      if (availableCharacters < 15000) {
+        showToast("This page needs more space. Remove a photo or create a new page.");
+        input.value = "";
         return;
       }
-      const status = $("#upload-status");
-      status.textContent = `Uploading photo ${pagePhotos.length + 1} of 4...`;
-      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 90);
-      const path = `gallery/${user.uid}/${Date.now()}_${safeName}`;
+      photoUploading = true;
+      status.textContent = `Compressing photo ${pagePhotos.length + 1} of 4...`;
       try {
-        const fileRef = storageApi.ref(storage, path);
-        await storageApi.uploadBytes(fileRef, file);
-        const url = await storageApi.getDownloadURL(fileRef);
-        try {
-          await fs.updateDoc(fs.doc(db, "galleryPages", page.id), {
-            photos: fs.arrayUnion({ url, path, addedAt: new Date() }),
-          });
-        } catch (error) {
-          await storageApi.deleteObject(fileRef).catch(() => {});
-          throw error;
-        }
-        $("#photo-input").value = "";
-        status.textContent = `${pagePhotos.length + 1} of 4 photos added.`;
+        const url = await compressGalleryPhoto(file, Math.min(180000, availableCharacters));
+        status.textContent = "Saving photo...";
+        await fs.updateDoc(fs.doc(db, "galleryPages", page.id), {
+          photos: fs.arrayUnion({ url, addedAt: new Date() }),
+        });
+        status.textContent = `${pagePhotos.length + 1} of 4 photos saved.`;
         gainXp(10);
         await loadGalleryPages();
         const index = galleryPages.findIndex((item) => item.id === page.id);
         if (index >= 0) galleryIndex = index;
         renderGalleryPages();
-        showToast("Photo added to the gallery page.");
+        showToast("Photo saved. No paid storage needed.");
       } catch (error) {
         status.textContent = "";
         showToast(error.message);
+      } finally {
+        input.value = "";
+        photoUploading = false;
       }
     }
 
@@ -2795,9 +3559,9 @@ You are loved more than this little game could ever hold.</p>
       const page = currentGalleryPage();
       if (!page || !canManageGalleryPage(page)) return;
       try {
-        const removed = await trashInteraction(`gallery-photo:${page.id}:${photo.path || photo.url}`, source, async () => {
+        const removed = await trashInteraction(`gallery-photo:${page.id}:${galleryPhotoKey(photo)}`, source, async () => {
           await fs.updateDoc(fs.doc(db, "galleryPages", page.id), { photos: fs.arrayRemove(photo) });
-          if (photo.path) await storageApi.deleteObject(storageApi.ref(storage, photo.path)).catch(() => {});
+          await deleteLegacyGalleryFile(photo.path);
           await loadGalleryPages();
         });
         if (removed) showToast("Photo removed.");
@@ -2823,7 +3587,7 @@ You are loved more than this little game could ever hold.</p>
       try {
         const removed = await trashInteraction(`gallery-page:${page.id}`, source, async () => {
           const pagePhotos = Array.isArray(page.photos) ? page.photos : [];
-          await Promise.all(pagePhotos.map((photo) => photo.path ? storageApi.deleteObject(storageApi.ref(storage, photo.path)).catch(() => {}) : Promise.resolve()));
+          await Promise.all(pagePhotos.map((photo) => deleteLegacyGalleryFile(photo.path)));
           await fs.deleteDoc(fs.doc(db, "galleryPages", page.id));
           await loadGalleryPages();
         });
@@ -2998,19 +3762,16 @@ You are loved more than this little game could ever hold.</p>
         return;
       }
       try {
-        const [appModule, authModule, firestoreModule, storageModule] = await Promise.all([
+        const [appModule, authModule, firestoreModule] = await Promise.all([
           import("https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js"),
           import("https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js"),
           import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js"),
-          import("https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js"),
         ]);
         app = appModule.initializeApp(firebaseConfig);
         authApi = authModule;
         fs = firestoreModule;
-        storageApi = storageModule;
         auth = authModule.getAuth(app);
         db = firestoreModule.getFirestore(app);
-        storage = storageModule.getStorage(app);
         $("#auth-setup").hidden = true;
 
         authApi.onAuthStateChanged(auth, handleAuthState);
@@ -3083,6 +3844,33 @@ You are loved more than this little game could ever hold.</p>
       }
     });
 
+    const gameKeyActions = { arrowleft: "left", a: "left", arrowright: "right", d: "right", arrowup: "jump", w: "jump", " ": "jump" };
+    document.addEventListener("keydown", (event) => {
+      if (!slimeGame || currentPage !== "slime" || event.target.matches("input, textarea, select, [contenteditable='true']")) return;
+      const action = gameKeyActions[event.key.toLowerCase()];
+      if (action && ["running", "paused"].includes(slimeGame.state.mode)) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        if (slimeGame.state.mode === "running") slimeGame.state.keys.add(action);
+        return;
+      }
+      if (event.key === "Enter" && document.activeElement === slimeGame.canvas && !["running", "transition"].includes(slimeGame.state.mode)) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        startSlimeGame();
+      } else if ((event.key === "Escape" || event.key.toLowerCase() === "p") && slimeGame.state.mode === "running") {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        pauseSlimeGame();
+      }
+    }, true);
+    document.addEventListener("keyup", (event) => {
+      const action = gameKeyActions[event.key.toLowerCase()];
+      if (action && slimeGame) slimeGame.state.keys.delete(action);
+    }, true);
+    window.addEventListener("blur", () => pauseSlimeGame());
+    document.addEventListener("visibilitychange", () => { if (document.hidden) pauseSlimeGame(); });
+
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape") {
         $$(".modal-backdrop").forEach((modal) => { if (!modal.hidden) closeModal(modal.id); });
@@ -3095,13 +3883,19 @@ You are loved more than this little game could ever hold.</p>
     });
 
     let touchStart = null;
+    const touchNavigationIgnore = "input, textarea, select, [contenteditable='true'], .bunny, .tulip, .house-item, #slime-game, .arcade-touch";
     viewport.addEventListener("touchstart", (event) => {
-      if (event.touches.length === 1 && !event.target.closest("input, textarea, select, [contenteditable='true'], .bunny, .tulip, .house-item")) {
+      touchStart = null;
+      if (event.touches.length === 1 && !event.target.closest(touchNavigationIgnore)) {
         touchStart = { x: event.touches[0].clientX, y: event.touches[0].clientY };
       }
     }, { passive: true });
     viewport.addEventListener("touchend", (event) => {
-      if (!touchStart || editMode || event.target.closest(".bunny, .tulip, .house-item")) return;
+      const ignored = !touchStart || editMode || event.target.closest(touchNavigationIgnore);
+      if (ignored) {
+        touchStart = null;
+        return;
+      }
       const touch = event.changedTouches[0];
       const dx = touch.clientX - touchStart.x;
       const dy = touch.clientY - touchStart.y;
@@ -3194,6 +3988,7 @@ You are loved more than this little game could ever hold.</p>
       updateSlimePreview(true);
     });
     $("#create-slime").addEventListener("click", createSlime);
+    $("#download-slime").addEventListener("click", downloadSlimePng);
     $("#unwrap-gift").addEventListener("click", unwrapGift);
     $("#rewrap-gift").addEventListener("click", rewrapGift);
     $("#pet-home").addEventListener("click", () => {
@@ -3244,6 +4039,7 @@ You are loved more than this little game could ever hold.</p>
     });
 
     initHouseControls();
+    initSlimeGame();
     renderContent();
     renderColorOptions();
     updateSlimePreview();
