@@ -124,8 +124,23 @@ service cloud.firestore {
 
     function validInsideHouse(data) {
       return data.zone == 'house'
+        && (!('worldPage' in data) || data.worldPage == 'house')
         && data.x >= 0.44 && data.x <= 0.94
         && data.y >= 0.28 && data.y <= 0.9;
+    }
+
+    function validCharacterPlacement(data) {
+      return data.zone in ['house', 'yard']
+        && validHousePosition(data)
+        && (
+          (!('worldPage' in data) && !('worldX' in data))
+          || (
+            data.worldPage in ['home', 'slime', 'gift', 'wedding', 'gallery', 'bunnyBlue', 'garden', 'house']
+            && data.worldX is number
+            && data.worldX >= 0.08 && data.worldX <= 0.92
+            && (data.zone == 'yard' || data.worldPage == 'house')
+          )
+        );
     }
 
     function validClothes(data) {
@@ -142,8 +157,7 @@ service cloud.firestore {
         && data.name.size() >= 1
         && data.name.size() <= 40
         && validClothes(data)
-        && data.zone in ['house', 'yard']
-        && validHousePosition(data)
+        && validCharacterPlacement(data)
         && data.createdBy == request.auth.uid
         && data.createdAt == request.time;
     }
@@ -291,24 +305,33 @@ service cloud.firestore {
     match /characters/{characterId} {
       allow read: if true;
       allow create: if (isAdmin() || isViewer()) && validCharacter(request.resource.data);
-      allow update: if isAdmin() && (
-        request.resource.data.clothes == resource.data.clothes
-        || (resource.data.zone == 'house' && validInsideHouse(request.resource.data))
-      );
+      allow update: if isAdmin()
+        && request.resource.data.key == resource.data.key
+        && request.resource.data.gender == resource.data.gender
+        && request.resource.data.name == resource.data.name
+        && request.resource.data.createdBy == resource.data.createdBy
+        && request.resource.data.createdAt == resource.data.createdAt
+        && validClothes(request.resource.data)
+        && validCharacterPlacement(request.resource.data)
+        && (
+          request.resource.data.clothes == resource.data.clothes
+          || (resource.data.zone == 'house' && validInsideHouse(resource.data) && validInsideHouse(request.resource.data))
+        );
       allow update: if isViewer()
+        && (resource.data.createdBy == request.auth.uid || characterId in ['seed-girl', 'seed-boy'])
+        && request.resource.data.createdBy == resource.data.createdBy
         && request.resource.data.createdAt == resource.data.createdAt
         && request.resource.data.key == resource.data.key
         && request.resource.data.gender == resource.data.gender
         && request.resource.data.name == resource.data.name
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
-          'clothes', 'zone', 'x', 'y'
+          'clothes', 'zone', 'x', 'y', 'worldPage', 'worldX'
         ])
         && validClothes(request.resource.data)
-        && request.resource.data.zone in ['house', 'yard']
-        && validHousePosition(request.resource.data)
+        && validCharacterPlacement(request.resource.data)
         && (
           request.resource.data.clothes == resource.data.clothes
-          || (resource.data.zone == 'house' && validInsideHouse(request.resource.data))
+          || (resource.data.zone == 'house' && validInsideHouse(resource.data) && validInsideHouse(request.resource.data))
         );
     }
 

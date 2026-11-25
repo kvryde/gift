@@ -187,6 +187,7 @@
       touch-action: auto;
     }
     .page-viewport::-webkit-scrollbar { display: none; }
+    .page-viewport.dragging-house { scroll-behavior: auto; scroll-snap-type: none; touch-action: none; user-select: none; }
     .world-character-layer {
       position: absolute;
       z-index: 12;
@@ -1708,7 +1709,7 @@ You are loved more than this little game could ever hold.</p>
             <div class="house-layer" id="house-furniture"></div>
             <div class="house-layer" id="house-cats"></div>
             <div class="house-layer" id="house-characters"></div>
-            <div class="house-hint" id="house-hint" data-field="houseHintDefault">Drag a character through the door · Tap cats to pet them</div>
+            <div class="house-hint" id="house-hint" data-field="houseHintDefault">Drag a character across the tabs or through the door · Tap cats to pet them</div>
           </div>
           <aside class="house-panel" aria-label="House activities" data-copy-aria="houseActivitiesAria">
             <section class="house-panel-section">
@@ -1969,6 +1970,7 @@ You are loved more than this little game could ever hold.</p>
       worldCharactersAria: "Shane and Zyrell exploring the game",
       roamCharacterAria: "{name}, exploring {page}. Drag to move or let them walk.",
       roamDragHint: "Drag {name} across the tabs to choose where they explore.",
+      characterMovedToPage: "{name} is exploring the {page} page.",
       worldSlimesAria: "Slimes deployed in the world",
       slimeDeploy: "Deploy",
       slimeDeployAria: "Deploy {name} into the current page.",
@@ -2753,7 +2755,8 @@ You are loved more than this little game could ever hold.</p>
       currentPage = pageId;
       const index = pages.indexOf(pageId);
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      viewport.scrollTo({ left: index * viewport.clientWidth, behavior: updateHash && !reduceMotion ? "smooth" : "auto" });
+      const draggingCharacter = activeHouseDrag?.kind === "character" || activeRoamDrag;
+      viewport.scrollTo({ left: index * viewport.clientWidth, behavior: updateHash && !reduceMotion && !draggingCharacter ? "smooth" : "auto" });
       $$(".app-page").forEach((page) => page.classList.toggle("active", page.dataset.page === pageId));
       $$("[data-page-link]").forEach((button) => {
         const active = button.dataset.pageLink === pageId;
@@ -4479,6 +4482,21 @@ You are loved more than this little game could ever hold.</p>
       return charactersLoaded ? characters : demoCharacters;
     }
 
+    function characterWorldPage(person) {
+      return pages.includes(person.worldPage) ? person.worldPage : "house";
+    }
+
+    function characterWorldX(person) {
+      const value = Number(person.worldX);
+      if (Number.isFinite(value)) return Math.max(.08, Math.min(.92, value));
+      const fallback = Number(person.x) || (person.key === "boy" ? .7 : .24);
+      return Math.max(.08, Math.min(.92, fallback));
+    }
+
+    function characterInHouseScene(person) {
+      return characterWorldPage(person) === "house";
+    }
+
     function visibleFurniture() {
       return furnitureLoaded ? furniture : demoFurniture;
     }
@@ -4684,7 +4702,7 @@ You are loved more than this little game could ever hold.</p>
       const layer = $("#house-characters");
       layer.replaceChildren();
       const visibleIds = new Set();
-      visibleCharacters().forEach((person) => {
+      visibleCharacters().filter(characterInHouseScene).forEach((person) => {
         visibleIds.add(person.id);
         const motion = ensureHouseMotion(person);
         const shadow = document.createElement("span");
@@ -4722,18 +4740,30 @@ You are loved more than this little game could ever hold.</p>
     }
 
     function ensureRoamMotion(person) {
-      const pageIndex = Math.max(0, pages.indexOf(currentPage));
-      const startX = pageIndex + (person.key === "boy" ? .7 : .24);
+      const worldPage = characterWorldPage(person);
+      const pageIndex = Math.max(0, pages.indexOf(worldPage));
+      const localX = characterWorldX(person);
+      const startX = pageIndex + localX;
       let motion = roamMotion.get(person.id);
       if (!motion) {
         motion = {
-          x: startX, targetX: startX, targetPage: currentPage, vx: 0, speed: .22,
+          x: startX, targetX: startX, targetPage: worldPage, vx: 0, speed: .22,
           jumpY: 0, jumpV: 0, onGround: true,
           nextPlan: performance.now() + 1800 + Math.random() * 2600,
           nextHop: performance.now() + 3200 + Math.random() * 5200,
-          element: null, shadow: null,
+          savedWorldPage: worldPage, savedWorldX: localX, element: null, shadow: null,
         };
         roamMotion.set(person.id, motion);
+      } else if (motion.savedWorldPage !== worldPage || Math.abs(motion.savedWorldX - localX) > .002) {
+        motion.x = startX;
+        motion.targetX = startX;
+        motion.targetPage = worldPage;
+        motion.vx = 0;
+        motion.jumpY = 0;
+        motion.jumpV = 0;
+        motion.onGround = true;
+        motion.savedWorldPage = worldPage;
+        motion.savedWorldX = localX;
       }
       return motion;
     }
@@ -4804,7 +4834,7 @@ You are loved more than this little game could ever hold.</p>
       const delta = Math.min(.05, Math.max(.001, (time - previousTime) / 1000));
       visibleCharacters().forEach((person) => {
         const motion = roamMotion.get(person.id);
-        if (!motion || (activeRoamDrag?.item.id === person.id)) return;
+        if (!motion || activeRoamDrag?.item.id === person.id || (activeHouseDrag?.kind === "character" && activeHouseDrag.item.id === person.id)) return;
         if (time >= motion.nextPlan && Math.abs(motion.targetX - motion.x) < .02) {
           const currentIndex = Math.max(0, Math.min(pages.length - 1, Math.floor(motion.x)));
           const offset = Math.floor(Math.random() * 5) - 2;
@@ -4852,13 +4882,65 @@ You are loved more than this little game could ever hold.</p>
       });
     }
 
+    function characterDropPosition(page, localX, event) {
+      if (page !== "house") {
+        return { zone: "yard", x: .34, y: houseGroundY("yard", .34), worldPage: page, worldX: Math.max(.08, Math.min(.92, localX)) };
+      }
+      let x = Math.max(.5, Math.min(.9, localX));
+      if (event) {
+        const stageRect = $("#house-stage").getBoundingClientRect();
+        if (event.clientX < stageRect.left || event.clientX > stageRect.right || event.clientY < stageRect.top || event.clientY > stageRect.bottom) return null;
+        const dropped = normalizeHousePosition(event.clientX, event.clientY);
+        const bounds = houseBounds(dropped.zone);
+        x = Math.round(Math.max(bounds.minX, Math.min(bounds.maxX, dropped.x)) * 10000) / 10000;
+        const zone = dropped.zone;
+        return { zone, x, y: houseGroundY(zone, x), worldPage: "house", worldX: x };
+      }
+      return { zone: "house", x, y: houseGroundY("house", x), worldPage: "house", worldX: x };
+    }
+
+    async function persistCharacterPlacement(person, position) {
+      if (!position || !db || String(person.id).startsWith("demo-")) return false;
+      const placementKeys = ["zone", "x", "y", "worldPage", "worldX"];
+      const previous = {};
+      placementKeys.forEach((key) => { if (Object.prototype.hasOwnProperty.call(person, key)) previous[key] = person[key]; });
+      const previousPage = characterWorldPage(person);
+      Object.assign(person, position);
+      renderHouse();
+      try {
+        await fs.updateDoc(fs.doc(db, "characters", person.id), position);
+        if (currentPage === "house") {
+          showToast(position.zone === "house"
+            ? formatCopy("houseCharacterInside", { name: characterName(person) }, `${characterName(person)} is inside. The wardrobe is unlocked!`)
+            : formatCopy("houseCharacterPlaying", { name: characterName(person) }, `${characterName(person)} is playing outside.`));
+        } else {
+          showToast(formatCopy("characterMovedToPage", { name: characterName(person), page: worldSlimePageLabel(currentPage) }, `${characterName(person)} is exploring the ${currentPage} page.`));
+        }
+        return true;
+      } catch (error) {
+        placementKeys.forEach((key) => {
+          if (Object.prototype.hasOwnProperty.call(previous, key)) person[key] = previous[key];
+          else delete person[key];
+        });
+        showPage(previousPage);
+        renderHouse();
+        showAppError("houseMoveError", "Could not move house item", error);
+        return false;
+      }
+    }
+
     function startRoamDrag(person, event) {
-      if (!event.isPrimary || event.button !== 0 || currentPage === "house") return;
+      if (!event.isPrimary || event.button !== 0 || currentPage === "house" || !requireHouseAccess()) return;
+      if (String(person.id).startsWith("demo-")) {
+        ensureHouseSeeds().catch((error) => showAppError("houseSeedError", "Could not prepare the house", error));
+        return;
+      }
       event.preventDefault();
       const motion = ensureRoamMotion(person);
       activeRoamDrag = {
         item: person, motion, element: event.currentTarget, pointerId: event.pointerId,
-        startClientX: event.clientX, startX: motion.x, moved: false,
+        startClientX: event.clientX, startClientY: event.clientY, startX: motion.x,
+        startPage: pages[Math.floor(motion.x)], moved: false,
       };
       motion.vx = 0;
       motion.targetX = motion.x;
@@ -4878,17 +4960,26 @@ You are loved more than this little game could ever hold.</p>
       applyRoamMotion(drag.motion);
     }
 
-    function finishRoamDrag(event) {
+    function cleanupRoamDrag() {
+      if (!activeRoamDrag) return;
+      const drag = activeRoamDrag;
+      try { drag.element.releasePointerCapture(drag.pointerId); } catch {}
+      drag.element.classList.remove("dragging");
+      activeRoamDrag = null;
+    }
+
+    async function finishRoamDrag(event) {
       if (!activeRoamDrag || event.pointerId !== activeRoamDrag.pointerId) return;
       const drag = activeRoamDrag;
       drag.element.dataset.draggedAt = String(performance.now());
-      drag.element.classList.remove("dragging");
-      try { drag.element.releasePointerCapture(event.pointerId); } catch {}
-      drag.motion.targetX = drag.motion.x;
-      drag.motion.targetPage = pages[Math.floor(drag.motion.x)];
+      const worldX = drag.motion.x;
+      const pageIndex = Math.max(0, Math.min(pages.length - 1, Math.floor(worldX)));
+      const position = drag.moved ? characterDropPosition(pages[pageIndex], worldX - pageIndex) : null;
+      drag.motion.targetX = worldX;
+      drag.motion.targetPage = pages[pageIndex];
       drag.motion.nextPlan = performance.now() + 1800 + Math.random() * 2800;
-      activeRoamDrag = null;
-      applyRoamMotion(drag.motion);
+      cleanupRoamDrag();
+      if (position) await persistCharacterPlacement(drag.item, position);
     }
 
     function cancelRoamDrag() {
@@ -4897,9 +4988,9 @@ You are loved more than this little game could ever hold.</p>
       drag.motion.x = drag.startX;
       drag.motion.targetX = drag.startX;
       drag.motion.vx = 0;
-      drag.element.classList.remove("dragging");
-      activeRoamDrag = null;
-      applyRoamMotion(drag.motion);
+      cleanupRoamDrag();
+      showPage(drag.startPage);
+      renderHouse();
     }
 
     function renderFurniture() {
@@ -5088,7 +5179,7 @@ You are loved more than this little game could ever hold.</p>
     }
 
     function isInsideHouse(person) {
-      return Boolean(person && person.zone === "house" && Number(person.x) >= .44 && Number(person.x) <= .94 && Number(person.y) >= .28 && Number(person.y) <= .9);
+      return Boolean(person && characterInHouseScene(person) && person.zone === "house" && Number(person.x) >= .44 && Number(person.x) <= .94 && Number(person.y) >= .28 && Number(person.y) <= .9);
     }
 
     function updateWardrobe() {
@@ -5143,7 +5234,7 @@ You are loved more than this little game could ever hold.</p>
       if (!person || !requireHouseAccess() || String(person.id).startsWith("demo-")) return;
       if (person.zone !== "house") return;
       try {
-        await fs.updateDoc(fs.doc(db, "characters", person.id), { zone: "yard", x: .34, y: houseGroundY("yard", .34) });
+        await fs.updateDoc(fs.doc(db, "characters", person.id), { zone: "yard", x: .34, y: houseGroundY("yard", .34), worldPage: "house", worldX: .34 });
         showToast(formatCopy("houseCharacterOutside", { name: characterName(person) }, `${characterName(person)} is off to play in the garden.`));
       } catch (error) {
         showAppError("houseCharacterOutsideError", "Could not send character outside", error);
@@ -5157,6 +5248,19 @@ You are loved more than this little game could ever hold.</p>
       const y = Math.round(Math.max(.26, Math.min(.9, (clientY - rect.top) / rect.height)) * 10000) / 10000;
       const zone = clientX >= insideRect.left && clientX <= insideRect.right && clientY >= insideRect.top && clientY <= insideRect.bottom ? "house" : "yard";
       return { x, y, zone };
+    }
+
+    function moveHouseCharacterDrag(drag, event) {
+      const worldX = Math.max(.08, Math.min(pages.length - .08, drag.startWorldX + (event.clientX - drag.startX) / Math.max(1, viewport.clientWidth)));
+      const pageIndex = Math.max(0, Math.min(pages.length - 1, Math.floor(worldX)));
+      drag.worldX = worldX;
+      if (pages[pageIndex] !== currentPage) showPage(pages[pageIndex]);
+      const motion = ensureRoamMotion(drag.item);
+      motion.x = worldX;
+      motion.targetX = worldX;
+      motion.targetPage = pages[pageIndex];
+      motion.vx = 0;
+      applyRoamMotion(motion);
     }
 
     function startHouseDrag(kind, item, event) {
@@ -5177,7 +5281,8 @@ You are loved more than this little game could ever hold.</p>
       ghost.style.top = `${event.clientY}px`;
       ghost.innerHTML = kind === "character" ? chibiSvg(item) : kind === "cat" ? catSvg(item.color) : furnitureSvg(item.type);
       document.body.append(ghost);
-      activeHouseDrag = { kind, item, element, ghost, pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, clientX: event.clientX, clientY: event.clientY, moved: false, canTrash: kind !== "character" && canManageHouseItem(item), trashVisible: false };
+      const houseX = houseMotion.get(item.id)?.x ?? Number(item.x) ?? .5;
+      activeHouseDrag = { kind, item, element, ghost, pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, clientX: event.clientX, clientY: event.clientY, moved: false, worldX: null, startWorldX: pages.indexOf("house") + Math.max(.08, Math.min(.92, houseX)), canTrash: kind !== "character" && canManageHouseItem(item), trashVisible: false };
       if (activeHouseDrag.canTrash) {
         $("#trash-bin").classList.add("active");
         activeHouseDrag.trashVisible = true;
@@ -5185,6 +5290,8 @@ You are loved more than this little game could ever hold.</p>
       if (kind === "character") {
         const motion = houseMotion.get(item.id);
         if (motion?.shadow) motion.shadow.style.opacity = "0";
+        roamMotion.get(item.id)?.element.classList.add("dragging");
+        viewport.classList.add("dragging-house");
       }
       element.classList.add("dragging");
       $("#house-stage").classList.add("dragging-house");
@@ -5199,6 +5306,8 @@ You are loved more than this little game could ever hold.</p>
       if (activeHouseDrag.kind === "character") {
         const motion = houseMotion.get(activeHouseDrag.item.id);
         if (motion) applyHouseMotion(motion);
+        roamMotion.get(activeHouseDrag.item.id)?.element.classList.remove("dragging");
+        viewport.classList.remove("dragging-house");
       }
       activeHouseDrag.ghost.remove();
       $("#house-stage").classList.remove("dragging-house");
@@ -5225,6 +5334,18 @@ You are loved more than this little game could ever hold.</p>
         await deleteHouseItem(drag.kind === "cat" ? "cats" : "furniture", drag.item, drag.element);
         return;
       }
+      if (drag.kind === "character" && drag.worldX !== null) {
+        const pageIndex = Math.max(0, Math.min(pages.length - 1, Math.floor(drag.worldX)));
+        const position = characterDropPosition(pages[pageIndex], drag.worldX - pageIndex, event);
+        cleanupHouseDrag();
+        if (!position) {
+          renderHouse();
+          showToast(copyText("houseDropHint", "Drop inside the house scene to move it."));
+          return;
+        }
+        await persistCharacterPlacement(drag.item, position);
+        return;
+      }
       const stageRect = $("#house-stage").getBoundingClientRect();
       const validTarget = event.clientX >= stageRect.left && event.clientX <= stageRect.right && event.clientY >= stageRect.top && event.clientY <= stageRect.bottom;
       const dropped = validTarget ? normalizeHousePosition(event.clientX, event.clientY) : null;
@@ -5238,6 +5359,7 @@ You are loved more than this little game could ever hold.</p>
       const x = Math.round(Math.max(bounds.minX, Math.min(bounds.maxX, dropped.x)) * 10000) / 10000;
       const ground = houseGroundY(dropped.zone, x);
       const position = { ...dropped, x, y: ground };
+      if (drag.kind === "character") Object.assign(position, { worldPage: "house", worldX: x });
       if (drag.kind === "character") {
         drag.item.zone = dropped.zone;
         drag.item.x = x;
@@ -5366,7 +5488,7 @@ You are loved more than this little game could ever hold.</p>
       $$("#furniture-options [data-furniture-type]").forEach((button) => button.classList.toggle("active", button.dataset.furnitureType === placementFurniture));
       $("#house-hint").textContent = placementFurniture
         ? formatCopy("housePlacementHint", { item: furnitureTypeLabel(placementFurniture) }, `Tap a spot to place the ${furnitureTypeLabel(placementFurniture)}`)
-        : copyText("houseHintDefault", "Drag a character through the door · Tap cats to pet them");
+        : copyText("houseHintDefault", "Drag a character across the tabs or through the door · Tap cats to pet them");
     }
 
     async function placeFurniture(event) {
@@ -5497,7 +5619,8 @@ You are loved more than this little game could ever hold.</p>
       motion.savedY = y;
       motion.savedZone = motion.zone;
       houseWriteTimes.set(key, now);
-      fs.updateDoc(fs.doc(db, kind === "character" ? "characters" : "cats", item.id), { zone: motion.zone, x, y })
+      const position = kind === "character" ? { zone: motion.zone, x, y, worldPage: "house", worldX: x } : { zone: motion.zone, x, y };
+      fs.updateDoc(fs.doc(db, kind === "character" ? "characters" : "cats", item.id), position)
         .catch((error) => showAppError("houseMotionError", "Could not save house movement", error));
     }
 
@@ -6394,6 +6517,7 @@ You are loved more than this little game could ever hold.</p>
           characters = snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
           charactersLoaded = true;
           renderCharacters();
+          renderRoamingCharacters();
           updateWardrobe();
         }, (error) => showAppError("charactersLoadError", "Characters", error));
         fs.onSnapshot(fs.collection(db, "furniture"), (snapshot) => {
@@ -6703,6 +6827,7 @@ You are loved more than this little game could ever hold.</p>
       const drag = activeHouseDrag;
       queueDragPosition(drag, event.clientX, event.clientY);
       if (Math.hypot(event.clientX - drag.startX, event.clientY - drag.startY) > 6) drag.moved = true;
+      if (drag.kind === "character" && drag.moved) moveHouseCharacterDrag(drag, event);
       if (drag.trashVisible) $("#trash-bin").classList.toggle("over", isOverTrash(event.clientX, event.clientY));
     }, { passive: false });
     document.addEventListener("pointerup", (event) => {
@@ -6710,7 +6835,9 @@ You are loved more than this little game could ever hold.</p>
     });
     document.addEventListener("pointercancel", () => {
       if (!activeHouseDrag) return;
+      const returnToHouse = activeHouseDrag.kind === "character";
       cleanupHouseDrag();
+      if (returnToHouse) showPage("house");
       renderHouse();
     });
     document.addEventListener("pointermove", (event) => {
