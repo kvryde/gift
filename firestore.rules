@@ -109,7 +109,7 @@ service cloud.firestore {
       return data.x is number && data.y is number
         && data.x >= 0.06 && data.x <= 0.94
         && data.y >= 0.22 && data.y <= 0.94
-        && data.zone in ['house', 'yard', 'garden'];
+        && data.zone in ['house', 'yard', 'garden', 'bunnyBlue'];
     }
 
     function validInsideHouse(data) {
@@ -377,13 +377,15 @@ service cloud.firestore {
       allow create: if (isAdmin() || isViewer())
         && request.resource.data.natureSeeded is bool
         && request.resource.data.houseSeeded is bool
-        && request.resource.data.gardenDecorSeeded is bool;
+        && request.resource.data.gardenDecorSeeded is bool
+        && request.resource.data.blueDecorSeeded is bool;
       allow update: if (isAdmin() || isViewer())
         && request.resource.data.natureSeeded is bool
         && request.resource.data.houseSeeded is bool
         && request.resource.data.gardenDecorSeeded is bool
+        && request.resource.data.blueDecorSeeded is bool
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
-          'natureSeeded', 'houseSeeded', 'gardenDecorSeeded'
+          'natureSeeded', 'houseSeeded', 'gardenDecorSeeded', 'blueDecorSeeded'
         ]);
     }
 
@@ -393,7 +395,7 @@ service cloud.firestore {
         || (isViewer() && resource.data.createdBy == request.auth.uid);
       allow create: if (isAdmin() || isViewer())
         && validGalleryPage(request.resource.data)
-        && (isAdmin() || request.resource.data.published == false);
+        && (isAdmin() || request.resource.data.published == true);
       allow update: if isAdmin() || (
         isViewer()
         && resource.data.createdBy == request.auth.uid
@@ -410,7 +412,6 @@ service cloud.firestore {
       allow delete: if isAdmin() || (
         isViewer()
         && resource.data.createdBy == request.auth.uid
-        && resource.data.published == false
       );
     }
   }

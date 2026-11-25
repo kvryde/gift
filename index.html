@@ -162,7 +162,7 @@
       scroll-behavior: smooth;
       scroll-snap-type: x mandatory;
       scrollbar-width: none;
-      touch-action: pan-y;
+      touch-action: auto;
     }
     .page-viewport::-webkit-scrollbar { display: none; }
     .app-page {
@@ -399,7 +399,7 @@
     .wedding-petals i:nth-child(5) { left: 83%; animation-delay: 3.5s; }
     .wedding-petals i:nth-child(6) { left: 93%; animation-delay: 5.4s; }
     .wedding-stage-label { position: absolute; right: 2%; bottom: 2%; z-index: 5; padding: .3rem .5rem; border: 2px solid #405b38; color: #2d402b; background: #e7ebcd; font-family: "Silkscreen", monospace; font-size: .52rem; }
-    .wedding-confetti { position: absolute; z-index: 12; width: 8px; height: 12px; pointer-events: none; animation: confettiBurst 1.35s cubic-bezier(.15, .75, .35, 1) forwards; }
+    .wedding-confetti { position: fixed; z-index: 190; width: 8px; height: 12px; pointer-events: none; will-change: transform; animation: confettiBurst 1.65s cubic-bezier(.12, .7, .3, 1) forwards; }
     @keyframes candleFlicker { 0%, 100% { transform: scale(.85, 1); } 50% { transform: scale(1.1, .8); } }
     @keyframes weddingDance { from { transform: rotate(-5deg); } to { transform: rotate(5deg) scaleY(.97); } }
     @keyframes petalFall { 0% { transform: translate3d(0, -20px, 0) rotate(0); opacity: 0; } 12% { opacity: .9; } 100% { transform: translate3d(55px, 430px, 0) rotate(240deg); opacity: 0; } }
@@ -719,7 +719,7 @@
     .tab-bar {
       z-index: 20;
       display: grid;
-      grid-template-columns: repeat(9, minmax(0, 1fr));
+      grid-template-columns: repeat(8, minmax(0, 1fr));
       min-height: 66px;
       padding: .45rem clamp(.5rem, 3vw, 2rem) max(.45rem, env(safe-area-inset-bottom));
       border-top: 1px solid var(--line);
@@ -763,9 +763,17 @@
     .rotate-card h2 { margin-bottom: .6rem; font-family: Georgia, "Times New Roman", serif; font-size: 2rem; font-weight: 400; }
     .rotate-card p { margin-bottom: 1.2rem; color: var(--muted); line-height: 1.6; }
     body.portrait-allowed .rotate-gate { display: none; }
-    @media (orientation: portrait) and (max-width: 900px) {
+    @media (display-mode: standalone), (orientation: portrait) and (max-width: 700px) {
+      .rotate-gate { display: none !important; }
+    }
+    @media (orientation: portrait) and (max-width: 900px) and (pointer: coarse) {
       body:not(.portrait-allowed) .rotate-gate { display: grid; }
     }
+    .nature-decor-palette { position: absolute; top: 6.2rem; right: clamp(1rem, 3vw, 2rem); z-index: 14; width: min(310px, 46vw); padding: .65rem; border: 3px solid #405b70; color: #eaf5fb; background: #263f56; box-shadow: 5px 5px #172d40; }
+    .nature-decor-palette strong { display: block; margin-bottom: .45rem; color: #d9efff; font-family: "Silkscreen", monospace; font-size: .7rem; }
+    .nature-decor-options { display: grid; max-height: 220px; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .35rem; overflow-y: auto; }
+    .nature-decor-options .house-choice { min-width: 0; min-height: 50px; padding: .3rem; font-size: .55rem; }
+    .nature-decor-options svg { width: 30px; height: 26px; }
 
     .modal-backdrop { position: fixed; inset: 0; z-index: 80; display: grid; overflow-y: auto; padding: 1rem; place-items: center; background: rgba(7, 6, 17, .75); backdrop-filter: blur(10px); }
     .modal { width: min(480px, 100%); max-height: calc(100dvh - 2rem); overflow-y: auto; border: 1px solid var(--line); border-radius: 22px; background: #211e3c; box-shadow: 0 30px 100px rgba(0, 0, 0, .45); }
@@ -781,6 +789,7 @@
     .uid-box code { min-width: 0; flex: 1; overflow: hidden; color: var(--mint); font-size: .68rem; text-overflow: ellipsis; white-space: nowrap; }
     .toast { position: fixed; bottom: 82px; left: 50%; z-index: 120; max-width: min(520px, calc(100% - 2rem)); padding: .7rem 1rem; border: 1px solid rgba(188, 232, 215, .25); border-radius: 12px; color: var(--ink); background: rgba(32, 29, 59, .97); box-shadow: var(--shadow); font-size: .74rem; line-height: 1.5; opacity: 0; pointer-events: none; transform: translate(-50%, 12px); transition: opacity .2s ease, transform .2s ease; }
     .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    .app-update { position: fixed; top: max(.75rem, env(safe-area-inset-top)); left: 50%; z-index: 195; min-height: 38px; padding: .55rem .85rem; border: 2px solid #78985d; color: #f4ecd5; background: #1d3022; box-shadow: 0 4px 0 #0b150f; font-family: "Silkscreen", monospace; font-size: .65rem; transform: translateX(-50%); }
 
     [contenteditable="true"] { border-radius: 5px; background: rgba(243, 213, 143, .08); box-shadow: 0 0 0 1px rgba(243, 213, 143, .35); cursor: text; }
     [contenteditable="true"]:empty::before { color: #8d849d; content: "Type something..."; }
@@ -954,7 +963,7 @@
       .tab-button .icon { width: 19px; height: 19px; }
     }
 
-    @media (max-width: 800px) {
+    @media (max-width: 800px) and (orientation: portrait) {
       .hud-center .xp-track { display: none; }
       .home-layout, .slime-layout, .gift-layout, .wedding-layout, .house-layout { grid-template-columns: 1fr; }
       .house-stage { height: 430px; }
@@ -971,56 +980,133 @@
     }
 
     @media (orientation: landscape) and (max-height: 600px) {
-      .hud { min-height: 54px; padding-top: .4rem; padding-bottom: .4rem; }
-      .brand-mark { width: 32px; height: 32px; border-radius: 2px; }
-      .brand { font-size: .68rem; }
-      .player-chip { padding: .3rem .55rem; }
-      .hud-button { min-height: 31px; padding: .35rem .55rem; }
-      .tab-bar { min-height: 54px; padding-top: .25rem; padding-bottom: max(.25rem, env(safe-area-inset-bottom)); }
-      .tab-button { padding: .3rem; }
-      .editor-toolbar { top: 60px; }
-      .app-page { padding: .85rem clamp(.85rem, 3vw, 2rem); }
-      .page-heading { margin-bottom: .7rem; }
-      .page-heading h1, .page-heading h2, .gift-copy h2 { font-size: clamp(1.25rem, 2.8vw, 2rem); }
-      .home-copy h1 { font-size: clamp(1.8rem, 4vw, 3rem); }
-      .hero-wrap { min-height: 240px; }
-      .hero-slime { width: min(260px, 75%); }
-      .slime-preview-card { min-height: 250px; }
-      .slime-preview { width: min(210px, 75%); }
-      .slime-controls { gap: .65rem; padding: .85rem; }
-      .gift-stage { min-height: 250px; }
-      .wedding-layout { gap: 1rem; }
-      .wedding-stage { min-height: 230px; height: calc(100dvh - 150px); max-height: 310px; }
-      .wedding-copy h1 { margin-bottom: .45rem; font-size: clamp(1.2rem, 2.6vw, 1.8rem); }
-      .wedding-intro { margin-bottom: .7rem; font-size: .74rem; line-height: 1.45; }
-      .wedding-actions { gap: .35rem; }
-      .wedding-actions .button { min-height: 34px; padding: .45rem .6rem; font-size: .66rem; }
-      .wedding-note { margin-top: .6rem; padding: .65rem .75rem; }
-      .wedding-note p { font-size: .74rem; line-height: 1.45; }
-      .wedding-couple { width: 178px; height: 126px; transform: translateX(-50%) scale(.82); transform-origin: 50% 100%; }
-      .wedding-person { width: 84px; flex-basis: 84px; }
-      .wedding-banner { top: 9%; min-width: 178px; padding: .3rem .55rem; }
-      .wedding-arch { bottom: 18%; height: 51%; border-width: 9px; }
-      .wedding-arch span { width: 14px; height: 14px; box-shadow: 4px 4px #bd7777; }
-      .arch-ribbon { height: 54px; border-width: 6px; }
-      .wedding-cake-table { right: 2%; width: 80px; }
-      .wedding-cake { transform: translateX(-50%) scale(.78); transform-origin: 50% 100%; }
-      .wedding-pew { width: 38px; height: 15px; border-width: 2px; }
-      .wedding-pew::before { bottom: 11px; height: 12px; border-width: 2px; }
-      .wedding-pew::after { bottom: -7px; height: 7px; border-width: 2px; }
-      .wedding-rings { bottom: 39%; }
-      .house-page .page-heading { margin-bottom: .4rem; }
-      .house-page .page-heading h1 { font-size: 1.5rem; }
+      .game-app { grid-template-rows: auto minmax(0, 1fr) auto; }
+      .hud { min-height: 46px; padding: max(.25rem, env(safe-area-inset-top)) .7rem .25rem; gap: .5rem; }
+      .brand-mark { width: 28px; height: 28px; border-radius: 2px; }
+      .brand { gap: .4rem; font-size: .62rem; }
+      .player-chip { padding: .22rem .45rem; font-size: .6rem; }
+      .level-chip { font-size: .52rem; }
+      .hud-center { gap: .35rem; }
+      .hud-actions { gap: .25rem; }
+      .hud-button { min-height: 29px; padding: .25rem .45rem; font-size: .58rem; }
+      .install-shortcut { min-width: 62px; }
+      .role-badge { font-size: .52rem; }
+      .tab-bar { min-height: 46px; padding: .18rem .4rem max(.18rem, env(safe-area-inset-bottom)); }
+      .tab-button { gap: .2rem; padding: .2rem .3rem; font-size: .54rem; }
+      .tab-button .icon { width: 17px; height: 17px; }
+      .page-viewport { touch-action: pan-x pan-y; }
+      .app-page { padding: .55rem clamp(.7rem, 2.5vw, 1.4rem); }
+      .nature-page { padding: 0; }
+      .editor-toolbar { top: 50px; padding: .3rem; }
+      .toolbar-button { min-height: 28px; padding: .3rem .5rem; }
+      .page-heading { margin-bottom: .45rem; }
+      .page-heading .eyebrow { margin-bottom: .2rem; font-size: .52rem; }
+      .page-heading h1, .page-heading h2, .gift-copy h2 { margin-bottom: .3rem; font-size: clamp(1.15rem, 2.5vw, 1.8rem); }
+      .page-heading p, .gallery-intro, .slime-intro { font-size: .68rem; line-height: 1.4; }
+      .home-layout, .gift-layout, .wedding-layout { gap: clamp(.7rem, 2vw, 1.2rem); }
+      .home-copy { padding: 0; }
+      .home-copy h1 { margin-bottom: .4rem; font-size: clamp(1.65rem, 3.5vw, 2.7rem); }
+      .home-text { font-size: .72rem; line-height: 1.45; }
+      .home-actions { gap: .35rem; margin-top: .8rem; }
+      .home-actions .button { min-height: 32px; padding: .4rem .6rem; font-size: .62rem; }
+      .home-footer { margin-top: .7rem; font-size: .55rem; }
+      .hero-wrap { min-height: 190px; }
+      .hero-slime { width: min(230px, 75%); }
+      .slime-layout { grid-template-columns: minmax(190px, .75fr) minmax(310px, 1.25fr); gap: .7rem; }
+      .slime-preview-card { min-height: 210px; padding: .7rem; }
+      .slime-preview { width: min(190px, 78%); }
+      .preview-name { font-size: .95rem; }
+      .slime-controls { gap: .5rem; padding: .65rem; }
+      .control-label { margin-bottom: .25rem; font-size: .56rem; }
+      .text-input, .select-input { min-height: 34px; padding: .4rem .55rem; font-size: .66rem; }
+      .option-row { gap: .3rem; }
+      .option-button { min-height: 30px; padding: .3rem .45rem; font-size: .58rem; }
+      .color-grid { max-height: 100px; gap: .2rem; }
+      .slime-controls > .button { min-height: 34px; padding: .4rem .6rem; font-size: .64rem; }
+      .slime-arcade { margin-top: .6rem; padding: .65rem; }
+      .arcade-header h2 { font-size: 1rem; }
+      .arcade-stats { font-size: .58rem; }
+      .gift-stage { min-height: 200px; }
+      .gift-box { width: min(200px, 58%); }
+      .letter-reveal { padding: 1rem; }
+      .letter-body { font-size: .82rem; line-height: 1.55; }
+      .wedding-layout { grid-template-columns: minmax(220px, .8fr) minmax(0, 1.2fr); }
+      .wedding-stage { min-height: 0; height: calc(100dvh - 162px); max-height: none; }
+      .wedding-copy h1 { margin-bottom: .3rem; font-size: clamp(1.1rem, 2.3vw, 1.55rem); }
+      .wedding-intro { margin-bottom: .45rem; font-size: .64rem; line-height: 1.35; }
+      .wedding-actions { gap: .3rem; }
+      .wedding-actions .button { min-height: 30px; padding: .35rem .5rem; font-size: .58rem; }
+      .wedding-note { margin-top: .4rem; padding: .45rem .55rem; }
+      .wedding-note p { font-size: .62rem; line-height: 1.35; }
+      .wedding-couple { width: 150px; height: 110px; transform: translateX(-50%) scale(.7); transform-origin: 50% 100%; }
+      .wedding-person { width: 72px; flex-basis: 72px; }
+      .wedding-banner { top: 7%; min-width: 150px; padding: .22rem .4rem; }
+      .wedding-banner strong { font-size: .58rem; }
+      .wedding-banner small { font-size: .42rem; }
+      .wedding-arch { bottom: 17%; height: 48%; border-width: 7px; }
+      .wedding-arch span { width: 11px; height: 11px; box-shadow: 3px 3px #bd7777; }
+      .arch-ribbon { height: 42px; border-width: 5px; }
+      .wedding-cake-table { right: 1%; width: 62px; }
+      .wedding-cake { transform: translateX(-50%) scale(.64); transform-origin: 50% 100%; }
+      .wedding-pew { width: 32px; height: 12px; border-width: 2px; }
+      .wedding-pew::before { bottom: 9px; height: 10px; border-width: 2px; }
+      .wedding-pew::after { bottom: -6px; height: 6px; border-width: 2px; }
+      .wedding-rings { bottom: 38%; }
+      .nature-heading { top: .65rem; left: .8rem; max-width: 70%; }
+      .nature-heading .eyebrow { margin-bottom: .15rem; font-size: .48rem; }
+      .nature-heading h1 { margin-bottom: .15rem; font-size: 1.45rem; }
+      .nature-heading p { font-size: .62rem; line-height: 1.3; }
+      .nature-actions { top: .6rem; right: .7rem; gap: .25rem; }
+      .nature-actions .button { min-height: 29px; padding: .3rem .5rem; font-size: .56rem; }
+      .nature-counter { padding: .25rem .45rem; font-size: .5rem; }
+      .nature-hint { bottom: .35rem; padding: .25rem .5rem; font-size: .5rem; }
+      .nature-empty { bottom: 14%; padding: .5rem; font-size: .6rem; }
+      .nature-decor-palette { top: 4.8rem; right: .7rem; width: min(270px, 44vw); max-height: calc(100dvh - 172px); padding: .45rem; overflow-y: auto; }
+      .nature-decor-options { max-height: 150px; }
+      .bunny { width: clamp(48px, 6vw, 68px); }
+      .garden-decor { max-width: 68px; max-height: 82px; }
+      .garden-palette { bottom: 2.3rem; padding: .45rem; }
+      .garden-palette-options { max-height: 90px; }
+      .house-layout { grid-template-columns: minmax(0, 1fr) minmax(205px, 245px); gap: .6rem; }
+      .house-page .page-heading { margin-bottom: .25rem; }
+      .house-page .page-heading .eyebrow { display: none; }
+      .house-page .page-heading h1 { margin-bottom: 0; font-size: 1.2rem; }
       .house-page .page-heading p { display: none; }
-      .house-stage { min-height: 160px; height: calc(100dvh - 220px); max-height: 320px; }
-      .house-panel { max-height: calc(100dvh - 220px); }
-      .house-character { width: clamp(52px, 7vw, 68px); }
-      .gift-box { width: min(220px, 62%); }
-      .letter-body { font-size: .92rem; line-height: 1.65; }
-      .gallery-toolbar { margin: .6rem 0 .8rem; padding: .7rem; }
-      .toast { bottom: 66px; }
-      .chat-panel { bottom: calc(64px + env(safe-area-inset-bottom)); max-height: 46vh; }
-      .chat-messages { min-height: 88px; }
+      .house-stage { min-height: 135px; height: calc(100dvh - 168px); max-height: none; border-radius: 10px; }
+      .house-panel { max-height: calc(100dvh - 168px); padding: .55rem; }
+      .house-character { width: clamp(44px, 6vw, 58px); }
+      .house-cat { width: 42px; }
+      .house-furniture { max-width: 64px; max-height: 72px; }
+      #page-gallery { display: grid; grid-template-columns: minmax(145px, 185px) minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr); column-gap: .7rem; }
+      #page-gallery .page-heading { grid-column: 1; grid-row: 1; align-self: end; margin: 0; }
+      #page-gallery .page-heading .eyebrow { display: block; }
+      #page-gallery .page-heading h1 { font-size: 1.15rem; }
+      #page-gallery .page-heading p { display: none; }
+      #page-gallery .gallery-toolbar { grid-column: 1; grid-row: 2; flex-direction: column; align-items: stretch; min-height: 0; margin: .4rem 0; padding: .35rem; }
+      #page-gallery .gallery-toolbar .eyebrow, #page-gallery .gallery-toolbar h2 { display: none; }
+      #page-gallery .gallery-toolbar .button { width: 100%; min-height: 30px; padding: .3rem .45rem; font-size: .56rem; }
+      #page-gallery .gallery-stage { grid-column: 2; grid-row: 1 / span 3; grid-template-columns: 32px minmax(0, 1fr) 32px; gap: .4rem; min-height: 0; height: 100%; }
+      #page-gallery .gallery-flip-wrap { min-height: 0; height: 100%; }
+      #page-gallery .gallery-flip-button { width: 32px; height: 42px; font-size: 1.1rem; }
+      #page-gallery .gallery-sheet { height: 100%; min-height: 0; max-width: none; padding: .45rem; overflow-y: auto; }
+      #page-gallery .gallery-page-handle { margin: 0 0 .25rem; padding: .15rem; font-size: .5rem; }
+      #page-gallery .gallery-page-handle::before { font-size: .8rem; }
+      #page-gallery .gallery-grid { gap: .35rem; }
+      #page-gallery .photo-slot { height: clamp(58px, 18dvh, 90px); min-height: 0; }
+      #page-gallery .photo-slot img { height: 100%; min-height: 0; aspect-ratio: auto; }
+      #page-gallery .photo-slot.empty button { height: 100%; min-height: 0; padding: .25rem; font-size: .6rem; }
+      #page-gallery .photo-slot.empty span { margin-top: .15rem; font-size: 1rem; }
+      #page-gallery .gallery-page-copy { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: .3rem; margin-top: .35rem; }
+      #page-gallery .gallery-page-copy textarea { height: 44px; min-height: 44px; padding: .35rem; font-size: .72rem; line-height: 1.25; }
+      #page-gallery .gallery-page-text { max-height: 60px; overflow-y: auto; font-size: .76rem; line-height: 1.35; }
+      #page-gallery .gallery-page-actions, #page-gallery .gallery-admin-actions { flex-wrap: nowrap; gap: .3rem; margin: 0; }
+      #page-gallery .gallery-admin-actions { margin-top: .3rem; }
+      #page-gallery .gallery-page-actions .button, #page-gallery .gallery-admin-actions .button { min-height: 26px; padding: .25rem .4rem; font-size: .54rem; }
+      #page-gallery .gallery-pager { grid-column: 1; grid-row: 3; flex-direction: column; align-items: flex-start; align-self: start; gap: .2rem; margin: .3rem 0 0; font-size: .55rem; }
+      .toast { bottom: 54px; max-width: 80vw; font-size: .68rem; }
+      .trash-bin { bottom: calc(54px + env(safe-area-inset-bottom)); transform: scale(.82); transform-origin: 100% 100%; }
+      .chat-panel { bottom: calc(54px + env(safe-area-inset-bottom)); max-height: 52vh; }
+      .chat-messages { min-height: 72px; }
     }
 
     @media (max-width: 540px) {
@@ -1283,24 +1369,6 @@ You are loved more than this little game could ever hold.</p>
         <input type="file" id="photo-input" accept="image/*" hidden>
       </section>
 
-      <section class="app-page nature-page rose-habitat" id="page-bunnyRose" data-page="bunnyRose">
-        <div class="habitat-scene" data-habitat-stage="bunnyRose">
-          <span class="habitat-sun"></span><span class="habitat-hill one"></span><span class="habitat-hill two"></span>
-          <div class="habitat-fence" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
-        </div>
-        <div class="nature-heading">
-          <span class="eyebrow" data-field="roseEyebrow">Strawberry burrow</span>
-          <h1 data-field="roseTitle">The Rose Cage</h1>
-          <p data-field="roseText">A soft pink hideaway for bouncy little rabbits.</p>
-        </div>
-        <div class="nature-actions">
-          <button class="button button-mint" type="button" data-add-bunny="bunnyRose" hidden><svg class="icon"><use href="#i-bunny"></use></svg>Adopt a bunny</button>
-          <span class="nature-counter" id="rose-counter">0 bunnies</span>
-        </div>
-        <div class="nature-empty" id="rose-empty" hidden></div>
-        <div class="nature-hint">Drag to move · Drop your bunny in the trash to delete</div>
-      </section>
-
       <section class="app-page nature-page blue-habitat" id="page-bunnyBlue" data-page="bunnyBlue">
         <div class="habitat-scene" data-habitat-stage="bunnyBlue">
           <span class="habitat-sun"></span><span class="habitat-hill one"></span><span class="habitat-hill two"></span>
@@ -1314,6 +1382,11 @@ You are loved more than this little game could ever hold.</p>
         <div class="nature-actions">
           <button class="button button-mint" type="button" data-add-bunny="bunnyBlue" hidden><svg class="icon"><use href="#i-bunny"></use></svg>Adopt a bunny</button>
           <span class="nature-counter" id="blue-counter">0 bunnies</span>
+          <button class="button button-ghost" type="button" id="blue-decor-toggle" data-nature-write hidden><svg class="icon"><use href="#i-star"></use></svg>Add toys</button>
+        </div>
+        <div class="nature-decor-palette" id="blue-decor-palette" hidden>
+          <strong>Blue Cage toy box</strong>
+          <div class="nature-decor-options" id="blue-decor-options"></div>
         </div>
         <div class="nature-empty" id="blue-empty" hidden></div>
         <div class="nature-hint">Drag to move · Drop your bunny in the trash to delete</div>
@@ -1420,7 +1493,6 @@ You are loved more than this little game could ever hold.</p>
       <button class="tab-button" type="button" data-page-link="gift" aria-selected="false"><svg class="icon"><use href="#i-gift"></use></svg><span data-field="navGift">Present</span></button>
       <button class="tab-button wedding-tab" type="button" data-page-link="wedding" aria-selected="false"><svg class="icon"><use href="#i-wedding"></use></svg><span data-field="navWedding">Wedding</span></button>
       <button class="tab-button" type="button" data-page-link="gallery" aria-selected="false"><svg class="icon"><use href="#i-photo"></use></svg><span data-field="navGallery">Gallery</span></button>
-      <button class="tab-button" type="button" data-page-link="bunnyRose" aria-selected="false"><svg class="icon"><use href="#i-bunny"></use></svg><span data-field="navRose">Rose cage</span></button>
       <button class="tab-button" type="button" data-page-link="bunnyBlue" aria-selected="false"><svg class="icon"><use href="#i-bunny"></use></svg><span data-field="navBlue">Blue cage</span></button>
       <button class="tab-button" type="button" data-page-link="garden" aria-selected="false"><svg class="icon"><use href="#i-flower"></use></svg><span data-field="navGarden">Garden</span></button>
       <button class="tab-button" type="button" data-page-link="house" aria-selected="false"><svg class="icon"><use href="#i-house"></use></svg><span data-field="navHouse">Our house</span></button>
@@ -1445,7 +1517,7 @@ You are loved more than this little game could ever hold.</p>
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="auth-title">
       <div class="modal-header"><h2 id="auth-title">Player sign in</h2><button class="modal-close" type="button" data-close="auth-modal" aria-label="Close">×</button></div>
       <form class="modal-body" id="auth-form">
-        <p class="modal-note">Admins can edit every text and publish gallery pages. Viewers can make slimes, save four compressed photos per page without paid storage, add page notes, and edit their own allowed birthday content.</p>
+        <p class="modal-note">Viewers can make slimes, create shared four-photo gallery pages with notes, and edit their own allowed birthday content. Admins keep role management, all-copy editing, and publishing of older private drafts.</p>
         <p class="modal-note" id="auth-setup" hidden>Firebase is not configured yet. Paste your web config in the firebaseConfig block near the bottom of this file.</p>
         <label><span class="control-label">Email</span><input class="text-input" id="auth-email" type="email" autocomplete="username" required></label>
         <label><span class="control-label">Password</span><input class="text-input" id="auth-password" type="password" autocomplete="current-password" required></label>
@@ -1483,13 +1555,14 @@ You are loved more than this little game could ever hold.</p>
   </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <button class="app-update" type="button" id="app-update" hidden>Update app</button>
   <div class="trash-bin" id="trash-bin" aria-hidden="true">
     <span class="trash-lid"></span>
     <span class="trash-body"></span>
     <span class="trash-label">Trash</span>
   </div>
 
-  <script type="module">
+  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyC3mGPd9kvr8pTf3K7wLBD-WmODtpmvcX8",
       authDomain: "gift-3e8ac.firebaseapp.com",
@@ -1499,9 +1572,9 @@ You are loved more than this little game could ever hold.</p>
       appId: "1:385782930980:web:8515fac32ce4c28a42c2b1",
     };
 
-    const pages = ["home", "slime", "gift", "wedding", "gallery", "bunnyRose", "bunnyBlue", "garden", "house"];
-    const naturePages = ["bunnyRose", "bunnyBlue", "garden"];
-    const pageTitles = { slime: "Slime Lab", wedding: "Wedding Quest", bunnyRose: "Rose Cage", bunnyBlue: "Blue Cage", house: "Our Little House" };
+    const pages = ["home", "slime", "gift", "wedding", "gallery", "bunnyBlue", "garden", "house"];
+    const naturePages = ["bunnyBlue", "garden"];
+    const pageTitles = { slime: "Slime Lab", wedding: "Wedding Quest", bunnyBlue: "Blue Cage", house: "Our Little House" };
     const viewerFields = new Set(["homeText", "slimeText", "galleryText", "houseText"]);
     const eyeStyles = ["happy", "sleepy", "star"];
     const accessories = ["none", "crown", "flower", "glasses"];
@@ -1527,6 +1600,7 @@ You are loved more than this little game could ever hold.</p>
     ];
     const furnitureTypes = ["sofa", "armchair", "bed", "table", "kitchen", "plant", "lamp", "shelf", "dresser", "desk", "tv", "clock", "rug", "bench", "swing", "fountain", "mailbox", "arch", "parasol", "cart", "lantern", "sandbox", "kite"];
     const gardenDecorTypes = ["bench", "swing", "fountain", "mailbox", "arch", "parasol", "cart", "lantern", "sandbox", "kite"];
+    const blueDecorTypes = ["bed", "table", "shelf", "plant", "lamp", "rug", "armchair", "kite", "bench", "swing"];
     const catColors = ["#f2c49d", "#8d8b9d", "#f1e5d4", "#c78962", "#69758f", "#d7a7b6"];
 
     function hslToHex(h, s, l) {
@@ -1557,10 +1631,10 @@ You are loved more than this little game could ever hold.</p>
     );
 
     const demoBunnies = [
-      { id: "demo-mochi", name: "Mochi", color: bunnyColors[0], habitat: "bunnyRose", x: .28, y: .69 },
-      { id: "demo-peach", name: "Peach", color: bunnyColors[3], habitat: "bunnyRose", x: .7, y: .76 },
-      { id: "demo-cloud", name: "Cloud", color: bunnyColors[1], habitat: "bunnyBlue", x: .3, y: .7 },
-      { id: "demo-bluebell", name: "Bluebell", color: bunnyColors[2], habitat: "bunnyBlue", x: .72, y: .79 },
+      { id: "demo-mochi", name: "Mochi", color: bunnyColors[0], habitat: "bunnyBlue", x: .22, y: .69 },
+      { id: "demo-peach", name: "Peach", color: bunnyColors[3], habitat: "bunnyBlue", x: .77, y: .76 },
+      { id: "demo-cloud", name: "Cloud", color: bunnyColors[1], habitat: "bunnyBlue", x: .32, y: .8 },
+      { id: "demo-bluebell", name: "Bluebell", color: bunnyColors[2], habitat: "bunnyBlue", x: .61, y: .69 },
       { id: "demo-clover", name: "Clover", color: bunnyColors[5], habitat: "garden", x: .23, y: .79 },
       { id: "demo-petal", name: "Petal", color: bunnyColors[4], habitat: "garden", x: .79, y: .73 },
     ];
@@ -1596,8 +1670,15 @@ You are loved more than this little game could ever hold.</p>
       { id: "demo-mailbox", type: "mailbox", zone: "garden", x: .88, y: .76 },
       { id: "demo-parasol", type: "parasol", zone: "garden", x: .31, y: .73 },
       { id: "demo-lantern", type: "lantern", zone: "garden", x: .59, y: .83 },
+      { id: "demo-blue-bed", type: "bed", zone: "bunnyBlue", x: .12, y: .66 },
+      { id: "demo-blue-shelf", type: "shelf", zone: "bunnyBlue", x: .84, y: .59 },
+      { id: "demo-blue-plant", type: "plant", zone: "bunnyBlue", x: .11, y: .86 },
+      { id: "demo-blue-lamp", type: "lamp", zone: "bunnyBlue", x: .9, y: .86 },
+      { id: "demo-blue-rug", type: "rug", zone: "bunnyBlue", x: .48, y: .78 },
+      { id: "demo-blue-armchair", type: "armchair", zone: "bunnyBlue", x: .69, y: .87 },
     ];
     const demoGardenFurniture = demoFurniture.filter((item) => item.zone === "garden");
+    const demoBlueFurniture = demoFurniture.filter((item) => item.zone === "bunnyBlue");
     const demoCats = [
       { id: "demo-cat-miso", name: "Miso", color: catColors[0], zone: "yard", x: .22, y: .87 },
       { id: "demo-cat-pixel", name: "Pixel", color: catColors[1], zone: "house", x: .88, y: .84 },
@@ -1642,6 +1723,8 @@ You are loved more than this little game could ever hold.</p>
     let houseSeedPromise = null;
     let gardenDecorSeeded = false;
     let gardenDecorSeedPromise = null;
+    let blueDecorSeeded = false;
+    let blueDecorSeedPromise = null;
     const houseMotion = new Map();
     const catMotion = new Map();
     let houseMotionTicker = null;
@@ -1656,6 +1739,8 @@ You are loved more than this little game could ever hold.</p>
     let chatSending = false;
     let deferredInstallPrompt = null;
     let appInstalled = false;
+    let waitingServiceWorker = null;
+    let offlineStatus = "";
     const houseWriteTimes = new Map();
     let toastTimer = null;
     let seedingContent = false;
@@ -1936,14 +2021,25 @@ You are loved more than this little game could ever hold.</p>
         showToast("Birthday Quest is already installed.");
         return;
       }
-      $("#install-status").textContent = "";
-      $("#install-instructions").textContent = deferredInstallPrompt
-        ? "Your browser is ready. Tap Install app below to add the whole game."
-        : installInstructions();
+      const localFile = location.protocol === "file:";
+      $("#install-status").textContent = localFile
+        ? "This saved copy needs internet access. Open the online app below to install a real app icon and offline access."
+        : offlineStatus;
+      $("#install-instructions").textContent = localFile
+        ? "A downloaded HTML file is not an installed app. Open https://kvryde.github.io/gift/ in your browser, then use Install app or Add to Home Screen."
+        : deferredInstallPrompt
+          ? "Your browser is ready. Tap Install app below to add the whole game."
+          : installInstructions();
+      $("#install-confirm").textContent = localFile ? "Open online app" : "Install app";
       openModal("install-modal");
     }
 
     async function installApp() {
+      if (location.protocol === "file:") {
+        window.open("https://kvryde.github.io/gift/", "_blank", "noopener");
+        showToast("Opened the online app. Use its Install app button.");
+        return;
+      }
       if (appInstalled || isStandaloneApp()) {
         updateInstallUi();
         showToast("Birthday Quest is already installed.");
@@ -1973,12 +2069,47 @@ You are loved more than this little game could ever hold.</p>
       }
     }
 
+    function showAppUpdate(worker) {
+      waitingServiceWorker = worker;
+      $("#app-update").hidden = false;
+    }
+
     function registerServiceWorker() {
-      if (!("serviceWorker" in navigator)
-        || (location.protocol !== "https:" && !["localhost", "127.0.0.1"].includes(location.hostname))) return;
-      const register = () => {
-        const scopeUrl = new URL("./", location.href);
-        navigator.serviceWorker.register(new URL("sw.js", scopeUrl), { scope: "./" }).catch(() => {});
+      if (location.protocol === "file:") {
+        offlineStatus = "Offline install is unavailable from a saved file. Open the online app first.";
+        return;
+      }
+      if (!("serviceWorker" in navigator)) {
+        offlineStatus = "This browser cannot enable offline mode. You can still install or bookmark the online app.";
+        return;
+      }
+      if (location.protocol !== "https:" && !["localhost", "127.0.0.1"].includes(location.hostname)) {
+        offlineStatus = "Offline mode requires HTTPS. Install from the secure online app.";
+        return;
+      }
+      const register = async () => {
+        try {
+          const scopeUrl = new URL("./", location.href);
+          const registration = await navigator.serviceWorker.register(new URL("sw.js", scopeUrl), { scope: "./" });
+          const watchWorker = (worker) => {
+            if (!worker) return;
+            worker.addEventListener("statechange", () => {
+              if (worker.state === "installed" && navigator.serviceWorker.controller) showAppUpdate(worker);
+            });
+            if (worker.state === "installed" && navigator.serviceWorker.controller) showAppUpdate(worker);
+          };
+          registration.addEventListener("updatefound", () => watchWorker(registration.installing));
+          watchWorker(registration.installing);
+          await navigator.serviceWorker.ready;
+          watchWorker(registration.installing);
+          if (registration.waiting && navigator.serviceWorker.controller) showAppUpdate(registration.waiting);
+          navigator.serviceWorker.addEventListener("controllerchange", () => {
+            if (waitingServiceWorker) location.reload();
+          });
+          offlineStatus = "";
+        } catch {
+          offlineStatus = "Offline setup failed. Check your connection and reload; online play still works.";
+        }
       };
       if (document.readyState === "complete") register();
       else window.addEventListener("load", register, { once: true });
@@ -2112,7 +2243,7 @@ You are loved more than this little game could ever hold.</p>
       $("#new-gallery-page").hidden = !user || !role;
       $$("[data-add-bunny]").forEach((button) => { button.hidden = !user || !role; });
       $("#plant-tulip").hidden = !user || !role;
-      $$("[data-house-write], [data-garden-write]").forEach((button) => { button.hidden = !user || !role; });
+      $$("[data-house-write], [data-garden-write], [data-nature-write]").forEach((button) => { button.hidden = !user || !role; });
       $("#role-badge").hidden = !role;
       $("#role-badge").textContent = role || "";
       syncChatListener();
@@ -2778,7 +2909,9 @@ You are loved more than this little game could ever hold.</p>
     }
 
     function renderBunnies() {
-      const visibleBunnies = natureLoaded ? bunnies : demoBunnies;
+      const visibleBunnies = (natureLoaded ? bunnies : demoBunnies).map((bunny) =>
+        bunny.habitat === "bunnyRose" ? { ...bunny, habitat: "bunnyBlue" } : bunny
+      );
       $$("[data-habitat-stage]").forEach((stage) => stage.querySelectorAll(".bunny").forEach((bunny) => bunny.remove()));
       visibleBunnies.forEach((bunny) => {
         if (!naturePages.includes(bunny.habitat)) return;
@@ -2811,11 +2944,9 @@ You are loved more than this little game could ever hold.</p>
         });
         stage.append(element);
       });
-      ["bunnyRose", "bunnyBlue"].forEach((habitat) => {
-        const count = visibleBunnies.filter((bunny) => bunny.habitat === habitat).length;
-        $(`#${habitat === "bunnyRose" ? "rose" : "blue"}-counter`).textContent = `${count} ${count === 1 ? "bunny" : "bunnies"}`;
-        $(`#${habitat === "bunnyRose" ? "rose" : "blue"}-empty`).hidden = count > 0;
-      });
+      const blueCount = visibleBunnies.filter((bunny) => bunny.habitat === "bunnyBlue").length;
+      $("#blue-counter").textContent = `${blueCount} ${blueCount === 1 ? "bunny" : "bunnies"}`;
+      $("#blue-empty").hidden = blueCount > 0;
       const gardenCount = visibleBunnies.filter((bunny) => bunny.habitat === "garden").length;
       if (!gardenCount) $("#garden-counter").textContent = `${tulips.length || demoTulips.length} tulips`;
     }
@@ -2938,7 +3069,10 @@ You are loved more than this little game could ever hold.</p>
       if (!requireNatureAccess()) return;
       if (String(item.id).startsWith("demo-")) {
         showToast("Preparing your little garden...");
-        (kind === "decor" ? ensureGardenDecorSeeds() : ensureNatureSeeds()).catch((error) => showToast(error.message));
+        (kind === "decor"
+          ? item.zone === "bunnyBlue" ? ensureBlueDecorSeeds() : ensureGardenDecorSeeds()
+          : ensureNatureSeeds()
+        ).catch((error) => showToast(error.message));
         return;
       }
       event.preventDefault();
@@ -3012,23 +3146,32 @@ You are loved more than this little game could ever hold.</p>
       const viewportRect = viewport.getBoundingClientRect();
       const targetIndex = Math.round((viewport.scrollLeft + event.clientX - viewportRect.left) / viewport.clientWidth);
       const targetPage = pages[targetIndex];
-      const habitat = drag.kind === "bunny" ? targetPage : "garden";
-      const validTarget = drag.kind === "bunny" ? naturePages.includes(habitat) : targetPage === "garden";
+      const habitat = targetPage;
+      const validTarget =
+        (drag.kind === "bunny" && naturePages.includes(habitat))
+        || (drag.kind === "decor" && ["garden", "bunnyBlue"].includes(habitat))
+        || (drag.kind === "tulip" && habitat === "garden");
       const position = validTarget ? normalizeNaturePosition(event.clientX, event.clientY, drag.kind, habitat) : null;
       cleanupNatureDrag();
       if (!validTarget || !position) {
-        showPage(drag.kind === "bunny" ? drag.item.habitat : "garden", true);
-        showToast("Bunnies can move between the two cages and the garden.");
+        showPage(drag.kind === "tulip" ? "garden" : drag.item.habitat, true);
+        showToast(
+          drag.kind === "bunny"
+            ? "Bunnies can move between the blue cage and the garden."
+            : drag.kind === "tulip"
+              ? "Tulips can move around the garden."
+              : "Decor can stay in the garden or move to the blue cage."
+        );
         return;
       }
       try {
         if (drag.kind === "bunny") {
           await fs.updateDoc(fs.doc(db, "bunnies", drag.item.id), { habitat, ...position });
           showPage(habitat, true);
-          showToast(`${drag.item.name || "Bunny"} moved to ${habitat === "garden" ? "the garden" : habitat === "bunnyRose" ? "the rose cage" : "the blue cage"}.`);
+          showToast(`${drag.item.name || "Bunny"} moved to ${habitat === "garden" ? "the garden" : "the blue cage"}.`);
         } else if (drag.kind === "decor") {
-          await fs.updateDoc(fs.doc(db, "furniture", drag.item.id), position);
-          showToast("Garden item moved.");
+          await fs.updateDoc(fs.doc(db, "furniture", drag.item.id), { zone: habitat, ...position });
+          showToast(habitat === "garden" ? "Garden item moved." : "Toy moved in the blue cage.");
         } else {
           await fs.updateDoc(fs.doc(db, "tulips", drag.item.id), position);
           showToast("Tulip moved.");
@@ -3037,7 +3180,7 @@ You are loved more than this little game could ever hold.</p>
         renderBunnies();
         renderTulips();
         if (drag.kind === "decor") renderGardenFurniture();
-        showPage(drag.kind === "bunny" ? drag.item.habitat : "garden", true);
+        showPage(drag.kind === "bunny" || drag.kind === "decor" ? drag.item.habitat : "garden", true);
         showToast(error.message);
       }
     }
@@ -3073,7 +3216,7 @@ You are loved more than this little game could ever hold.</p>
     }
 
     async function addBunny(habitat) {
-      if (!requireNatureAccess() || !["bunnyRose", "bunnyBlue", "garden"].includes(habitat)) return;
+      if (!requireNatureAccess() || !naturePages.includes(habitat)) return;
       try {
         await ensureNatureSeeds();
         const names = ["Mochi", "Clover", "Peach", "Cloud", "Petal", "Bluebell", "Biscuit", "Daisy"];
@@ -3114,21 +3257,21 @@ You are loved more than this little game could ever hold.</p>
     }
 
     async function commitSeedState(flag, entries) {
-      await fs.runTransaction(db, async (transaction) => {
-        const stateSnapshot = await transaction.get(seedStateRef());
-        const state = stateSnapshot.exists() ? stateSnapshot.data() : {};
-        if (state[flag] === true) return;
-        const refs = entries.map(([collection, id]) => fs.doc(db, collection, id));
-        const snapshots = await Promise.all(refs.map((ref) => transaction.get(ref)));
-        entries.forEach(([collection, id, data], index) => {
-          if (!snapshots[index].exists) transaction.set(fs.doc(db, collection, id), data);
-        });
-        transaction.set(seedStateRef(), {
-          natureSeeded: state.natureSeeded === true || flag === "natureSeeded",
-          houseSeeded: state.houseSeeded === true || flag === "houseSeeded",
-          gardenDecorSeeded: state.gardenDecorSeeded === true || flag === "gardenDecorSeeded",
-        }, { merge: true });
-      });
+      const stateSnapshot = await fs.getDoc(seedStateRef());
+      const state = stateSnapshot.exists() ? stateSnapshot.data() : {};
+      const snapshots = await Promise.all(entries.map(([collection, id]) =>
+        fs.getDoc(fs.doc(db, collection, id))
+      ));
+      await Promise.all(entries.map(([collection, id, data], index) => {
+        if (snapshots[index].exists()) return null;
+        return fs.setDoc(fs.doc(db, collection, id), data);
+      }));
+      await fs.setDoc(seedStateRef(), {
+        natureSeeded: state.natureSeeded === true || flag === "natureSeeded",
+        houseSeeded: state.houseSeeded === true || flag === "houseSeeded",
+        gardenDecorSeeded: state.gardenDecorSeeded === true || flag === "gardenDecorSeeded",
+        blueDecorSeeded: state.blueDecorSeeded === true || flag === "blueDecorSeeded",
+      }, { merge: true });
     }
 
     function ensureNatureSeeds() {
@@ -3181,6 +3324,26 @@ You are loved more than this little game could ever hold.</p>
       return gardenDecorSeedPromise;
     }
 
+    function ensureBlueDecorSeeds() {
+      if (blueDecorSeeded) return Promise.resolve();
+      if (blueDecorSeedPromise) return blueDecorSeedPromise;
+      blueDecorSeedPromise = (async () => {
+        const seedState = await fs.getDoc(seedStateRef());
+        if (seedState.exists() && seedState.data().blueDecorSeeded === true) {
+          blueDecorSeeded = true;
+          renderGardenFurniture();
+          return;
+        }
+        const entries = demoBlueFurniture.map(({ id, ...item }) => [
+          "furniture", `seed-blue-${item.type}`, { ...item, createdBy: user.uid, createdAt: fs.serverTimestamp() },
+        ]);
+        await commitSeedState("blueDecorSeeded", entries);
+        blueDecorSeeded = true;
+        renderGardenFurniture();
+      })().finally(() => { blueDecorSeedPromise = null; });
+      return blueDecorSeedPromise;
+    }
+
     function visibleCharacters() {
       return charactersLoaded ? characters : demoCharacters;
     }
@@ -3189,9 +3352,10 @@ You are loved more than this little game could ever hold.</p>
       return furnitureLoaded ? furniture : demoFurniture;
     }
 
-    function visibleGardenFurniture() {
-      if (furnitureLoaded && gardenDecorSeeded) return furniture.filter((item) => item.zone === "garden");
-      return demoGardenFurniture;
+    function visibleNatureFurniture(zone) {
+      const seeded = zone === "bunnyBlue" ? blueDecorSeeded : gardenDecorSeeded;
+      if (furnitureLoaded && seeded) return furniture.filter((item) => item.zone === zone);
+      return zone === "bunnyBlue" ? demoBlueFurniture : demoGardenFurniture;
     }
 
     function visibleCats() {
@@ -3414,7 +3578,7 @@ You are loved more than this little game could ever hold.</p>
     function renderFurniture() {
       const layer = $("#house-furniture");
       layer.replaceChildren();
-      visibleFurniture().filter((item) => item.zone !== "garden").forEach((item) => {
+      visibleFurniture().filter((item) => ["house", "yard"].includes(item.zone)).forEach((item) => {
         const element = document.createElement("div");
         element.className = "house-item house-furniture";
         element.dataset.houseId = item.id;
@@ -3441,33 +3605,35 @@ You are loved more than this little game could ever hold.</p>
     }
 
     function renderGardenFurniture() {
-      const stage = $('[data-habitat-stage="garden"]');
-      stage.querySelectorAll(".garden-decor").forEach((element) => element.remove());
-      visibleGardenFurniture().forEach((item) => {
-        const element = document.createElement("button");
-        element.type = "button";
-        element.className = "garden-decor";
-        element.dataset.houseId = item.id;
-        element.dataset.type = item.type;
-        element.dataset.trashKey = `furniture:${item.id}`;
-        element.style.left = `${Math.max(.07, Math.min(.93, Number(item.x) || .5)) * 100}%`;
-        element.style.top = `${Math.max(.48, Math.min(.9, Number(item.y) || .78)) * 100}%`;
-        element.style.width = ["arch", "swing", "fountain", "parasol"].includes(item.type) ? "94px" : "72px";
-        element.setAttribute("aria-label", `${item.type}. Tap to play or drag to move.`);
-        element.innerHTML = furnitureSvg(item.type);
-        element.addEventListener("pointerdown", (event) => startNatureDrag("decor", item, event));
-        element.addEventListener("click", () => {
-          if (performance.now() - Number(element.dataset.draggedAt || 0) < 350) return;
-          useGardenDecor(item, element);
-        });
-        element.addEventListener("keydown", (event) => {
-          if (event.key === "Enter" || event.key === " ") {
-            event.preventDefault();
+      ["garden", "bunnyBlue"].forEach((zone) => {
+        const stage = $(`[data-habitat-stage="${zone}"]`);
+        stage.querySelectorAll(".garden-decor").forEach((element) => element.remove());
+        visibleNatureFurniture(zone).forEach((item) => {
+          const element = document.createElement("button");
+          element.type = "button";
+          element.className = "garden-decor";
+          element.dataset.houseId = item.id;
+          element.dataset.type = item.type;
+          element.dataset.trashKey = `furniture:${item.id}`;
+          element.style.left = `${Math.max(.07, Math.min(.93, Number(item.x) || .5)) * 100}%`;
+          element.style.top = `${Math.max(.48, Math.min(.9, Number(item.y) || .78)) * 100}%`;
+          element.style.width = ["arch", "swing", "fountain", "parasol"].includes(item.type) ? "94px" : "72px";
+          element.setAttribute("aria-label", `${item.type}. Tap to play or drag to move.${canManageHouseItem(item) ? " Drop in the trash to delete." : ""}`);
+          element.innerHTML = furnitureSvg(item.type);
+          element.addEventListener("pointerdown", (event) => startNatureDrag("decor", item, event));
+          element.addEventListener("click", () => {
+            if (performance.now() - Number(element.dataset.draggedAt || 0) < 350) return;
             useGardenDecor(item, element);
-          }
-          if (event.key === "Delete" && canManageHouseItem(item)) deleteGardenDecor(item, element);
+          });
+          element.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              useGardenDecor(item, element);
+            }
+            if (event.key === "Delete" && canManageHouseItem(item)) deleteGardenDecor(item, element);
+          });
+          stage.append(element);
         });
-        stage.append(element);
       });
     }
 
@@ -3485,26 +3651,35 @@ You are loved more than this little game could ever hold.</p>
         lantern: active ? "A warm glow lights the garden." : "The lantern goes dark.",
         sandbox: active ? "A blocky sandcastle appears!" : "The tide smooths the sand.",
         kite: active ? "The kite dances in the breeze." : "The kite floats down.",
+        bed: active ? "A bunny-sized nap spot." : "The little bed is freshly made.",
+        table: active ? "Snack time for the bunnies." : "The toy table is cleared.",
+        shelf: active ? "Tiny treasures line the shelves." : "The toys are tucked away.",
+        plant: active ? "A leafy friend for the cage." : "The plant rests in its pot.",
+        lamp: active ? "A warm glow fills the cage." : "The lamp clicks off.",
+        rug: active ? "A soft rug for bunny hops." : "The rug settles flat.",
+        armchair: active ? "A cozy chair for a tiny reader." : "The armchair is ready for a story.",
       };
       showToast(messages[item.type] || "A little garden magic.");
       gainXp(2);
     }
 
-    async function addGardenDecor(type) {
-      if (!requireNatureAccess() || !gardenDecorTypes.includes(type)) return;
+    async function addGardenDecor(type, zone = "garden") {
+      const allowed = zone === "bunnyBlue" ? blueDecorTypes : gardenDecorTypes;
+      if (!requireNatureAccess() || !allowed.includes(type) || !["garden", "bunnyBlue"].includes(zone)) return;
       try {
         await ensureNatureSeeds();
+        await (zone === "bunnyBlue" ? ensureBlueDecorSeeds() : ensureGardenDecorSeeds());
         await fs.addDoc(fs.collection(db, "furniture"), {
           type,
-          zone: "garden",
+          zone,
           x: .12 + Math.random() * .76,
-          y: .62 + Math.random() * .24,
+          y: (zone === "bunnyBlue" ? .56 : .62) + Math.random() * (zone === "bunnyBlue" ? .28 : .24),
           createdBy: user.uid,
           createdAt: fs.serverTimestamp(),
         });
-        $("#garden-palette").hidden = true;
+        $(zone === "bunnyBlue" ? "#blue-decor-palette" : "#garden-palette").hidden = true;
         gainXp(6);
-        showToast(`${type[0].toUpperCase() + type.slice(1)} added to the garden.`);
+        showToast(`${type[0].toUpperCase() + type.slice(1)} added to ${zone === "bunnyBlue" ? "the blue cage" : "the garden"}.`);
       } catch (error) {
         showToast(error.message);
       }
@@ -3514,7 +3689,7 @@ You are loved more than this little game could ever hold.</p>
       if (!canManageHouseItem(item) || !db) return;
       try {
         const removed = await trashInteraction(`furniture:${item.id}`, source, () => fs.deleteDoc(fs.doc(db, "furniture", item.id)));
-        if (removed) showToast("Garden item moved to the trash.");
+        if (removed) showToast(item.zone === "bunnyBlue" ? "Blue Cage toy moved to the trash." : "Garden item moved to the trash.");
       } catch (error) {
         showToast(error.message);
       }
@@ -4182,15 +4357,16 @@ You are loved more than this little game could ever hold.</p>
         for (let index = 0; index < 34; index += 1) {
           const piece = document.createElement("i");
           piece.className = "wedding-confetti";
-          piece.style.left = `${rect.width * (.35 + Math.random() * .3)}px`;
-          piece.style.top = `${rect.height * .42}px`;
+          piece.style.left = `${rect.left + rect.width * (.35 + Math.random() * .3)}px`;
+          piece.style.top = `${rect.top + rect.height * .36}px`;
           piece.style.background = colors[index % colors.length];
-          piece.style.setProperty("--confetti-x", `${(Math.random() - .5) * rect.width * .9}px`);
-          piece.style.setProperty("--confetti-y", `${-60 - Math.random() * rect.height * .55}px`);
-          piece.style.setProperty("--confetti-r", `${(Math.random() - .5) * 720}deg`);
+          piece.style.setProperty("--confetti-x", `${(Math.random() - .5) * Math.min(innerWidth * .8, 620)}px`);
+          piece.style.setProperty("--confetti-y", `${rect.height * .55 + Math.random() * 180}px`);
+          piece.style.setProperty("--confetti-r", `${(Math.random() - .5) * 900}deg`);
           piece.style.animationDelay = `${Math.random() * .18}s`;
-          stage.append(piece);
-          setTimeout(() => piece.remove(), 1700);
+          document.body.append(piece);
+          piece.addEventListener("animationend", () => piece.remove(), { once: true });
+          setTimeout(() => piece.remove(), 2200);
         }
         gainXp(8);
         showToast("Confetti for the newlywed team.");
@@ -4242,14 +4418,15 @@ You are loved more than this little game could ever hold.</p>
         return;
       }
       try {
+        const readOptions = navigator.onLine === false ? { source: "cache" } : undefined;
         let docs = [];
         if (role === "admin") {
-          docs = (await fs.getDocs(fs.collection(db, "galleryPages"))).docs;
+          docs = (await fs.getDocs(fs.collection(db, "galleryPages"), readOptions)).docs;
         } else {
-          const published = await fs.getDocs(fs.query(fs.collection(db, "galleryPages"), fs.where("published", "==", true)));
+          const published = await fs.getDocs(fs.query(fs.collection(db, "galleryPages"), fs.where("published", "==", true)), readOptions);
           docs = [...published.docs];
           if (user?.uid && role === "viewer") {
-            const own = await fs.getDocs(fs.query(fs.collection(db, "galleryPages"), fs.where("createdBy", "==", user.uid)));
+            const own = await fs.getDocs(fs.query(fs.collection(db, "galleryPages"), fs.where("createdBy", "==", user.uid)), readOptions);
             docs.push(...own.docs);
           }
         }
@@ -4360,7 +4537,7 @@ You are loved more than this little game could ever hold.</p>
 
       $("#gallery-page-indicator").textContent = `Page ${galleryIndex + 1} of ${galleryPages.length}`;
       const status = $("#gallery-page-status");
-      status.textContent = page.published ? "Published" : "Waiting for admin";
+      status.textContent = page.published ? "Shared with both of you" : "Waiting for admin";
       status.className = `gallery-page-status${page.published ? " published" : ""}`;
     }
 
@@ -4380,13 +4557,13 @@ You are loved more than this little game could ever hold.</p>
           photos: [],
           createdBy: user.uid,
           createdAt: fs.serverTimestamp(),
-          published: false,
+          published: true,
         });
         await loadGalleryPages();
         const index = galleryPages.findIndex((page) => page.id === snapshot.id);
         galleryIndex = index >= 0 ? index : 0;
         renderGalleryPages();
-        showToast("New four-photo page created.");
+        showToast("New shared gallery page created. Both players can view it.");
       } catch (error) {
         showToast(error.message);
       }
@@ -4577,9 +4754,10 @@ You are loved more than this little game could ever hold.</p>
     }
 
     async function resolveRole(uid) {
-      const admin = await fs.getDoc(fs.doc(db, "admins", uid));
+      const readOptions = navigator.onLine === false ? { source: "cache" } : undefined;
+      const admin = await fs.getDoc(fs.doc(db, "admins", uid), readOptions);
       if (admin.exists()) return "admin";
-      const viewer = await fs.getDoc(fs.doc(db, "viewers", uid));
+      const viewer = await fs.getDoc(fs.doc(db, "viewers", uid), readOptions);
       if (viewer.exists()) return "viewer";
       return null;
     }
@@ -4599,12 +4777,13 @@ You are loved more than this little game could ever hold.</p>
         }
       }
       updateRoleUi();
+      await loadGalleryPages();
       if (account && role) {
         try { await ensureNatureSeeds(); } catch (error) { showToast(`Bunny garden: ${error.message}`); }
         try { await ensureHouseSeeds(); } catch (error) { showToast(`Little house: ${error.message}`); }
         try { await ensureGardenDecorSeeds(); } catch (error) { showToast(`Garden toys: ${error.message}`); }
+        try { await ensureBlueDecorSeeds(); } catch (error) { showToast(`Blue cage toys: ${error.message}`); }
       }
-      await loadGalleryPages();
       if (role === "admin" && !contentExists && !seedingContent) {
         seedingContent = true;
         try {
@@ -4710,6 +4889,17 @@ You are loved more than this little game could ever hold.</p>
         button.addEventListener("click", () => addGardenDecor(type));
         $("#garden-decor-options").append(button);
       });
+      $("#blue-decor-toggle").addEventListener("click", () => {
+        $("#blue-decor-palette").hidden = !$("#blue-decor-palette").hidden;
+      });
+      blueDecorTypes.forEach((type) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "house-choice garden-decor-choice";
+        button.innerHTML = `${furnitureSvg(type)}<span>${type[0].toUpperCase() + type.slice(1)}</span>`;
+        button.addEventListener("click", () => addGardenDecor(type, "bunnyBlue"));
+        $("#blue-decor-options").append(button);
+      });
     }
 
     async function initFirebase() {
@@ -4728,7 +4918,13 @@ You are loved more than this little game could ever hold.</p>
         authApi = authModule;
         fs = firestoreModule;
         auth = authModule.getAuth(app);
-        db = firestoreModule.getFirestore(app);
+        try {
+          db = firestoreModule.initializeFirestore(app, {
+            localCache: firestoreModule.persistentLocalCache(),
+          });
+        } catch {
+          db = firestoreModule.getFirestore(app);
+        }
         $("#auth-setup").hidden = true;
 
         authApi.onAuthStateChanged(auth, handleAuthState);
@@ -4889,6 +5085,10 @@ You are loved more than this little game could ever hold.</p>
     $("#install-app").addEventListener("click", openInstallModal);
     $("#install-home").addEventListener("click", openInstallModal);
     $("#install-confirm").addEventListener("click", installApp);
+    $("#app-update").addEventListener("click", () => {
+      waitingServiceWorker?.postMessage({ type: "SKIP_WAITING" });
+      $("#app-update").hidden = true;
+    });
     $("#chat-button").addEventListener("click", () => setChatOpen(!chatOpen));
     $("#chat-nav-button").addEventListener("click", () => setChatOpen(!chatOpen));
     $("#chat-close").addEventListener("click", () => setChatOpen(false));
