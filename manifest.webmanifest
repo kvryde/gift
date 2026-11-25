@@ -1,7 +1,10 @@
 {
+  "id": "./",
   "name": "Birthday Quest",
   "short_name": "Birthday",
-  "description": "A little birthday quest with slimes, letters, memories, and couple chat.",
+  "description": "A little birthday quest with slimes, letters, memories, a wedding, a garden, a house, and couple chat.",
+  "lang": "en",
+  "categories": ["games", "lifestyle"],
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

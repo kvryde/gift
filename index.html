@@ -128,7 +128,7 @@
     .hud-button:hover { color: var(--ink); border-color: rgba(255, 255, 255, .22); }
     .hud-button.active { color: var(--gold); border-color: var(--gold); }
     .hud-button.primary { color: var(--bg); border-color: var(--mint); background: var(--mint); }
-    .install-shortcut { width: 36px; padding: 0; }
+    .install-shortcut { width: auto; min-width: 78px; gap: .35rem; padding: .45rem .6rem; }
     .install-shortcut .icon { width: 18px; height: 18px; vertical-align: middle; }
     .role-badge { color: var(--gold); font-size: .65rem; font-weight: 900; text-transform: uppercase; letter-spacing: .08em; }
 
@@ -311,6 +311,74 @@
     @keyframes pop { 0% { transform: scale(.75); opacity: .3; } 55% { transform: scale(1.1, .9); } 100% { transform: scale(1); opacity: 1; } }
     @keyframes cardIn { from { opacity: 0; transform: translateY(10px) scale(.96); } to { opacity: 1; transform: none; } }
 
+    .wedding-layout { display: grid; min-height: 100%; grid-template-columns: minmax(260px, .82fr) minmax(360px, 1.18fr); align-items: center; gap: clamp(1rem, 3vw, 2.4rem); }
+    .wedding-copy h1 { max-width: 620px; margin-bottom: .75rem; font-family: Georgia, "Times New Roman", serif; font-size: clamp(2.2rem, 4.4vw, 4.6rem); font-weight: 400; letter-spacing: -.045em; line-height: 1.05; }
+    .wedding-intro { max-width: 580px; margin-bottom: 1.2rem; color: var(--muted); font-size: .9rem; line-height: 1.7; }
+    .wedding-actions { display: flex; flex-wrap: wrap; gap: .55rem; }
+    .wedding-note { max-width: 580px; margin-top: 1.3rem; padding: 1rem 1.1rem; border: 2px solid rgba(240, 207, 118, .35); background: rgba(240, 207, 118, .07); box-shadow: 4px 4px #101b14; }
+    .wedding-note p { margin: 0; color: #e9e2c8; font-family: Georgia, "Times New Roman", serif; font-size: .95rem; line-height: 1.7; }
+    .wedding-stage { position: relative; min-height: 390px; overflow: hidden; border: 3px solid #4f6745; background: linear-gradient(180deg, #9fc6d5 0 66%, #6f9c4c 66%, #5d873f 100%); box-shadow: inset 0 5px #c6ded8, inset 0 -9px #486c34, var(--shadow); isolation: isolate; }
+    .wedding-sun { position: absolute; top: 9%; right: 10%; width: 58px; height: 58px; border: 5px solid #e7d48d; background: #f5e5a5; box-shadow: 5px 5px rgba(111, 126, 78, .25); }
+    .wedding-cloud { position: absolute; width: 84px; height: 20px; background: #dce9df; box-shadow: 7px 7px rgba(92, 131, 128, .18); }
+    .wedding-cloud::before, .wedding-cloud::after { position: absolute; bottom: 0; background: inherit; content: ""; }
+    .wedding-cloud::before { left: 14px; width: 34px; height: 30px; }
+    .wedding-cloud::after { right: 12px; width: 26px; height: 24px; }
+    .wedding-cloud.one { top: 14%; left: 8%; }
+    .wedding-cloud.two { top: 22%; left: 43%; transform: scale(.65); opacity: .7; }
+    .wedding-hill { position: absolute; bottom: 24%; width: 62%; height: 28%; background: #608a50; clip-path: polygon(0 100%, 0 58%, 16% 58%, 16% 32%, 38% 32%, 38% 12%, 62% 12%, 62% 40%, 84% 40%, 84% 68%, 100% 68%, 100% 100%); }
+    .wedding-hill.one { left: -12%; }
+    .wedding-hill.two { right: -15%; bottom: 21%; transform: scaleX(-1); background: #739a56; }
+    .wedding-ground { position: absolute; right: 0; bottom: 0; left: 0; height: 25%; border-top: 5px solid #89ad5c; background: repeating-linear-gradient(90deg, #5c883e 0 26px, #668f45 26px 30px); }
+    .wedding-arch { position: absolute; bottom: 23%; left: 50%; z-index: 2; width: 42%; height: 49%; border: 12px solid #e7e1bd; border-bottom: 0; box-shadow: inset 0 0 0 4px #b7ae86, 6px 6px #344d2e; transform: translateX(-50%); }
+    .wedding-arch::before, .wedding-arch::after { position: absolute; top: -18px; width: 34px; height: 34px; background: #6f9c4c; box-shadow: 12px 10px #4f7d3f, -8px 15px #87ab5a; content: ""; }
+    .wedding-arch::before { left: -22px; }
+    .wedding-arch::after { right: -22px; }
+    .wedding-arch span { position: absolute; width: 18px; height: 18px; background: #e7aaa1; box-shadow: 6px 6px #bd7777; }
+    .wedding-arch span:nth-child(1) { top: 8%; left: -7%; }
+    .wedding-arch span:nth-child(2) { top: 23%; right: -6%; }
+    .wedding-arch span:nth-child(3) { top: 44%; left: -5%; background: #f0cf76; box-shadow: 6px 6px #b39245; }
+    .wedding-arch span:nth-child(4) { top: 58%; right: -4%; }
+    .wedding-arch span:nth-child(5) { top: 75%; left: 5%; background: #b5c98d; box-shadow: 6px 6px #7d955b; }
+    .wedding-cake { position: absolute; right: 9%; bottom: 24%; z-index: 4; width: 74px; height: 86px; }
+    .cake-base, .cake-layer, .cake-top { position: absolute; left: 50%; border: 3px solid #684936; transform: translateX(-50%); }
+    .cake-base { bottom: 0; width: 74px; height: 34px; background: #e7aaa1; box-shadow: inset 0 6px #f3c7bd, inset 0 -6px #bd7e78; }
+    .cake-layer { bottom: 29px; width: 58px; height: 30px; background: #f0cf76; box-shadow: inset 0 6px #ffe3a0, inset 0 -5px #c3a453; }
+    .cake-top { bottom: 55px; width: 42px; height: 18px; background: #e9dfc2; box-shadow: inset 0 5px #fff3d5; }
+    .wedding-cake i { position: absolute; bottom: 70px; width: 6px; height: 22px; background: #f5efd9; border: 2px solid #9a8e6a; }
+    .wedding-cake i.one { left: 18px; }
+    .wedding-cake i.two { left: 34px; }
+    .wedding-cake i.three { left: 50px; }
+    .wedding-cake b { position: absolute; bottom: 91px; width: 10px; height: 14px; background: #f0cf76; opacity: 0; transform: scale(.4); }
+    .wedding-cake b.one { left: 16px; }
+    .wedding-cake b.two { left: 32px; }
+    .wedding-cake b.three { left: 48px; }
+    .wedding-stage.lit .wedding-cake b { opacity: 1; animation: candleFlicker .7s steps(2, end) infinite; }
+    .wedding-stage.lit .wedding-cake b.two { animation-delay: .2s; }
+    .wedding-stage.lit .wedding-cake b.three { animation-delay: .4s; }
+    .wedding-couple { position: absolute; bottom: 23%; left: 50%; z-index: 3; display: flex; width: 180px; height: 132px; align-items: flex-end; justify-content: center; gap: 2px; transform: translateX(-50%); }
+    .wedding-couple .house-character { position: relative; width: 78px; flex: 0 0 78px; transition: none; }
+    .wedding-couple .house-character svg { width: 100%; animation: chibiBreathe 2.8s ease-in-out infinite; transform-origin: 50% 100%; }
+    .wedding-stage.dancing .wedding-couple .house-character:first-child svg { animation: weddingDance .7s ease-in-out infinite alternate; }
+    .wedding-stage.dancing .wedding-couple .house-character:last-child svg { animation: weddingDance .7s ease-in-out .35s infinite alternate-reverse; }
+    .wedding-petals i { position: absolute; z-index: 1; top: -12px; width: 9px; height: 9px; background: #e7aaa1; animation: petalFall 7s linear infinite; }
+    .wedding-petals i:nth-child(1) { left: 12%; animation-delay: .4s; }
+    .wedding-petals i:nth-child(2) { left: 29%; animation-delay: 2.1s; }
+    .wedding-petals i:nth-child(3) { left: 48%; animation-delay: 4.2s; }
+    .wedding-petals i:nth-child(4) { left: 67%; animation-delay: 1.3s; }
+    .wedding-petals i:nth-child(5) { left: 83%; animation-delay: 3.5s; }
+    .wedding-petals i:nth-child(6) { left: 93%; animation-delay: 5.4s; }
+    .wedding-stage-label { position: absolute; right: 2%; bottom: 2%; z-index: 5; padding: .3rem .5rem; border: 2px solid #405b38; color: #2d402b; background: #e7ebcd; font-family: "Silkscreen", monospace; font-size: .52rem; }
+    .wedding-confetti { position: absolute; z-index: 12; width: 8px; height: 12px; pointer-events: none; animation: confettiBurst 1.35s cubic-bezier(.15, .75, .35, 1) forwards; }
+    @keyframes candleFlicker { 0%, 100% { transform: scale(.85, 1); } 50% { transform: scale(1.1, .8); } }
+    @keyframes weddingDance { from { transform: rotate(-5deg); } to { transform: rotate(5deg) scaleY(.97); } }
+    @keyframes petalFall { 0% { transform: translate3d(0, -20px, 0) rotate(0); opacity: 0; } 12% { opacity: .9; } 100% { transform: translate3d(55px, 430px, 0) rotate(240deg); opacity: 0; } }
+    @keyframes confettiBurst { 0% { opacity: 1; transform: translate3d(0, 0, 0) rotate(0); } 100% { opacity: 0; transform: translate3d(var(--confetti-x), var(--confetti-y), 0) rotate(var(--confetti-r)); } }
+    .install-preview { display: flex; align-items: center; gap: .8rem; padding: .8rem; border: 2px solid #526747; background: #182a1e; }
+    .install-preview .brand-mark { flex: 0 0 auto; }
+    .install-preview div { display: grid; gap: .2rem; }
+    .install-preview strong { color: var(--gold); font-family: "Silkscreen", monospace; font-size: .72rem; }
+    .install-preview div span { color: var(--muted); font-size: .65rem; }
+
     .chat-panel { position: fixed; left: max(1rem, env(safe-area-inset-left)); bottom: calc(80px + env(safe-area-inset-bottom)); z-index: 75; display: flex; width: min(420px, calc(100vw - 2rem)); max-height: min(52vh, 480px); flex-direction: column; border: 3px solid #78985d; border-radius: 2px; color: #f4ecd5; background: #1d3022; box-shadow: inset 0 3px #314a34, 0 6px #0b150f; }
     .chat-header { display: flex; align-items: center; justify-content: space-between; gap: .8rem; padding: .65rem .75rem; border-bottom: 2px solid #40573c; background: #263c2b; }
     .chat-header h2 { margin: .15rem 0 0; font-family: "Silkscreen", monospace; font-size: .9rem; letter-spacing: -.04em; }
@@ -452,6 +520,23 @@
     .tulip-stage { position: absolute; bottom: 0; left: 50%; min-width: 38px; padding: .12rem .3rem; border-radius: 999px; color: #29452f; background: rgba(255, 255, 255, .82); font-size: .48rem; font-weight: 900; text-align: center; pointer-events: none; transform: translateX(-50%); }
     .tulip.grown .tulip-stage { color: #73552e; background: rgba(255, 240, 185, .9); }
     @keyframes tulipSway { 0%, 100% { transform: rotate(-2deg); } 50% { transform: rotate(3deg) translateX(2px); } }
+    .garden-palette { position: absolute; bottom: 3.2rem; left: 50%; z-index: 15; width: min(560px, 88%); padding: .7rem; border: 3px solid #405b38; background: #e7ebcd; box-shadow: 5px 5px #29452f; transform: translateX(-50%); }
+    .garden-palette .control-label { display: block; margin-bottom: .45rem; color: #33472d; }
+    .garden-palette-options { display: flex; max-height: 150px; flex-wrap: wrap; gap: .35rem; overflow-y: auto; }
+    .garden-palette-options .house-choice { min-width: 64px; color: #e9e2c8; border-color: #75613e; background: #2f3525; }
+    .garden-palette-options svg { width: 32px; height: 30px; }
+    .garden-decor { position: absolute; z-index: 5; padding: 0; border: 0; background: transparent; cursor: grab; touch-action: none; transform: translate(-50%, -100%); filter: drop-shadow(0 7px 5px rgba(34, 61, 35, .22)); user-select: none; -webkit-user-select: none; }
+    .garden-decor:active { cursor: grabbing; }
+    .garden-decor svg { display: block; width: 100%; overflow: visible; pointer-events: none; }
+    .garden-decor.dragging { visibility: hidden; }
+    .garden-decor[data-active="true"] svg { animation: decorBounce .7s ease-in-out infinite alternate; }
+    .garden-decor[data-type="swing"][data-active="true"] svg { animation: swingMotion 1.2s ease-in-out infinite alternate; transform-origin: 50% 8%; }
+    .garden-decor[data-type="kite"][data-active="true"] svg { animation: kiteFloat 2.2s ease-in-out infinite alternate; }
+    .garden-decor[data-type="fountain"][data-active="true"] svg { animation: fountainPulse .8s steps(2, end) infinite; }
+    @keyframes decorBounce { from { transform: translateY(0); } to { transform: translateY(-5px); } }
+    @keyframes swingMotion { from { transform: rotate(-5deg); } to { transform: rotate(5deg); } }
+    @keyframes kiteFloat { from { transform: translate(-3px, 0) rotate(-2deg); } to { transform: translate(4px, -8px) rotate(3deg); } }
+    @keyframes fountainPulse { 0%, 100% { filter: brightness(1); } 50% { filter: brightness(1.18); } }
     .drag-ghost { position: fixed; z-index: 150; pointer-events: none; opacity: .92; filter: drop-shadow(0 18px 15px rgba(0, 0, 0, .28)); transform: translate(-50%, -50%); }
     .drag-ghost svg { display: block; width: 100%; }
     .trash-bin {
@@ -488,7 +573,7 @@
     .house-page .page-heading h1 { margin-bottom: .3rem; font-size: clamp(1.8rem, 3.5vw, 3.2rem); }
     .house-page .page-heading p { font-size: .76rem; }
     .house-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(245px, 290px); gap: .85rem; align-items: start; }
-    .house-stage { position: relative; min-height: 440px; height: min(61vh, 580px); overflow: hidden; border: 1px solid rgba(255, 255, 255, .15); border-radius: 24px; background: linear-gradient(180deg, #6d81b4 0%, #b9b7d2 47%, #789967 48%, #527953 100%); box-shadow: var(--shadow); touch-action: pan-y; user-select: none; }
+    .house-stage { position: relative; min-height: 480px; height: min(68vh, 680px); overflow: hidden; border: 1px solid rgba(255, 255, 255, .15); border-radius: 24px; background: linear-gradient(180deg, #6d81b4 0%, #b9b7d2 47%, #789967 48%, #527953 100%); box-shadow: var(--shadow); touch-action: pan-y; user-select: none; }
     .house-stage.placing { cursor: crosshair; }
     .house-stage.dragging-house { cursor: grabbing; touch-action: none; }
     .house-cloud { position: absolute; width: 90px; height: 25px; border-radius: 999px; background: rgba(255, 255, 255, .32); }
@@ -501,16 +586,17 @@
     .house-tree::before { position: absolute; bottom: 0; left: 35px; width: 18px; height: 75px; border-radius: 8px; background: #765b4c; content: ""; }
     .house-tree::after { position: absolute; top: 0; left: 0; width: 85px; height: 95px; border-radius: 48% 52% 45% 55%; background: radial-gradient(circle at 35% 28%, #8eb878, #4e7958 72%); box-shadow: -16px 25px 0 -10px #628c61, 18px 22px 0 -8px #456e51; content: ""; }
     .house-path { position: absolute; bottom: -12%; left: 39%; width: 17%; height: 50%; border-radius: 50% 50% 0 0; background: rgba(224, 202, 172, .58); transform: rotate(-7deg); }
-    .house-building { position: absolute; top: 13%; right: 3%; width: 42%; height: 74%; border: 3px solid #72546d; border-radius: 16px 16px 7px 7px; background: linear-gradient(180deg, #f5d9d2 0 64%, #c9957e 65% 100%); box-shadow: 0 18px 30px rgba(35, 30, 55, .24); }
+    .house-building { position: absolute; top: 8%; right: 2%; width: 58%; height: 82%; border: 3px solid #72546d; border-radius: 16px 16px 7px 7px; background: linear-gradient(180deg, #f5d9d2 0 64%, #c9957e 65% 100%); box-shadow: 0 18px 30px rgba(35, 30, 55, .24); }
     .house-roof { position: absolute; top: -24%; left: -8%; width: 116%; height: 32%; background: #b46f7e; clip-path: polygon(50% 0, 100% 100%, 0 100%); filter: drop-shadow(0 5px 0 #714b60); }
     .house-window { position: absolute; top: 14%; right: 9%; width: 27%; aspect-ratio: 1.15; border: 5px solid #fff0d7; border-radius: 8px; background: linear-gradient(135deg, #9bc8dc, #e6f2ee); box-shadow: 0 0 25px rgba(255, 234, 177, .22); }
     .house-window::before, .house-window::after { position: absolute; background: #fff0d7; content: ""; }
     .house-window::before { top: 43%; left: 0; width: 100%; height: 5px; }
     .house-window::after { top: 0; left: 45%; width: 5px; height: 100%; }
+    .house-floor { position: absolute; right: 0; bottom: 0; left: 0; height: 34%; border-top: 4px solid #76543a; background: repeating-linear-gradient(90deg, #a37b50 0 34px, #8f6944 34px 38px); }
     .house-door { position: absolute; bottom: 0; left: 5%; width: 25%; height: 48%; border: 4px solid #79566b; border-bottom: 0; border-radius: 10px 10px 0 0; background: linear-gradient(90deg, #98728c, #b78da4); }
     .house-door::after { position: absolute; top: 52%; right: 12%; width: 7px; height: 7px; border-radius: 50%; background: #f5d58f; content: ""; }
     .house-rug { position: absolute; right: 7%; bottom: 7%; width: 52%; height: 19%; border: 2px solid rgba(255, 255, 255, .3); border-radius: 50%; background: repeating-radial-gradient(ellipse, #d79aab 0 8px, #efbfca 9px 15px); opacity: .7; }
-    .house-interior { position: absolute; top: 13%; right: 3%; z-index: 2; width: 42%; height: 74%; border: 2px dashed transparent; border-radius: 14px; pointer-events: none; transition: border-color .2s, background .2s; }
+    .house-interior { position: absolute; top: 8%; right: 2%; z-index: 2; width: 58%; height: 82%; border: 2px dashed transparent; border-radius: 14px; pointer-events: none; transition: border-color .2s, background .2s; }
     .house-stage.dragging-house .house-interior { border-color: rgba(255, 240, 185, .8); background: rgba(255, 240, 185, .08); }
     .house-label { position: absolute; z-index: 3; padding: .25rem .5rem; border: 1px solid rgba(255, 255, 255, .22); border-radius: 999px; color: white; background: rgba(30, 28, 53, .38); font-size: .55rem; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; pointer-events: none; backdrop-filter: blur(6px); }
     .house-label.yard { bottom: 3%; left: 4%; }
@@ -522,17 +608,28 @@
     .house-choice-row .select-input { min-height: 32px; padding: .35rem .45rem; font-size: .6rem; }
     .house-item { position: absolute; z-index: 5; transform: translate(-50%, -50%); cursor: grab; touch-action: none; filter: drop-shadow(0 7px 5px rgba(25, 24, 43, .22)); }
     .house-item:active { cursor: grabbing; }
+    .house-furniture { transform: translate(-50%, -100%); }
+    .house-furniture[data-furniture-type="rug"] { transform: translate(-50%, -50%); }
     .house-item svg { display: block; width: 100%; overflow: visible; pointer-events: none; }
     .house-item.dragging { opacity: .25; }
-    .house-character { z-index: 8; width: clamp(62px, 8vw, 88px); transform: translate(-50%, -100%); transition: left .9s ease-in-out, top .9s ease-in-out; }
+    .house-character { z-index: 8; width: clamp(62px, 8vw, 88px); transform: translate(-50%, -100%); will-change: left, top; }
     .house-character svg { animation: chibiBreathe 2.8s ease-in-out infinite; transform-origin: 50% 100%; }
     .house-character.walking svg { animation: chibiWalk .42s ease-in-out infinite; }
-    .house-character.dragging { transition: none; }
-    .house-cat { z-index: 7; width: clamp(48px, 6vw, 68px); transition: left 1.1s ease-in-out, top 1.1s ease-in-out; }
+    .house-character.physics-character svg > path:first-child { display: none; }
+    .house-character.dragging { opacity: .25; }
+    .house-character[data-action="eat"] svg { animation: chibiEat .45s ease-in-out 3; }
+    .house-character[data-action="read"] svg { animation: chibiRead .7s ease-in-out 3; }
+    .house-character[data-action="rest"] svg { animation: chibiRest 1.4s ease-in-out 2; }
+    .house-character[data-action="dance"] svg { animation: chibiDance .5s ease-in-out 4 alternate; }
+    .house-actor-shadow { position: absolute; z-index: 4; width: 58px; height: 14px; background: rgba(28, 43, 29, .3); clip-path: polygon(12% 0, 88% 0, 100% 45%, 88% 100%, 12% 100%, 0 45%); transform: translate(-50%, -50%); pointer-events: none; will-change: left, top, transform; }
+    .house-cat { z-index: 7; width: clamp(48px, 6vw, 68px); transform: translate(-50%, -100%); will-change: left, top; }
     .house-cat svg { animation: catBreathe 2.2s ease-in-out infinite; transform-origin: 50% 100%; }
+    .house-cat.walking svg { animation: catWalk .36s ease-in-out infinite; }
+    .house-cat.physics-cat svg > path:first-child { display: none; }
     .house-cat.petted svg { animation: catHappy .45s ease; }
+    .house-actor-shadow.cat-shadow { width: 42px; height: 10px; }
     .house-item-label { position: absolute; bottom: -3px; left: 50%; padding: .12rem .35rem; border-radius: 999px; color: #392b43; background: rgba(255, 255, 255, .86); font-size: .48rem; font-weight: 900; pointer-events: none; transform: translateX(-50%); white-space: nowrap; }
-    .house-panel { display: grid; max-height: min(61vh, 580px); gap: .7rem; overflow-y: auto; padding: .8rem; border: 1px solid var(--line); border-radius: 20px; background: rgba(32, 29, 59, .9); scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, .18) transparent; }
+    .house-panel { display: grid; max-height: min(68vh, 680px); gap: .7rem; overflow-y: auto; padding: .8rem; border: 1px solid var(--line); border-radius: 20px; background: rgba(32, 29, 59, .9); scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, .18) transparent; }
     .house-panel-section { display: grid; gap: .55rem; padding-bottom: .7rem; border-bottom: 1px solid var(--line); }
     .house-panel-section:last-child { padding-bottom: 0; border-bottom: 0; }
     .house-panel-title { margin: 0; color: var(--gold); font-family: Georgia, "Times New Roman", serif; font-size: 1rem; font-weight: 400; }
@@ -570,9 +667,14 @@
     .mix-card svg { width: 58px; height: 48px; }
     .mix-card span { max-width: 100%; overflow: hidden; font-size: .52rem; font-weight: 900; text-overflow: ellipsis; white-space: nowrap; }
     .house-heart { position: absolute; z-index: 20; color: #ff9eb5; font-size: 1.2rem; pointer-events: none; animation: heartPop .8s ease-out forwards; }
-    @keyframes chibiBreathe { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(1.025) translateY(-2px); } }
-    @keyframes chibiWalk { 0%, 100% { transform: rotate(-2deg) translateY(0); } 50% { transform: rotate(2deg) translateY(-5px); } }
+    @keyframes chibiBreathe { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(1.018); } }
+    @keyframes chibiWalk { 0%, 100% { transform: rotate(-2deg) scaleY(1); } 50% { transform: rotate(2deg) scaleY(.985); } }
+    @keyframes chibiEat { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(-2deg) scaleY(.97); } }
+    @keyframes chibiRead { 0%, 100% { transform: rotate(-2deg); } 50% { transform: rotate(2deg); } }
+    @keyframes chibiRest { 0%, 100% { transform: rotate(-7deg) scaleY(.94); } 50% { transform: rotate(-9deg) scaleY(.91); } }
+    @keyframes chibiDance { from { transform: rotate(-5deg); } to { transform: rotate(5deg) scaleY(.97); } }
     @keyframes catBreathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03, .97); } }
+    @keyframes catWalk { 0%, 100% { transform: rotate(-2deg) scaleY(1); } 50% { transform: rotate(2deg) scaleY(.97); } }
     @keyframes catHappy { 0%, 100% { transform: rotate(0); } 30% { transform: rotate(-8deg) translateY(-4px); } 65% { transform: rotate(8deg) translateY(-4px); } }
     @keyframes pour { from { transform: translateY(-3px) rotate(12deg) scaleY(.8); } to { transform: translateY(3px) rotate(12deg) scaleY(1); } }
     @keyframes liquidSwirl { 0%, 100% { transform: scaleX(1); } 50% { transform: scaleX(.82) scaleY(1.18); } }
@@ -584,7 +686,7 @@
     .tab-bar {
       z-index: 20;
       display: grid;
-      grid-template-columns: repeat(8, minmax(0, 1fr));
+      grid-template-columns: repeat(9, minmax(0, 1fr));
       min-height: 66px;
       padding: .45rem clamp(.5rem, 3vw, 2rem) max(.45rem, env(safe-area-inset-bottom));
       border-top: 1px solid var(--line);
@@ -728,6 +830,13 @@
     .arcade-touch button { border: 2px solid #698452; border-radius: 2px; background: #314b34; box-shadow: inset 0 3px #476240, 0 3px #132117; }
     .arcade-touch button[data-game-control="jump"] { color: #24351f; border-color: #c2e29c; background: var(--mint); }
     .arcade-help { border: 2px solid #4e6644; border-radius: 2px; background: #1a2d20; box-shadow: inset 0 3px #2b432d; }
+    .wedding-copy h1 { font-family: "Silkscreen", monospace; font-size: clamp(1.6rem, 3.3vw, 3.2rem); letter-spacing: -.045em; line-height: 1.25; }
+    .wedding-note { border-color: #75613e; background: #2f3525; box-shadow: 3px 3px #132117; }
+    .wedding-note p { color: #e9e2c8; font-family: "Pixelify Sans", monospace; }
+    .wedding-stage { border-color: #314c32; }
+    .wedding-arch { border-color: #eee5c5; box-shadow: inset 0 0 0 4px #b7ae86, 6px 6px #344d2e; }
+    .wedding-tab { letter-spacing: .03em; text-transform: uppercase; }
+    .install-shortcut { min-width: 0; }
     .gift-box { filter: drop-shadow(0 8px 0 rgba(18, 30, 20, .35)); }
     .gift-lid, .gift-base { border: 4px solid #673e35; border-radius: 0; background: #b95f4f; box-shadow: inset 0 5px #d88162, inset 0 -6px #8f4439; }
     .gift-ribbon-v, .gift-ribbon-h { background: #e8c767; box-shadow: inset 3px 0 #f6dd8b, inset -3px 0 #b8943f; }
@@ -814,7 +923,7 @@
 
     @media (max-width: 800px) {
       .hud-center .xp-track { display: none; }
-      .home-layout, .slime-layout, .gift-layout, .house-layout { grid-template-columns: 1fr; }
+      .home-layout, .slime-layout, .gift-layout, .wedding-layout, .house-layout { grid-template-columns: 1fr; }
       .house-stage { height: 430px; }
       .house-panel { max-height: none; }
       .home-page, .gift-page { align-items: start; }
@@ -847,6 +956,22 @@
       .slime-preview { width: min(210px, 75%); }
       .slime-controls { gap: .65rem; padding: .85rem; }
       .gift-stage { min-height: 250px; }
+      .wedding-layout { gap: 1rem; }
+      .wedding-stage { min-height: 230px; height: calc(100dvh - 150px); max-height: 310px; }
+      .wedding-copy h1 { margin-bottom: .45rem; font-size: clamp(1.2rem, 2.6vw, 1.8rem); }
+      .wedding-intro { margin-bottom: .7rem; font-size: .74rem; line-height: 1.45; }
+      .wedding-actions { gap: .35rem; }
+      .wedding-actions .button { min-height: 34px; padding: .45rem .6rem; font-size: .66rem; }
+      .wedding-note { margin-top: .6rem; padding: .65rem .75rem; }
+      .wedding-note p { font-size: .74rem; line-height: 1.45; }
+      .wedding-couple { transform: translateX(-50%) scale(.78); transform-origin: 50% 100%; }
+      .wedding-cake { transform: scale(.82); transform-origin: 50% 100%; }
+      .house-page .page-heading { margin-bottom: .4rem; }
+      .house-page .page-heading h1 { font-size: 1.5rem; }
+      .house-page .page-heading p { display: none; }
+      .house-stage { min-height: 160px; height: calc(100dvh - 220px); max-height: 320px; }
+      .house-panel { max-height: calc(100dvh - 220px); }
+      .house-character { width: clamp(52px, 7vw, 68px); }
       .gift-box { width: min(220px, 62%); }
       .letter-body { font-size: .92rem; line-height: 1.65; }
       .gallery-toolbar { margin: .6rem 0 .8rem; padding: .7rem; }
@@ -882,6 +1007,7 @@
     <symbol id="i-home" viewBox="0 0 24 24"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10M9 20v-6h6v6"/></symbol>
     <symbol id="i-slime" viewBox="0 0 24 24"><path d="M4 19c0-3 2-5 3-8 1-4 3-6 6-6s5 2 6 6c1 3 2 5 2 8 0 2-17 3-17 0Z"/><path d="M9 13h.01M15 13h.01M10 16c1 1 3 1 4 0"/></symbol>
     <symbol id="i-gift" viewBox="0 0 24 24"><path d="M3 9h18v4H3zM5 13v8h14v-8M12 9v12"/><path d="M12 9H8a3 3 0 1 1 3-3ZM12 9h4a3 3 0 1 0-3-3Z"/></symbol>
+    <symbol id="i-wedding" viewBox="0 0 24 24"><path d="M8 4h8v5H8zM12 9v12M9 12h6v5H9z"/><circle cx="7" cy="14" r="4"/><circle cx="17" cy="14" r="4"/><path d="m5 6 2-2 2 2-2 2Z"/></symbol>
     <symbol id="i-photo" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8" cy="9" r="1.5"/><path d="m4 17 5-5 4 4 3-3 4 4"/></symbol>
     <symbol id="i-bunny" viewBox="0 0 24 24"><path d="M8 11C5 4 7 2 9 3c2 1 3 5 3 8M14 11c0-6 2-9 4-8 2 1 1 6-1 10M5 14c0-4 3-6 7-6s7 2 7 6c0 5-3 7-7 7s-7-2-7-7Z"/><path d="M9 14h.01M15 14h.01M10 17c1 1 3 1 4 0"/></symbol>
     <symbol id="i-flower" viewBox="0 0 24 24"><path d="M12 22V11M12 17c-4 0-6-2-6-5 4 0 6 2 6 5ZM12 14c4 0 6-2 6-5-4 0-6 2-6 5Z"/><path d="M12 4c-4-5-8 1-4 4-6 1-3 7 1 5 1 5 7 3 6-1 5 1 7-5 2-6 2-5-3-8-5-2Z"/></symbol>
@@ -918,7 +1044,7 @@
       </div>
       <div class="hud-actions">
         <span class="role-badge" id="role-badge" hidden></span>
-        <button class="hud-button install-shortcut" type="button" id="install-app" aria-label="Install Birthday Quest app" title="Install app"><svg class="icon"><use href="#i-download"></use></svg></button>
+        <button class="hud-button install-shortcut" type="button" id="install-app" aria-label="Install Birthday Quest app" title="Install app"><svg class="icon"><use href="#i-download"></use></svg><span>Get app</span></button>
         <button class="hud-button" type="button" id="chat-button" aria-controls="chat-panel" aria-expanded="false"><svg class="icon"><use href="#i-chat"></use></svg>Chat</button>
         <button class="hud-button" type="button" id="edit-button" hidden>Edit copy</button>
         <button class="hud-button" type="button" id="access-button" hidden>Access</button>
@@ -943,6 +1069,7 @@
               <button class="button button-mint" type="button" data-go="slime"><span data-field="homeButtonSlime">Enter slime lab</span><svg class="icon"><use href="#i-arrow"></use></svg></button>
               <button class="button button-gold" type="button" data-go="gift"><span data-field="homeButtonGift">Open present</span></button>
               <button class="button button-ghost" type="button" id="pet-home"><svg class="icon"><use href="#i-heart"></use></svg>Pet slime</button>
+              <button class="button button-ghost install-home" type="button" id="install-home"><svg class="icon"><use href="#i-download"></use></svg>Install app</button>
             </div>
             <p class="home-footer" data-field="homeFooter">Every page is a tiny celebration of you.</p>
           </div>
@@ -1048,6 +1175,34 @@ You are loved more than this little game could ever hold.</p>
         </div>
       </section>
 
+      <section class="app-page wedding-page" id="page-wedding" data-page="wedding">
+        <div class="wedding-layout">
+          <div class="wedding-copy">
+            <span class="eyebrow" data-field="weddingEyebrow">Our forever side quest</span>
+            <h1 data-field="weddingTitle">One day, one beautiful adventure.</h1>
+            <p class="wedding-intro" data-field="weddingText">A little place to imagine the music, the flowers, and all the tiny moments we want to share.</p>
+            <div class="wedding-actions">
+              <button class="button button-gold" type="button" id="wedding-candles"><svg class="icon"><use href="#i-star"></use></svg><span>Light the candles</span></button>
+              <button class="button button-mint" type="button" id="wedding-confetti"><svg class="icon"><use href="#i-heart"></use></svg>Throw confetti</button>
+              <button class="button button-ghost" type="button" id="wedding-dance"><svg class="icon"><use href="#i-wedding"></use></svg><span>Dance together</span></button>
+            </div>
+            <div class="wedding-note">
+              <span class="eyebrow" data-field="weddingNoteEyebrow">A promise to keep</span>
+              <p data-field="weddingNote">Whatever the date, whatever the place — I choose you, in every little world we build together.</p>
+            </div>
+          </div>
+          <div class="wedding-stage" id="wedding-stage" aria-label="Pixel wedding celebration">
+            <span class="wedding-sun"></span><span class="wedding-cloud one"></span><span class="wedding-cloud two"></span>
+            <span class="wedding-hill one"></span><span class="wedding-hill two"></span><span class="wedding-ground"></span>
+            <div class="wedding-arch"><span></span><span></span><span></span><span></span><span></span></div>
+            <div class="wedding-cake"><span class="cake-top"></span><span class="cake-layer"></span><span class="cake-base"></span><i class="candle one"></i><i class="candle two"></i><i class="candle three"></i><b class="flame one"></b><b class="flame two"></b><b class="flame three"></b></div>
+            <div class="wedding-couple" id="wedding-couple"></div>
+            <div class="wedding-petals" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <span class="wedding-stage-label">LOVE LEVEL ∞</span>
+          </div>
+        </div>
+      </section>
+
       <section class="app-page" id="page-gallery" data-page="gallery">
         <div class="page-heading">
           <span class="eyebrow" data-field="galleryEyebrow">Memory gallery</span>
@@ -1124,11 +1279,16 @@ You are loved more than this little game could ever hold.</p>
         </div>
         <div class="nature-actions">
           <button class="button button-gold" type="button" id="plant-tulip" hidden><svg class="icon"><use href="#i-flower"></use></svg>Plant a tulip</button>
+          <button class="button button-mint" type="button" id="garden-decor-toggle" data-garden-write hidden><svg class="icon"><use href="#i-star"></use></svg>Garden toys</button>
           <span class="nature-counter" id="garden-counter">0 tulips</span>
           <span class="nature-counter" id="garden-growth">0 blooming</span>
         </div>
         <div class="nature-empty" id="garden-empty" hidden></div>
-        <div class="nature-hint">Tap a tulip to water it · Drag to move it</div>
+        <div class="garden-palette" id="garden-palette" hidden>
+          <span class="control-label">Add a toy or garden furniture</span>
+          <div class="garden-palette-options" id="garden-decor-options"></div>
+        </div>
+        <div class="nature-hint">Water tulips · Drag decor · Drop your items in the trash</div>
       </section>
 
       <section class="app-page house-page" id="page-house" data-page="house">
@@ -1140,7 +1300,7 @@ You are loved more than this little game could ever hold.</p>
         <div class="house-layout">
           <div class="house-stage" id="house-stage" aria-label="Interactive house and garden">
             <span class="house-cloud one"></span><span class="house-cloud two"></span><span class="house-tree"></span><span class="house-path"></span>
-            <div class="house-building" aria-hidden="true"><span class="house-roof"></span><span class="house-window"></span><span class="house-door"></span><span class="house-rug"></span></div>
+            <div class="house-building" aria-hidden="true"><span class="house-roof"></span><span class="house-window"></span><span class="house-floor"></span><span class="house-door"></span><span class="house-rug"></span></div>
             <div class="house-interior" data-house-interior></div>
             <span class="house-label yard">Garden</span><span class="house-label inside">Inside · wardrobe</span>
             <div class="house-layer" id="house-furniture"></div>
@@ -1158,6 +1318,16 @@ You are loved more than this little game could ever hold.</p>
               </div>
               <div class="house-choice-row" id="wardrobe-options"></div>
               <button class="house-small-button" type="button" id="send-character-out" data-house-write hidden>Go play outside</button>
+            </section>
+            <section class="house-panel-section">
+              <h2 class="house-panel-title">Little daily moments</h2>
+              <p class="house-panel-note">Pick a character inside, then share a snack, read a story, rest, or dance.</p>
+              <div class="house-choice-row" id="house-actions">
+                <button class="house-small-button" type="button" data-house-action="eat" data-house-write hidden>Share a snack</button>
+                <button class="house-small-button" type="button" data-house-action="read" data-house-write hidden>Read together</button>
+                <button class="house-small-button" type="button" data-house-action="rest" data-house-write hidden>Take a nap</button>
+                <button class="house-small-button" type="button" data-house-action="dance" data-house-write hidden>Dance</button>
+              </div>
             </section>
             <section class="house-panel-section">
               <h2 class="house-panel-title">Furniture & friends</h2>
@@ -1196,6 +1366,7 @@ You are loved more than this little game could ever hold.</p>
     <nav class="tab-bar" aria-label="Game pages">
       <button class="tab-button" type="button" data-page-link="slime" aria-selected="false"><svg class="icon"><use href="#i-slime"></use></svg><span data-field="navSlime">Slime lab</span></button>
       <button class="tab-button" type="button" data-page-link="gift" aria-selected="false"><svg class="icon"><use href="#i-gift"></use></svg><span data-field="navGift">Present</span></button>
+      <button class="tab-button wedding-tab" type="button" data-page-link="wedding" aria-selected="false"><svg class="icon"><use href="#i-wedding"></use></svg><span data-field="navWedding">Wedding</span></button>
       <button class="tab-button" type="button" data-page-link="gallery" aria-selected="false"><svg class="icon"><use href="#i-photo"></use></svg><span data-field="navGallery">Gallery</span></button>
       <button class="tab-button" type="button" data-page-link="bunnyRose" aria-selected="false"><svg class="icon"><use href="#i-bunny"></use></svg><span data-field="navRose">Rose cage</span></button>
       <button class="tab-button" type="button" data-page-link="bunnyBlue" aria-selected="false"><svg class="icon"><use href="#i-bunny"></use></svg><span data-field="navBlue">Blue cage</span></button>
@@ -1246,6 +1417,19 @@ You are loved more than this little game could ever hold.</p>
     </div>
   </div>
 
+  <div class="modal-backdrop" id="install-modal" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="install-title">
+      <div class="modal-header"><h2 id="install-title">Take Birthday Quest with you</h2><button class="modal-close" type="button" data-close="install-modal" aria-label="Close">×</button></div>
+      <div class="modal-body">
+        <p class="modal-note">Install the whole game as an app on your phone or laptop. It opens in its own window and can keep working offline after the first visit.</p>
+        <div class="install-preview"><span class="brand-mark"><svg class="icon"><use href="#i-gift"></use></svg></span><div><strong>Birthday Quest</strong><span>Slimes · Gallery · House · Wedding · Chat</span></div></div>
+        <p class="modal-note" id="install-instructions">Use your browser menu and choose Install app or Add to Home screen.</p>
+        <p class="form-error" id="install-status" aria-live="polite"></p>
+        <div class="form-actions"><button class="button button-mint" type="button" id="install-confirm"><svg class="icon"><use href="#i-download"></use></svg>Install app</button><button class="button button-ghost" type="button" data-close="install-modal">Not now</button></div>
+      </div>
+    </div>
+  </div>
+
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <div class="trash-bin" id="trash-bin" aria-hidden="true">
     <span class="trash-lid"></span>
@@ -1263,10 +1447,9 @@ You are loved more than this little game could ever hold.</p>
       appId: "1:385782930980:web:8515fac32ce4c28a42c2b1",
     };
 
-    const pages = ["home", "slime", "gift", "gallery", "bunnyRose", "bunnyBlue", "garden", "house"];
+    const pages = ["home", "slime", "gift", "wedding", "gallery", "bunnyRose", "bunnyBlue", "garden", "house"];
     const naturePages = ["bunnyRose", "bunnyBlue", "garden"];
-    const FRAME_MS = 1000 / 30;
-    const pageTitles = { slime: "Slime Lab", bunnyRose: "Rose Cage", bunnyBlue: "Blue Cage", house: "Our Little House" };
+    const pageTitles = { slime: "Slime Lab", wedding: "Wedding Quest", bunnyRose: "Rose Cage", bunnyBlue: "Blue Cage", house: "Our Little House" };
     const viewerFields = new Set(["homeText", "slimeText", "galleryText", "houseText"]);
     const eyeStyles = ["happy", "sleepy", "star"];
     const accessories = ["none", "crown", "flower", "glasses"];
@@ -1290,7 +1473,8 @@ You are loved more than this little game could ever hold.</p>
       { id: "violet", label: "Violet Hearts", primary: "#8b72bd", secondary: "#d9c7f3", pattern: "hearts" },
       { id: "winter", label: "Winter Flakes", primary: "#8eb8cf", secondary: "#e7f5fb", pattern: "flakes" },
     ];
-    const furnitureTypes = ["sofa", "bed", "table", "plant", "lamp", "shelf", "rug"];
+    const furnitureTypes = ["sofa", "armchair", "bed", "table", "kitchen", "plant", "lamp", "shelf", "dresser", "desk", "tv", "clock", "rug", "bench", "swing", "fountain", "mailbox", "arch", "parasol", "cart", "lantern", "sandbox", "kite"];
+    const gardenDecorTypes = ["bench", "swing", "fountain", "mailbox", "arch", "parasol", "cart", "lantern", "sandbox", "kite"];
     const catColors = ["#f2c49d", "#8d8b9d", "#f1e5d4", "#c78962", "#69758f", "#d7a7b6"];
 
     function hslToHex(h, s, l) {
@@ -1346,11 +1530,22 @@ You are loved more than this little game could ever hold.</p>
       { id: "demo-boy", key: "boy", name: "Guy", gender: "boy", clothes: "sky", zone: "house", x: .68, y: .84 },
     ];
     const demoFurniture = [
-      { id: "demo-sofa", type: "sofa", zone: "house", x: .75, y: .64 },
-      { id: "demo-rug", type: "rug", zone: "house", x: .75, y: .81 },
-      { id: "demo-table", type: "table", zone: "house", x: .88, y: .66 },
-      { id: "demo-plant", type: "plant", zone: "yard", x: .15, y: .7 },
+      { id: "demo-sofa", type: "sofa", zone: "house", x: .7, y: .76 },
+      { id: "demo-rug", type: "rug", zone: "house", x: .72, y: .86 },
+      { id: "demo-table", type: "table", zone: "house", x: .86, y: .8 },
+      { id: "demo-bed", type: "bed", zone: "house", x: .56, y: .72 },
+      { id: "demo-dresser", type: "dresser", zone: "house", x: .9, y: .58 },
+      { id: "demo-desk", type: "desk", zone: "house", x: .64, y: .59 },
+      { id: "demo-lamp", type: "lamp", zone: "house", x: .78, y: .62 },
+      { id: "demo-plant", type: "plant", zone: "yard", x: .15, y: .76 },
+      { id: "demo-bench", type: "bench", zone: "garden", x: .18, y: .76 },
+      { id: "demo-swing", type: "swing", zone: "garden", x: .72, y: .68 },
+      { id: "demo-fountain", type: "fountain", zone: "garden", x: .43, y: .79 },
+      { id: "demo-mailbox", type: "mailbox", zone: "garden", x: .88, y: .76 },
+      { id: "demo-parasol", type: "parasol", zone: "garden", x: .31, y: .73 },
+      { id: "demo-lantern", type: "lantern", zone: "garden", x: .59, y: .83 },
     ];
+    const demoGardenFurniture = demoFurniture.filter((item) => item.zone === "garden");
     const demoCats = [
       { id: "demo-cat-miso", name: "Miso", color: catColors[0], zone: "yard", x: .22, y: .87 },
       { id: "demo-cat-pixel", name: "Pixel", color: catColors[1], zone: "house", x: .88, y: .84 },
@@ -1392,6 +1587,11 @@ You are loved more than this little game could ever hold.</p>
     let catsLoaded = false;
     let houseSeeded = false;
     let houseSeedPromise = null;
+    let gardenDecorSeeded = false;
+    let gardenDecorSeedPromise = null;
+    const houseMotion = new Map();
+    const catMotion = new Map();
+    let houseMotionTicker = null;
     let selectedWardrobeCharacter = "girl";
     let placementFurniture = null;
     let activeHouseDrag = null;
@@ -1431,15 +1631,11 @@ You are loved more than this little game could ever hold.</p>
 
     function createFrameTicker(update) {
       let frame = 0;
-      let lastTime = 0;
       let stopped = false;
       const tick = (time) => {
         if (stopped) return;
-        if (time - lastTime >= FRAME_MS - .5) {
-          lastTime = time;
-          update(time);
-        }
-        if (!stopped) frame = requestAnimationFrame(tick);
+        update(time);
+        frame = requestAnimationFrame(tick);
       };
       frame = requestAnimationFrame(tick);
       return () => {
@@ -1451,18 +1647,8 @@ You are loved more than this little game could ever hold.</p>
     function queueDragPosition(drag, clientX, clientY) {
       drag.clientX = clientX;
       drag.clientY = clientY;
-      if (drag.renderFrame) return;
-      const render = (time) => {
-        if (time - (drag.lastRender || 0) < FRAME_MS - .5) {
-          drag.renderFrame = requestAnimationFrame(render);
-          return;
-        }
-        drag.lastRender = time;
-        drag.renderFrame = 0;
-        drag.ghost.style.left = `${drag.clientX}px`;
-        drag.ghost.style.top = `${drag.clientY}px`;
-      };
-      drag.renderFrame = requestAnimationFrame(render);
+      drag.ghost.style.left = `${clientX}px`;
+      drag.ghost.style.top = `${clientY}px`;
     }
 
     function findTrashSource(key) {
@@ -1673,27 +1859,64 @@ You are loved more than this little game could ever hold.</p>
     }
 
     function updateInstallUi() {
-      $("#install-app").hidden = appInstalled || isStandaloneApp();
+      const installed = appInstalled || isStandaloneApp();
+      $("#install-app").hidden = installed;
+      $("#install-home").hidden = installed;
+      if (installed) closeModal("install-modal");
     }
 
-    async function installApp() {
+    function installInstructions() {
+      if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+        return "On your iPhone or iPad, tap Share in Safari, then choose Add to Home Screen and Add.";
+      }
+      if (/Android/i.test(navigator.userAgent)) {
+        return "In Chrome or Edge, open the browser menu and choose Install app or Add to Home screen.";
+      }
+      if (/Firefox|FxiOS/i.test(navigator.userAgent)) {
+        return "Open your browser menu and choose Install or Add to Home Screen if available.";
+      }
+      return "In Chrome or Edge, click the install icon in the address bar or open the browser menu and choose Install app.";
+    }
+
+    function openInstallModal() {
       if (appInstalled || isStandaloneApp()) {
         showToast("Birthday Quest is already installed.");
         return;
       }
-      if (deferredInstallPrompt) {
-        const prompt = deferredInstallPrompt;
-        deferredInstallPrompt = null;
+      $("#install-status").textContent = "";
+      $("#install-instructions").textContent = deferredInstallPrompt
+        ? "Your browser is ready. Tap Install app below to add the whole game."
+        : installInstructions();
+      openModal("install-modal");
+    }
+
+    async function installApp() {
+      if (appInstalled || isStandaloneApp()) {
         updateInstallUi();
-        await prompt.prompt();
-        const choice = await prompt.userChoice;
-        if (choice.outcome === "accepted") showToast("Installing Birthday Quest...");
+        showToast("Birthday Quest is already installed.");
         return;
       }
-      if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-        showToast("Tap Share, then choose Add to Home Screen.");
-      } else {
-        showToast("Open your browser menu and choose Install app or Add to Home screen.");
+      if (!deferredInstallPrompt) {
+        $("#install-instructions").textContent = installInstructions();
+        $("#install-status").textContent = "Automatic install is not available in this browser. Follow the steps above; no file download is needed.";
+        return;
+      }
+      const prompt = deferredInstallPrompt;
+      deferredInstallPrompt = null;
+      $("#install-status").textContent = "";
+      try {
+        await prompt.prompt();
+        const choice = await prompt.userChoice;
+        if (choice.outcome === "accepted") {
+          closeModal("install-modal");
+          showToast("Installing Birthday Quest...");
+        } else {
+          $("#install-status").textContent = "Install cancelled. You can try again from the app button.";
+        }
+      } catch {
+        $("#install-status").textContent = "The browser could not start installation. Use the menu instructions above.";
+      } finally {
+        updateInstallUi();
       }
     }
 
@@ -1836,7 +2059,7 @@ You are loved more than this little game could ever hold.</p>
       $("#new-gallery-page").hidden = !user || !role;
       $$("[data-add-bunny]").forEach((button) => { button.hidden = !user || !role; });
       $("#plant-tulip").hidden = !user || !role;
-      $$("[data-house-write]").forEach((button) => { button.hidden = !user || !role; });
+      $$("[data-house-write], [data-garden-write]").forEach((button) => { button.hidden = !user || !role; });
       $("#role-badge").hidden = !role;
       $("#role-badge").textContent = role || "";
       syncChatListener();
@@ -2605,8 +2828,8 @@ You are loved more than this little game could ever hold.</p>
 
     function normalizeNaturePosition(clientX, clientY, kind, habitat) {
       const rect = $(`[data-habitat-stage="${habitat}"]`).getBoundingClientRect();
-      const minY = kind === "tulip" ? .42 : .28;
-      const maxY = kind === "tulip" ? .94 : .86;
+      const minY = kind === "tulip" ? .42 : kind === "decor" ? .48 : .28;
+      const maxY = kind === "tulip" ? .94 : kind === "decor" ? .9 : .86;
       return {
         x: Math.round(Math.max(.06, Math.min(.94, (clientX - rect.left) / rect.width)) * 10000) / 10000,
         y: Math.round(Math.max(minY, Math.min(maxY, (clientY - rect.top) / rect.height)) * 10000) / 10000,
@@ -2623,7 +2846,7 @@ You are loved more than this little game could ever hold.</p>
       if (!requireNatureAccess()) return;
       if (String(item.id).startsWith("demo-")) {
         showToast("Preparing your little garden...");
-        ensureNatureSeeds().catch((error) => showToast(error.message));
+        (kind === "decor" ? ensureGardenDecorSeeds() : ensureNatureSeeds()).catch((error) => showToast(error.message));
         return;
       }
       event.preventDefault();
@@ -2634,12 +2857,12 @@ You are loved more than this little game could ever hold.</p>
       ghost.style.width = `${rect.width}px`;
       ghost.style.left = `${event.clientX}px`;
       ghost.style.top = `${event.clientY}px`;
-      ghost.innerHTML = kind === "bunny" ? bunnySvg(item.color) : tulipSvg(item.color, item.growth);
+      ghost.innerHTML = kind === "bunny" ? bunnySvg(item.color) : kind === "decor" ? furnitureSvg(item.type) : tulipSvg(item.color, item.growth);
       document.body.append(ghost);
       activeNatureDrag = {
         kind, item, element, ghost, pointerId: event.pointerId,
         startX: event.clientX, startY: event.clientY, clientX: event.clientX, clientY: event.clientY,
-        moved: false, canTrash: canManageNatureItem(item), trashVisible: false,
+        moved: false, canTrash: kind === "decor" ? canManageHouseItem(item) : canManageNatureItem(item), trashVisible: false,
       };
       if (activeNatureDrag.canTrash) {
         $("#trash-bin").classList.add("active");
@@ -2684,18 +2907,21 @@ You are loved more than this little game could ever hold.</p>
       if (!drag.moved) {
         cleanupNatureDrag();
         if (drag.kind === "tulip") waterTulip(drag.item);
+        if (drag.kind === "decor") useGardenDecor(drag.item, drag.element);
         return;
       }
+      drag.element.dataset.draggedAt = String(performance.now());
       if (drag.canTrash && isOverTrash(event.clientX, event.clientY)) {
         cleanupNatureDrag();
-        await deleteNatureItem(drag.kind, drag.item, drag.element);
+        if (drag.kind === "decor") await deleteGardenDecor(drag.item, drag.element);
+        else await deleteNatureItem(drag.kind, drag.item, drag.element);
         return;
       }
       const viewportRect = viewport.getBoundingClientRect();
       const targetIndex = Math.round((viewport.scrollLeft + event.clientX - viewportRect.left) / viewport.clientWidth);
       const targetPage = pages[targetIndex];
       const habitat = drag.kind === "bunny" ? targetPage : "garden";
-      const validTarget = drag.kind === "tulip" || naturePages.includes(habitat);
+      const validTarget = drag.kind === "bunny" ? naturePages.includes(habitat) : targetPage === "garden";
       const position = validTarget ? normalizeNaturePosition(event.clientX, event.clientY, drag.kind, habitat) : null;
       cleanupNatureDrag();
       if (!validTarget || !position) {
@@ -2708,6 +2934,9 @@ You are loved more than this little game could ever hold.</p>
           await fs.updateDoc(fs.doc(db, "bunnies", drag.item.id), { habitat, ...position });
           showPage(habitat, true);
           showToast(`${drag.item.name || "Bunny"} moved to ${habitat === "garden" ? "the garden" : habitat === "bunnyRose" ? "the rose cage" : "the blue cage"}.`);
+        } else if (drag.kind === "decor") {
+          await fs.updateDoc(fs.doc(db, "furniture", drag.item.id), position);
+          showToast("Garden item moved.");
         } else {
           await fs.updateDoc(fs.doc(db, "tulips", drag.item.id), position);
           showToast("Tulip moved.");
@@ -2715,6 +2944,7 @@ You are loved more than this little game could ever hold.</p>
       } catch (error) {
         renderBunnies();
         renderTulips();
+        if (drag.kind === "decor") renderGardenFurniture();
         showPage(drag.kind === "bunny" ? drag.item.habitat : "garden", true);
         showToast(error.message);
       }
@@ -2804,6 +3034,7 @@ You are loved more than this little game could ever hold.</p>
         transaction.set(seedStateRef(), {
           natureSeeded: state.natureSeeded === true || flag === "natureSeeded",
           houseSeeded: state.houseSeeded === true || flag === "houseSeeded",
+          gardenDecorSeeded: state.gardenDecorSeeded === true || flag === "gardenDecorSeeded",
         }, { merge: true });
       });
     }
@@ -2838,12 +3069,37 @@ You are loved more than this little game could ever hold.</p>
       return natureSeedPromise;
     }
 
+    function ensureGardenDecorSeeds() {
+      if (gardenDecorSeeded) return Promise.resolve();
+      if (gardenDecorSeedPromise) return gardenDecorSeedPromise;
+      gardenDecorSeedPromise = (async () => {
+        const seedState = await fs.getDoc(seedStateRef());
+        if (seedState.exists() && seedState.data().gardenDecorSeeded === true) {
+          gardenDecorSeeded = true;
+          renderGardenFurniture();
+          return;
+        }
+        const entries = demoGardenFurniture.map(({ id, ...item }) => [
+          "furniture", `seed-garden-${item.type}`, { ...item, createdBy: user.uid, createdAt: fs.serverTimestamp() },
+        ]);
+        await commitSeedState("gardenDecorSeeded", entries);
+        gardenDecorSeeded = true;
+        renderGardenFurniture();
+      })().finally(() => { gardenDecorSeedPromise = null; });
+      return gardenDecorSeedPromise;
+    }
+
     function visibleCharacters() {
       return charactersLoaded ? characters : demoCharacters;
     }
 
     function visibleFurniture() {
       return furnitureLoaded ? furniture : demoFurniture;
+    }
+
+    function visibleGardenFurniture() {
+      if (furnitureLoaded && gardenDecorSeeded) return furniture.filter((item) => item.zone === "garden");
+      return demoGardenFurniture;
     }
 
     function visibleCats() {
@@ -2904,6 +3160,22 @@ You are loved more than this little game could ever hold.</p>
         plant: '<path d="M46 30h8v46h-8ZM30 42h16v10H30ZM22 32h10v12H22ZM54 50h16v10H54ZM62 38h12v14H62Z" fill="#5d8b4c" stroke="#3d5d35" stroke-width="3"/><path d="M32 68h36v24H32Z" fill="#b66c4e" stroke="#493d32" stroke-width="4"/><path d="M28 66h44v8H28Z" fill="#d58b62" stroke="#493d32" stroke-width="3"/>',
         lamp: '<path d="M46 44h8v46h-8ZM28 90h44v8H28Z" fill="#66563c" stroke="#493d32" stroke-width="3"/><path d="M28 12h44v34H28Z" fill="#e8c767" stroke="#493d32" stroke-width="4"/><path d="M34 18h32v8H34Z" fill="#fff0ad"/>',
         shelf: '<path d="M16 10h68v82H16Z" fill="#9b7146" stroke="#493d32" stroke-width="4"/><path d="M20 40h60v6H20ZM20 70h60v6H20Z" fill="#654c34"/><path d="M26 22h10v16H26ZM40 18h10v20H40ZM62 24h12v14H62Z" fill="#c77a5d"/><path d="M26 50h16v18H26Z" fill="#7fa35b"/><path d="M56 48h18v20H56Z" fill="#9cc7da"/>',
+        armchair: '<path d="M14 34h72v44H14Z" fill="#8f6b4f" stroke="#493d32" stroke-width="4"/><path d="M22 20h56v42H22Z" fill="#b98963" stroke="#493d32" stroke-width="4"/><path d="M30 56h40v22H30Z" fill="#d1a374"/><path d="M18 72h12v16H18ZM70 72h12v16H70Z" fill="#493d32"/>',
+        kitchen: '<path d="M8 18h84v70H8Z" fill="#b88a52" stroke="#493d32" stroke-width="4"/><path d="M14 26h72v16H14ZM14 50h72v30H14Z" fill="#d1aa6c"/><path d="M44 26v16M44 50v30" stroke="#765b3c" stroke-width="4"/><path d="M22 58h14v14H22ZM62 58h14v14H62Z" fill="#66563c"/><path d="M18 12h64v8H18Z" fill="#e8c767" stroke="#493d32" stroke-width="3"/>',
+        dresser: '<path d="M14 16h72v72H14Z" fill="#9b7146" stroke="#493d32" stroke-width="4"/><path d="M20 24h60v18H20ZM20 48h60v18H20ZM20 72h60v10H20Z" fill="#bd9058"/><path d="M44 30h12v5H44ZM44 54h12v5H44Z" fill="#e8c767"/>',
+        desk: '<path d="M10 30h80v18H10Z" fill="#b88a52" stroke="#493d32" stroke-width="4"/><path d="M18 48h10v40H18ZM72 48h10v40H72Z" fill="#765b3c" stroke="#493d32" stroke-width="3"/><path d="M28 16h40v16H28Z" fill="#e9dfc2" stroke="#493d32" stroke-width="3"/><path d="M34 22h28v4H34Z" fill="#7fa35b"/>',
+        tv: '<path d="M12 16h76v58H12Z" fill="#493d32" stroke="#302b26" stroke-width="4"/><path d="M20 24h60v40H20Z" fill="#9cc7da"/><path d="M26 30h48v28H26Z" fill="#6f9c8e"/><path d="M42 74v12M58 74v12M32 86h36v6H32Z" fill="#493d32"/>',
+        clock: '<path d="M22 12h56v76H22Z" fill="#9b7146" stroke="#493d32" stroke-width="4"/><path d="M30 36h40v40H30Z" fill="#e9dfc2" stroke="#493d32" stroke-width="3"/><path d="M50 44v10h10" fill="none" stroke="#493d32" stroke-width="4"/><path d="M46 20h8v10h-8Z" fill="#e8c767"/>',
+        bench: '<path d="M10 42h80v18H10ZM12 24h76v16H12Z" fill="#b88a52" stroke="#493d32" stroke-width="4"/><path d="M18 60h10v28H18ZM72 60h10v28H72Z" fill="#765b3c" stroke="#493d32" stroke-width="3"/><path d="M20 28h60v5H20Z" fill="#d1aa6c"/>',
+        swing: '<path d="M12 10h10v80H12ZM78 10h10v80H78ZM8 8h84v10H8Z" fill="#765b3c" stroke="#493d32" stroke-width="4"/><path d="M30 16h6v58h-6ZM64 16h6v58h-6Z" fill="#d1aa6c"/><path d="M24 70h52v12H24Z" fill="#b88a52" stroke="#493d32" stroke-width="4"/>',
+        fountain: '<path d="M18 54h64v34H18Z" fill="#9aa7a0" stroke="#493d32" stroke-width="4"/><path d="M26 48h48v12H26Z" fill="#9cc7da" stroke="#493d32" stroke-width="3"/><path d="M46 22h8v30h-8ZM30 24h40v8H30Z" fill="#b8c7bd" stroke="#493d32" stroke-width="3"/><path d="M34 16h6v8h-6ZM60 12h6v12h-6ZM48 8h6v12h-6Z" fill="#9cc7da"/>',
+        mailbox: '<path d="M44 46h12v44H44Z" fill="#765b3c" stroke="#493d32" stroke-width="3"/><path d="M16 22h58v34H16Z" fill="#a85f50" stroke="#493d32" stroke-width="4"/><path d="M16 22h58v18H16Z" fill="#c77a5d"/><path d="M66 30h14v18H66Z" fill="#8f4d40"/><path d="M24 16h8v10h-8Z" fill="#e8c767"/>',
+        arch: '<path d="M14 88V42C14 12 86 12 86 42v46h-12V44C74 24 26 24 26 44v44Z" fill="#e7e1bd" stroke="#493d32" stroke-width="4"/><path d="M18 36h8v14h-8ZM34 22h10v12H34ZM58 22h10v12H58ZM74 36h8v14h-8Z" fill="#6f9c4c"/>',
+        parasol: '<path d="M48 24h8v64h-8Z" fill="#765b3c" stroke="#493d32" stroke-width="3"/><path d="M8 38h84L74 10H26Z" fill="#e8c767" stroke="#493d32" stroke-width="4"/><path d="M26 10h12v28H26ZM48 10h12v28H48ZM70 10h8v28h-8Z" fill="#c77a5d"/><path d="M38 88h28v8H38Z" fill="#765b3c"/>',
+        cart: '<path d="M14 34h64v40H14Z" fill="#b88a52" stroke="#493d32" stroke-width="4"/><path d="M22 26h48v12H22Z" fill="#d1aa6c"/><path d="M78 44h14v12H78Z" fill="#765b3c"/><circle cx="28" cy="80" r="10" fill="#493d32"/><circle cx="70" cy="80" r="10" fill="#493d32"/><path d="M28 48h12v14H28ZM48 44h16v20H48Z" fill="#e7aaa1"/>',
+        lantern: '<path d="M40 12h20v10H40ZM34 22h32v8H34ZM38 30h24v48H38Z" fill="#66563c" stroke="#493d32" stroke-width="4"/><path d="M44 36h12v36H44Z" fill="#f0cf76"/><path d="M32 78h36v8H32Z" fill="#66563c" stroke="#493d32" stroke-width="3"/>',
+        sandbox: '<path d="M8 44h84v40H8Z" fill="#b88a52" stroke="#493d32" stroke-width="4"/><path d="M16 52h68v24H16Z" fill="#e8c767"/><path d="M32 70V50h10v20h10V46h10v24Z" fill="#c77a5d" stroke="#493d32" stroke-width="3"/>',
+        kite: '<path d="M50 8h24v24L50 56 26 32Z" fill="#e7aaa1" stroke="#493d32" stroke-width="4"/><path d="M50 8v48M26 32h48" stroke="#f5efd9" stroke-width="3"/><path d="M50 56c-16 12 16 16 0 30" fill="none" stroke="#493d32" stroke-width="3"/><path d="M42 66h16v8H42ZM50 78h12v8H50Z" fill="#f0cf76"/>',
         rug: '<path d="M8 18h84v64H8Z" fill="#a85f50" stroke="#493d32" stroke-width="4"/><path d="M16 26h68v48H16Z" fill="#c77a5d"/><path d="M42 32h16v8H42ZM34 40h32v8H34ZM42 48h16v24H42Z" fill="#e8c767"/>',
       };
       return `<svg viewBox="0 0 100 100" shape-rendering="crispEdges" aria-hidden="true">${drawings[type] || drawings.plant}</svg>`;
@@ -2943,22 +3215,88 @@ You are loved more than this little game could ever hold.</p>
       renderCharacters();
       renderFurniture();
       renderCats();
+      renderGardenFurniture();
       renderMixes();
       updateWardrobe();
+    }
+
+    function houseGroundY(zone, x) {
+      return zone === "house" ? .81 + Math.max(0, Math.min(1, (x - .44) / .5)) * .065 : .77 + Math.max(0, Math.min(1, x)) * .12;
+    }
+
+    function houseBounds(zone) {
+      return zone === "house" ? { minX: .45, maxX: .92 } : { minX: .08, maxX: .38 };
+    }
+
+    function ensureHouseMotion(item) {
+      const zone = item.zone === "house" ? "house" : "yard";
+      const bounds = houseBounds(zone);
+      const x = Math.max(bounds.minX, Math.min(bounds.maxX, Number(item.x) || .32));
+      const ground = houseGroundY(zone, x);
+      let motion = houseMotion.get(item.id);
+      if (!motion) {
+        motion = {
+          x, y: ground, vx: 0, vy: 0, targetX: x, zone, onGround: true,
+          nextMove: performance.now() + 1200 + Math.random() * 2600,
+          lastSave: 0, savedX: x, savedY: ground, savedZone: zone, element: null, shadow: null,
+        };
+        houseMotion.set(item.id, motion);
+      }
+      if (zone !== motion.zone || Math.abs(Number(item.x) - motion.savedX) > .002 || Math.abs(Number(item.y) - motion.savedY) > .002) {
+        motion.zone = zone;
+        motion.x = x;
+        motion.y = ground;
+        motion.vx = 0;
+        motion.vy = 0;
+        motion.targetX = x;
+        motion.onGround = true;
+      }
+      motion.savedX = Number(item.x);
+      motion.savedY = Number(item.y);
+      return motion;
+    }
+
+    function applyHouseMotion(motion) {
+      if (!motion.element) return;
+      const ground = houseGroundY(motion.zone, motion.x);
+      const air = Math.max(0, ground - motion.y);
+      const left = `${motion.x * 100}%`;
+      const top = `${motion.y * 100}%`;
+      const walking = Math.abs(motion.vx) > .006 || !motion.onGround;
+      if (motion.element.style.left !== left) motion.element.style.left = left;
+      if (motion.element.style.top !== top) motion.element.style.top = top;
+      if (motion.element.classList.contains("walking") !== walking) motion.element.classList.toggle("walking", walking);
+      const grounded = String(motion.onGround);
+      if (motion.element.dataset.grounded !== grounded) motion.element.dataset.grounded = grounded;
+      if (motion.shadow) {
+        const shadowLeft = `${motion.x * 100}%`;
+        const shadowTop = `${ground * 100}%`;
+        const opacity = String(Math.max(.2, 1 - air * 2.4));
+        const transform = `translate(-50%, -50%) scale(${Math.max(.55, 1 - air * 1.8)})`;
+        if (motion.shadow.style.left !== shadowLeft) motion.shadow.style.left = shadowLeft;
+        if (motion.shadow.style.top !== shadowTop) motion.shadow.style.top = shadowTop;
+        if (motion.shadow.style.opacity !== opacity) motion.shadow.style.opacity = opacity;
+        if (motion.shadow.style.transform !== transform) motion.shadow.style.transform = transform;
+      }
     }
 
     function renderCharacters() {
       const layer = $("#house-characters");
       layer.replaceChildren();
+      const visibleIds = new Set();
       visibleCharacters().forEach((person) => {
+        visibleIds.add(person.id);
+        const motion = ensureHouseMotion(person);
+        const shadow = document.createElement("span");
+        shadow.className = "house-actor-shadow";
+        shadow.dataset.shadowFor = person.id;
+        shadow.setAttribute("aria-hidden", "true");
         const element = document.createElement("div");
-        element.className = "house-item house-character";
+        element.className = "house-item house-character physics-character";
         element.dataset.houseId = person.id;
         element.dataset.characterKey = person.key || person.gender;
         element.tabIndex = 0;
         element.setAttribute("role", "button");
-        element.style.left = `${Number(person.x) * 100}%`;
-        element.style.top = `${Number(person.y) * 100}%`;
         element.setAttribute("aria-label", `${person.name || "Character"}, ${person.zone === "house" ? "inside the house" : "in the garden"}. Drag to move.`);
         element.innerHTML = chibiSvg(person);
         const label = document.createElement("span");
@@ -2973,24 +3311,31 @@ You are loved more than this little game could ever hold.</p>
             updateWardrobe();
           }
         });
-        layer.append(element);
+        motion.element = element;
+        motion.shadow = shadow;
+        applyHouseMotion(motion);
+        layer.append(shadow, element);
       });
+      [...houseMotion.keys()].forEach((id) => { if (!visibleIds.has(id)) houseMotion.delete(id); });
     }
 
     function renderFurniture() {
       const layer = $("#house-furniture");
       layer.replaceChildren();
-      visibleFurniture().forEach((item) => {
+      visibleFurniture().filter((item) => item.zone !== "garden").forEach((item) => {
         const element = document.createElement("div");
         element.className = "house-item house-furniture";
         element.dataset.houseId = item.id;
+        element.dataset.furnitureType = item.type;
         element.dataset.trashKey = `furniture:${item.id}`;
         element.tabIndex = 0;
         element.setAttribute("role", "button");
-        element.style.left = `${Number(item.x) * 100}%`;
-        element.style.top = `${Number(item.y) * 100}%`;
-        element.style.width = item.type === "rug" ? "120px" : item.type === "sofa" || item.type === "bed" ? "100px" : "72px";
-        element.setAttribute("aria-label", `${item.type}. Drag to move.`);
+        const x = Math.max(.06, Math.min(.94, Number(item.x) || .5));
+        const y = item.type === "rug" ? Number(item.y) || .84 : houseGroundY(item.zone, x);
+        element.style.left = `${x * 100}%`;
+        element.style.top = `${y * 100}%`;
+        element.style.width = item.type === "rug" ? "120px" : ["sofa", "bed", "kitchen", "bench"].includes(item.type) ? "104px" : ["arch", "swing", "fountain"].includes(item.type) ? "92px" : "74px";
+        element.setAttribute("aria-label", `${item.type}. Tap to use or drag to move.`);
         element.innerHTML = furnitureSvg(item.type);
         if (canManageHouseItem(item)) {
           const remove = document.createElement("button");
@@ -3003,22 +3348,123 @@ You are loved more than this little game could ever hold.</p>
           element.append(remove);
         }
         element.addEventListener("pointerdown", (event) => startHouseDrag("furniture", item, event));
+        element.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            useFurniture(item, element);
+          }
+        });
         layer.append(element);
       });
+    }
+
+    function renderGardenFurniture() {
+      const stage = $('[data-habitat-stage="garden"]');
+      stage.querySelectorAll(".garden-decor").forEach((element) => element.remove());
+      visibleGardenFurniture().forEach((item) => {
+        const element = document.createElement("button");
+        element.type = "button";
+        element.className = "garden-decor";
+        element.dataset.houseId = item.id;
+        element.dataset.type = item.type;
+        element.dataset.trashKey = `furniture:${item.id}`;
+        element.style.left = `${Math.max(.07, Math.min(.93, Number(item.x) || .5)) * 100}%`;
+        element.style.top = `${Math.max(.48, Math.min(.9, Number(item.y) || .78)) * 100}%`;
+        element.style.width = ["arch", "swing", "fountain", "parasol"].includes(item.type) ? "94px" : "72px";
+        element.setAttribute("aria-label", `${item.type}. Tap to play or drag to move.`);
+        element.innerHTML = furnitureSvg(item.type);
+        element.addEventListener("pointerdown", (event) => startNatureDrag("decor", item, event));
+        element.addEventListener("click", () => {
+          if (performance.now() - Number(element.dataset.draggedAt || 0) < 350) return;
+          useGardenDecor(item, element);
+        });
+        element.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            useGardenDecor(item, element);
+          }
+          if (event.key === "Delete" && canManageHouseItem(item)) deleteGardenDecor(item, element);
+        });
+        stage.append(element);
+      });
+    }
+
+    function useGardenDecor(item, element) {
+      const active = element.dataset.active !== "true";
+      element.dataset.active = String(active);
+      const messages = {
+        bench: active ? "A cozy seat for two." : "The bench is ready for the next player.",
+        swing: active ? "Wheee! Higher, little player." : "The swing slows to a stop.",
+        fountain: active ? "The fountain splashes softly." : "The little fountain is resting.",
+        mailbox: active ? "A tiny love letter is waiting inside." : "The mailbox is closed.",
+        arch: active ? "Flowers for our forever path." : "The wedding arch settles into place.",
+        parasol: active ? "A shady spot for a picnic." : "The parasol is folded.",
+        cart: active ? "The cart is ready for garden adventures." : "The cart parks for a while.",
+        lantern: active ? "A warm glow lights the garden." : "The lantern goes dark.",
+        sandbox: active ? "A blocky sandcastle appears!" : "The tide smooths the sand.",
+        kite: active ? "The kite dances in the breeze." : "The kite floats down.",
+      };
+      showToast(messages[item.type] || "A little garden magic.");
+      gainXp(2);
+    }
+
+    async function addGardenDecor(type) {
+      if (!requireNatureAccess() || !gardenDecorTypes.includes(type)) return;
+      try {
+        await ensureNatureSeeds();
+        await fs.addDoc(fs.collection(db, "furniture"), {
+          type,
+          zone: "garden",
+          x: .12 + Math.random() * .76,
+          y: .62 + Math.random() * .24,
+          createdBy: user.uid,
+          createdAt: fs.serverTimestamp(),
+        });
+        $("#garden-palette").hidden = true;
+        gainXp(6);
+        showToast(`${type[0].toUpperCase() + type.slice(1)} added to the garden.`);
+      } catch (error) {
+        showToast(error.message);
+      }
+    }
+
+    async function deleteGardenDecor(item, source) {
+      if (!canManageHouseItem(item) || !db) return;
+      try {
+        const removed = await trashInteraction(`furniture:${item.id}`, source, () => fs.deleteDoc(fs.doc(db, "furniture", item.id)));
+        if (removed) showToast("Garden item moved to the trash.");
+      } catch (error) {
+        showToast(error.message);
+      }
     }
 
     function renderCats() {
       const layer = $("#house-cats");
       layer.replaceChildren();
+      const visibleIds = new Set();
       visibleCats().forEach((cat) => {
+        visibleIds.add(cat.id);
+        const zone = cat.zone === "house" ? "house" : "yard";
+        const bounds = houseBounds(zone);
+        const x = Math.max(bounds.minX, Math.min(bounds.maxX, Number(cat.x) || .2));
+        const ground = houseGroundY(zone, x);
+        let motion = catMotion.get(cat.id);
+        if (!motion) {
+          motion = { x, y: ground, vx: 0, vy: 0, targetX: x, zone, onGround: true, nextMove: performance.now() + 1500 + Math.random() * 2600, lastSave: 0, savedX: x, savedY: ground, savedZone: zone, element: null, shadow: null };
+          catMotion.set(cat.id, motion);
+        }
+        if (zone !== motion.zone || Math.abs(Number(cat.x) - motion.savedX) > .003 || Math.abs(Number(cat.y) - motion.savedY) > .003) {
+          Object.assign(motion, { zone, x, y: ground, vx: 0, vy: 0, targetX: x, onGround: true, savedX: Number(cat.x), savedY: Number(cat.y), savedZone: zone });
+        }
+        const shadow = document.createElement("span");
+        shadow.className = "house-actor-shadow cat-shadow";
+        shadow.setAttribute("aria-hidden", "true");
         const element = document.createElement("div");
-        element.className = "house-item house-cat";
+        element.className = "house-item house-cat physics-cat";
         element.dataset.houseId = cat.id;
         element.dataset.trashKey = `cats:${cat.id}`;
         element.tabIndex = 0;
         element.setAttribute("role", "button");
-        element.style.left = `${Number(cat.x) * 100}%`;
-        element.style.top = `${Number(cat.y) * 100}%`;
         element.setAttribute("aria-label", `${cat.name || "Cat"}. Tap to pet or drag to move.`);
         element.innerHTML = catSvg(cat.color);
         const label = document.createElement("span");
@@ -3035,9 +3481,13 @@ You are loved more than this little game could ever hold.</p>
           remove.addEventListener("click", (event) => { event.stopPropagation(); deleteHouseItem("cats", cat, element); });
           element.append(remove);
         }
+        motion.element = element;
+        motion.shadow = shadow;
+        applyHouseMotion(motion);
         element.addEventListener("pointerdown", (event) => startHouseDrag("cat", cat, event));
-        layer.append(element);
+        layer.append(shadow, element);
       });
+      [...catMotion.keys()].forEach((id) => { if (!visibleIds.has(id)) catMotion.delete(id); });
     }
 
     function renderMixes() {
@@ -3072,9 +3522,13 @@ You are loved more than this little game could ever hold.</p>
       });
     }
 
+    function isInsideHouse(person) {
+      return Boolean(person && person.zone === "house" && Number(person.x) >= .44 && Number(person.x) <= .94 && Number(person.y) >= .28 && Number(person.y) <= .9);
+    }
+
     function updateWardrobe() {
       const person = visibleCharacters().find((item) => (item.key || item.gender) === selectedWardrobeCharacter);
-      const inside = person?.zone === "house" && Number(person.x) >= .56 && Number(person.x) <= .94 && Number(person.y) >= .3 && Number(person.y) <= .88;
+      const inside = isInsideHouse(person);
       const canChange = Boolean(inside && user && role && db && !String(person?.id).startsWith("demo-"));
       $$("[data-wardrobe-character]").forEach((button) => button.classList.toggle("active", button.dataset.wardrobeCharacter === selectedWardrobeCharacter));
       const options = $("#wardrobe-options");
@@ -3099,7 +3553,7 @@ You are loved more than this little game could ever hold.</p>
     }
 
     async function changeClothes(person, clothes) {
-      if (!person || !requireHouseAccess() || person.zone !== "house" || Number(person.x) < .56 || Number(person.x) > .94 || Number(person.y) < .3 || Number(person.y) > .88 || String(person.id).startsWith("demo-") || !outfits.some((outfit) => outfit.id === clothes)) return;
+      if (!person || !requireHouseAccess() || !isInsideHouse(person) || String(person.id).startsWith("demo-") || !outfits.some((outfit) => outfit.id === clothes)) return;
       try {
         await fs.updateDoc(fs.doc(db, "characters", person.id), { clothes });
         gainXp(5);
@@ -3114,7 +3568,7 @@ You are loved more than this little game could ever hold.</p>
       if (!person || !requireHouseAccess() || String(person.id).startsWith("demo-")) return;
       if (person.zone !== "house") return;
       try {
-        await fs.updateDoc(fs.doc(db, "characters", person.id), { zone: "yard", x: .34, y: .84 });
+        await fs.updateDoc(fs.doc(db, "characters", person.id), { zone: "yard", x: .34, y: houseGroundY("yard", .34) });
         showToast(`${person.name} is off to play in the garden.`);
       } catch (error) {
         showToast(error.message);
@@ -3149,6 +3603,10 @@ You are loved more than this little game could ever hold.</p>
       ghost.innerHTML = kind === "character" ? chibiSvg(item) : kind === "cat" ? catSvg(item.color) : furnitureSvg(item.type);
       document.body.append(ghost);
       activeHouseDrag = { kind, item, element, ghost, pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, clientX: event.clientX, clientY: event.clientY, moved: false };
+      if (kind === "character") {
+        const motion = houseMotion.get(item.id);
+        if (motion?.shadow) motion.shadow.style.opacity = "0";
+      }
       element.classList.add("dragging");
       $("#house-stage").classList.add("dragging-house");
       try { element.setPointerCapture(event.pointerId); } catch {}
@@ -3159,6 +3617,10 @@ You are loved more than this little game could ever hold.</p>
       cancelAnimationFrame(activeHouseDrag.renderFrame);
       try { activeHouseDrag.element.releasePointerCapture(activeHouseDrag.pointerId); } catch {}
       activeHouseDrag.element.classList.remove("dragging");
+      if (activeHouseDrag.kind === "character") {
+        const motion = houseMotion.get(activeHouseDrag.item.id);
+        if (motion) applyHouseMotion(motion);
+      }
       activeHouseDrag.ghost.remove();
       $("#house-stage").classList.remove("dragging-house");
       activeHouseDrag = null;
@@ -3174,22 +3636,52 @@ You are loved more than this little game could ever hold.</p>
           selectedWardrobeCharacter = drag.item.key || drag.item.gender;
           updateWardrobe();
         }
+        if (drag.kind === "furniture") useFurniture(drag.item, drag.element);
         return;
       }
       const stageRect = $("#house-stage").getBoundingClientRect();
       const validTarget = event.clientX >= stageRect.left && event.clientX <= stageRect.right && event.clientY >= stageRect.top && event.clientY <= stageRect.bottom;
-      const position = validTarget ? normalizeHousePosition(event.clientX, event.clientY) : null;
+      const dropped = validTarget ? normalizeHousePosition(event.clientX, event.clientY) : null;
       cleanupHouseDrag();
-      if (!position) {
+      if (!dropped) {
         renderHouse();
         showToast("Drop inside the house scene to move it.");
         return;
+      }
+      const bounds = houseBounds(dropped.zone);
+      const x = Math.round(Math.max(bounds.minX, Math.min(bounds.maxX, dropped.x)) * 10000) / 10000;
+      const ground = houseGroundY(dropped.zone, x);
+      const position = { ...dropped, x, y: ground };
+      if (drag.kind === "character") {
+        drag.item.zone = dropped.zone;
+        drag.item.x = x;
+        drag.item.y = ground;
+        const motion = ensureHouseMotion(drag.item);
+        motion.y = Math.min(ground, Math.max(.3, dropped.y));
+        motion.vy = 0;
+        motion.vx = 0;
+        motion.onGround = motion.y >= ground;
+        motion.targetX = x;
+        motion.savedX = x;
+        motion.savedY = ground;
+        motion.savedZone = dropped.zone;
+        applyHouseMotion(motion);
+      } else if (drag.kind === "cat") {
+        drag.item.zone = dropped.zone;
+        drag.item.x = x;
+        drag.item.y = ground;
+        const motion = catMotion.get(drag.item.id);
+        if (motion) {
+          Object.assign(motion, { zone: dropped.zone, x, y: ground, vx: 0, vy: 0, targetX: x, onGround: true, savedX: x, savedY: ground, savedZone: dropped.zone });
+          applyHouseMotion(motion);
+        }
       }
       try {
         const collection = drag.kind === "character" ? "characters" : drag.kind === "cat" ? "cats" : "furniture";
         await fs.updateDoc(fs.doc(db, collection, drag.item.id), position);
         if (drag.kind === "character") {
           selectedWardrobeCharacter = drag.item.key || drag.item.gender;
+          updateWardrobe();
           showToast(position.zone === "house" ? `${drag.item.name} is inside. The wardrobe is unlocked!` : `${drag.item.name} is playing outside.`);
         } else {
           showToast(drag.kind === "cat" ? `${drag.item.name} found a cozy new spot.` : "Furniture moved.");
@@ -3213,6 +3705,54 @@ You are loved more than this little game could ever hold.</p>
       setTimeout(() => heart.remove(), 850);
       gainXp(2);
       showToast(`${cat.name || "The cat"} purrs.`);
+    }
+
+    function triggerCharacterAction(action) {
+      const person = visibleCharacters().find((item) => (item.key || item.gender) === selectedWardrobeCharacter);
+      if (!person || person.zone !== "house") {
+        showToast(`Bring ${person?.name || "your player"} inside the house first.`);
+        return false;
+      }
+      const motion = houseMotion.get(person.id);
+      const element = motion?.element || $(`#house-characters [data-house-id="${person.id}"]`);
+      if (!element) return false;
+      element.dataset.action = action;
+      clearTimeout(element.actionTimer);
+      element.actionTimer = setTimeout(() => { delete element.dataset.action; }, action === "rest" ? 2800 : 1900);
+      const messages = {
+        eat: "A tiny snack makes every adventure better.",
+        read: "One story, two players, zero boss battles.",
+        rest: "Shh... saving energy for the next quest.",
+        dance: "The living room becomes a dance floor.",
+      };
+      showToast(messages[action] || "A sweet little moment.");
+      gainXp(4);
+      return true;
+    }
+
+    function useFurniture(item, element) {
+      if (item.zone === "garden") {
+        useGardenDecor(item, element);
+        return;
+      }
+      if (["lamp", "lantern"].includes(item.type)) {
+        const active = element.dataset.active !== "true";
+        element.dataset.active = String(active);
+        element.style.filter = active ? "drop-shadow(0 0 12px rgba(240, 207, 118, .8))" : "";
+        showToast(active ? "The lamp fills the room with a warm glow." : "The lamp clicks off.");
+        return;
+      }
+      if (item.type === "plant") {
+        element.dataset.active = "true";
+        setTimeout(() => { element.dataset.active = "false"; }, 900);
+        showToast("A little water helps the plant grow.");
+        return;
+      }
+      const action = ["bed", "sofa", "armchair"].includes(item.type) ? "rest"
+        : ["table", "kitchen"].includes(item.type) ? "eat"
+          : ["shelf", "desk", "tv", "dresser", "clock"].includes(item.type) ? "read" : null;
+      if (action) triggerCharacterAction(action);
+      else showToast("A cozy new piece for the house.");
     }
 
     async function deleteHouseItem(kind, item, source) {
@@ -3351,29 +3891,80 @@ You are loved more than this little game could ever hold.</p>
       showToast("Mixture loaded into the slime lab.");
     }
 
-    function moveHouseActor(kind, item, element) {
-      if (activeHouseDrag) return;
-      let zone = item.zone;
-      if (kind === "cat" && Math.random() < .18) zone = zone === "house" ? "yard" : "house";
-      const bounds = zone === "house" ? { minX: .6, maxX: .92, minY: .38, maxY: .86 } : { minX: .1, maxX: .53, minY: .5, maxY: .88 };
-      const x = Math.round(Math.max(bounds.minX, Math.min(bounds.maxX, Number(item.x) + (Math.random() - .5) * .12)) * 10000) / 10000;
-      const y = Math.round(Math.max(bounds.minY, Math.min(bounds.maxY, Number(item.y) + (Math.random() - .5) * .1)) * 10000) / 10000;
-      item.zone = zone;
-      item.x = x;
-      item.y = y;
-      element.style.left = `${x * 100}%`;
-      element.style.top = `${y * 100}%`;
-      if (kind === "character") {
-        element.classList.add("walking");
-        setTimeout(() => element.classList.remove("walking"), 900);
-      }
-      if (!user || !role || !db || String(item.id).startsWith("demo-")) return;
+    function persistHouseMotion(kind, item, motion, time) {
+      if (!user || !role || !db || !fs || String(item.id).startsWith("demo-")) return;
+      const x = Math.round(motion.x * 10000) / 10000;
+      const y = Math.round(houseGroundY(motion.zone, motion.x) * 10000) / 10000;
+      if (Math.abs(x - motion.savedX) < .003 && Math.abs(y - motion.savedY) < .003 && motion.zone === motion.savedZone) return;
+      if (time - motion.lastSave < 6000) return;
       const key = `${kind}:${item.id}`;
       const now = Date.now();
-      if (now - (houseWriteTimes.get(key) || 0) < 12000) return;
+      if (now - (houseWriteTimes.get(key) || 0) < 4000) return;
+      motion.lastSave = time;
+      motion.savedX = x;
+      motion.savedY = y;
+      motion.savedZone = motion.zone;
       houseWriteTimes.set(key, now);
-      const collection = kind === "character" ? "characters" : "cats";
-      fs.updateDoc(fs.doc(db, collection, item.id), { zone, x, y }).catch((error) => showToast(error.message));
+      fs.updateDoc(fs.doc(db, kind === "character" ? "characters" : "cats", item.id), { zone: motion.zone, x, y })
+        .catch((error) => showToast(error.message));
+    }
+
+    function updateHouseMotion(time, previousTime) {
+      const delta = Math.min(.05, Math.max(.001, (time - previousTime) / 1000));
+      if (currentPage !== "house" || activeHouseDrag) return;
+      const advance = (motion, kind, item, speed, canJump) => {
+        if (activeHouseDrag?.kind === kind && activeHouseDrag.item.id === item.id) return;
+        if (time >= motion.nextMove) {
+          const bounds = houseBounds(motion.zone);
+          motion.targetX = Math.round((bounds.minX + Math.random() * (bounds.maxX - bounds.minX)) * 10000) / 10000;
+          motion.nextMove = time + 2200 + Math.random() * 3400;
+          if (canJump && motion.onGround && Math.random() < .16) motion.vy = -.68;
+        }
+        const distance = motion.targetX - motion.x;
+        const desiredVelocity = Math.abs(distance) > .008 ? Math.sign(distance) * speed : 0;
+        motion.vx += (desiredVelocity - motion.vx) * Math.min(1, delta * 8);
+        motion.x += motion.vx * delta;
+        const bounds = houseBounds(motion.zone);
+        if (motion.x <= bounds.minX || motion.x >= bounds.maxX) {
+          motion.x = Math.max(bounds.minX, Math.min(bounds.maxX, motion.x));
+          motion.vx = 0;
+          motion.targetX = motion.x;
+        }
+        if (!motion.onGround || motion.vy !== 0) {
+          motion.vy += 2.4 * delta;
+          motion.y += motion.vy * delta;
+        }
+        const ground = houseGroundY(motion.zone, motion.x);
+        if (motion.y >= ground) {
+          motion.y = ground;
+          motion.vy = 0;
+          motion.onGround = true;
+        } else {
+          motion.onGround = false;
+        }
+        item.zone = motion.zone;
+        item.x = motion.x;
+        item.y = motion.y;
+        applyHouseMotion(motion);
+        persistHouseMotion(kind, item, motion, time);
+      };
+      visibleCharacters().forEach((person) => {
+        const motion = houseMotion.get(person.id);
+        if (motion) advance(motion, "character", person, .058, true);
+      });
+      visibleCats().forEach((cat) => {
+        const motion = catMotion.get(cat.id);
+        if (motion) advance(motion, "cat", cat, .075, false);
+      });
+    }
+
+    function startHouseMotion() {
+      if (houseMotionTicker) return;
+      let previousTime = performance.now();
+      houseMotionTicker = createFrameTicker((time) => {
+        updateHouseMotion(time, previousTime);
+        previousTime = time;
+      });
     }
 
     async function ensureHouseSeeds() {
@@ -3395,12 +3986,59 @@ You are loved more than this little game could ever hold.</p>
         demoCharacters.forEach(({ id, ...person }) => {
           if (!existingKeys.has(person.key)) entries.push(["characters", `seed-${person.key}`, { ...person, createdBy: user.uid, createdAt: fs.serverTimestamp() }]);
         });
-        if (furnitureSnapshot.empty) demoFurniture.forEach(({ id, ...item }, index) => entries.push(["furniture", `seed-furniture-${index + 1}`, { ...item, createdBy: user.uid, createdAt: fs.serverTimestamp() }]));
+        if (furnitureSnapshot.empty) demoFurniture.filter((item) => item.zone !== "garden").forEach(({ id, ...item }, index) => entries.push(["furniture", `seed-furniture-${index + 1}`, { ...item, createdBy: user.uid, createdAt: fs.serverTimestamp() }]));
         if (catSnapshot.empty) demoCats.forEach(({ id, ...cat }, index) => entries.push(["cats", `seed-cat-${index + 1}`, { ...cat, createdBy: user.uid, createdAt: fs.serverTimestamp() }]));
         await commitSeedState("houseSeeded", entries);
         houseSeeded = true;
       })().finally(() => { houseSeedPromise = null; });
       return houseSeedPromise;
+    }
+
+    function renderWeddingScene() {
+      const couple = $("#wedding-couple");
+      couple.replaceChildren();
+      [{ key: "girl", gender: "girl", clothes: "rose" }, { key: "boy", gender: "boy", clothes: "cloud" }].forEach((person) => {
+        const actor = document.createElement("div");
+        actor.className = "house-character";
+        actor.innerHTML = chibiSvg(person);
+        couple.append(actor);
+      });
+    }
+
+    function initWeddingControls() {
+      $("#wedding-candles").addEventListener("click", () => {
+        const stage = $("#wedding-stage");
+        const lit = stage.classList.toggle("lit");
+        $("#wedding-candles span").textContent = lit ? "Blow out the candles" : "Light the candles";
+        gainXp(5);
+        showToast(lit ? "Every little candle is glowing." : "Make a wish — the future is yours.");
+      });
+      $("#wedding-dance").addEventListener("click", () => {
+        const dancing = $("#wedding-stage").classList.toggle("dancing");
+        $("#wedding-dance span").textContent = dancing ? "Take a little bow" : "Dance together";
+        gainXp(5);
+        showToast(dancing ? "Two players, one perfect dance." : "A sweet little bow.");
+      });
+      $("#wedding-confetti").addEventListener("click", () => {
+        const stage = $("#wedding-stage");
+        const rect = stage.getBoundingClientRect();
+        const colors = ["#f0cf76", "#e7aaa1", "#93cf75", "#9cc7da", "#f5efd9"];
+        for (let index = 0; index < 34; index += 1) {
+          const piece = document.createElement("i");
+          piece.className = "wedding-confetti";
+          piece.style.left = `${rect.width * (.35 + Math.random() * .3)}px`;
+          piece.style.top = `${rect.height * .42}px`;
+          piece.style.background = colors[index % colors.length];
+          piece.style.setProperty("--confetti-x", `${(Math.random() - .5) * rect.width * .9}px`);
+          piece.style.setProperty("--confetti-y", `${-60 - Math.random() * rect.height * .55}px`);
+          piece.style.setProperty("--confetti-r", `${(Math.random() - .5) * 720}deg`);
+          piece.style.animationDelay = `${Math.random() * .18}s`;
+          stage.append(piece);
+          setTimeout(() => piece.remove(), 1700);
+        }
+        gainXp(8);
+        showToast("Confetti for our favorite team.");
+      });
     }
 
     function unwrapGift() {
@@ -3818,6 +4456,7 @@ You are loved more than this little game could ever hold.</p>
       if (account && role) {
         try { await ensureNatureSeeds(); } catch (error) { showToast(`Bunny garden: ${error.message}`); }
         try { await ensureHouseSeeds(); } catch (error) { showToast(`Little house: ${error.message}`); }
+        try { await ensureGardenDecorSeeds(); } catch (error) { showToast(`Garden toys: ${error.message}`); }
       }
       await loadGalleryPages();
       if (role === "admin" && !contentExists && !seedingContent) {
@@ -3913,17 +4552,18 @@ You are loved more than this little game could ever hold.</p>
       $("#mix-eyes").addEventListener("change", updateMixerPreview);
       $("#mix-accessory").addEventListener("change", updateMixerPreview);
       $("#mix-slime").addEventListener("click", mixSlime);
-      setInterval(() => {
-        if (currentPage !== "house" || activeHouseDrag) return;
-        $$("#house-characters .house-character").forEach((element) => {
-          const item = visibleCharacters().find((person) => person.id === element.dataset.houseId);
-          if (item) moveHouseActor("character", item, element);
-        });
-        $$("#house-cats .house-cat").forEach((element) => {
-          const item = visibleCats().find((cat) => cat.id === element.dataset.houseId);
-          if (item) moveHouseActor("cat", item, element);
-        });
-      }, 3200);
+      $$("[data-house-action]").forEach((button) => button.addEventListener("click", () => triggerCharacterAction(button.dataset.houseAction)));
+      $("#garden-decor-toggle").addEventListener("click", () => {
+        $("#garden-palette").hidden = !$("#garden-palette").hidden;
+      });
+      gardenDecorTypes.forEach((type) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "house-choice garden-decor-choice";
+        button.innerHTML = `${furnitureSvg(type)}<span>${type[0].toUpperCase() + type.slice(1)}</span>`;
+        button.addEventListener("click", () => addGardenDecor(type));
+        $("#garden-decor-options").append(button);
+      });
     }
 
     async function initFirebase() {
@@ -3971,17 +4611,19 @@ You are loved more than this little game could ever hold.</p>
         fs.onSnapshot(fs.collection(db, "characters"), (snapshot) => {
           characters = snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
           charactersLoaded = true;
-          renderHouse();
+          renderCharacters();
+          updateWardrobe();
         }, (error) => showToast(`Characters: ${error.message}`));
         fs.onSnapshot(fs.collection(db, "furniture"), (snapshot) => {
           furniture = snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
           furnitureLoaded = true;
-          renderHouse();
+          renderFurniture();
+          renderGardenFurniture();
         }, (error) => showToast(`Furniture: ${error.message}`));
         fs.onSnapshot(fs.collection(db, "cats"), (snapshot) => {
           cats = snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
           catsLoaded = true;
-          renderHouse();
+          renderCats();
         }, (error) => showToast(`Cats: ${error.message}`));
         fs.onSnapshot(fs.collection(db, "mixes"), (snapshot) => {
           mixes = snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
@@ -4062,7 +4704,7 @@ You are loved more than this little game could ever hold.</p>
     });
 
     let touchStart = null;
-    const touchNavigationIgnore = "input, textarea, select, [contenteditable='true'], .bunny, .tulip, .house-item, #slime-game, .arcade-touch";
+    const touchNavigationIgnore = "input, textarea, select, [contenteditable='true'], .bunny, .tulip, .garden-decor, .house-item, #slime-game, .arcade-touch";
     viewport.addEventListener("touchstart", (event) => {
       touchStart = null;
       if (event.touches.length === 1 && !event.target.closest(touchNavigationIgnore)) {
@@ -4098,7 +4740,9 @@ You are loved more than this little game could ever hold.</p>
     });
 
     $("#continue-portrait").addEventListener("click", () => document.body.classList.add("portrait-allowed"));
-    $("#install-app").addEventListener("click", installApp);
+    $("#install-app").addEventListener("click", openInstallModal);
+    $("#install-home").addEventListener("click", openInstallModal);
+    $("#install-confirm").addEventListener("click", installApp);
     $("#chat-button").addEventListener("click", () => setChatOpen(!chatOpen));
     $("#chat-nav-button").addEventListener("click", () => setChatOpen(!chatOpen));
     $("#chat-close").addEventListener("click", () => setChatOpen(false));
@@ -4112,6 +4756,7 @@ You are loved more than this little game could ever hold.</p>
       deferredInstallPrompt = null;
       appInstalled = true;
       updateInstallUi();
+      closeModal("install-modal");
       showToast("Birthday Quest installed.");
     });
     $("#edit-button").addEventListener("click", startEditing);
@@ -4234,7 +4879,9 @@ You are loved more than this little game could ever hold.</p>
     });
 
     initHouseControls();
+    initWeddingControls();
     initSlimeGame();
+    renderWeddingScene();
     renderContent();
     renderColorOptions();
     updateSlimePreview();
@@ -4243,6 +4890,7 @@ You are loved more than this little game could ever hold.</p>
     renderBunnies();
     renderTulips();
     renderHouse();
+    startHouseMotion();
     updateInstallUi();
     updateChatUi();
     registerServiceWorker();

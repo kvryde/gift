@@ -109,13 +109,13 @@ service cloud.firestore {
       return data.x is number && data.y is number
         && data.x >= 0.06 && data.x <= 0.94
         && data.y >= 0.22 && data.y <= 0.94
-        && data.zone in ['house', 'yard'];
+        && data.zone in ['house', 'yard', 'garden'];
     }
 
     function validInsideHouse(data) {
       return data.zone == 'house'
-        && data.x >= 0.56 && data.x <= 0.94
-        && data.y >= 0.30 && data.y <= 0.88;
+        && data.x >= 0.44 && data.x <= 0.94
+        && data.y >= 0.28 && data.y <= 0.9;
     }
 
     function validClothes(data) {
@@ -132,13 +132,18 @@ service cloud.firestore {
         && data.name.size() >= 1
         && data.name.size() <= 40
         && validClothes(data)
+        && data.zone in ['house', 'yard']
         && validHousePosition(data)
         && data.createdBy == request.auth.uid
         && data.createdAt == request.time;
     }
 
     function validFurniture(data) {
-      return data.type in ['sofa', 'bed', 'table', 'plant', 'lamp', 'shelf', 'rug']
+      return data.type in [
+        'sofa', 'armchair', 'bed', 'table', 'kitchen', 'plant', 'lamp', 'shelf',
+        'dresser', 'desk', 'tv', 'clock', 'rug', 'bench', 'swing', 'fountain',
+        'mailbox', 'arch', 'parasol', 'cart', 'lantern', 'sandbox', 'kite'
+      ]
         && validHousePosition(data)
         && data.createdBy == request.auth.uid
         && data.createdAt == request.time;
@@ -150,6 +155,7 @@ service cloud.firestore {
         && data.name.size() <= 40
         && data.color is string
         && data.color.matches('^#[0-9a-fA-F]{6}$')
+        && data.zone in ['house', 'yard']
         && validHousePosition(data)
         && data.createdBy == request.auth.uid
         && data.createdAt == request.time;
@@ -280,7 +286,6 @@ service cloud.firestore {
         || (resource.data.zone == 'house' && validInsideHouse(request.resource.data))
       );
       allow update: if isViewer()
-        && request.resource.data.createdBy == resource.data.createdBy
         && request.resource.data.createdAt == resource.data.createdAt
         && request.resource.data.key == resource.data.key
         && request.resource.data.gender == resource.data.gender
@@ -289,6 +294,7 @@ service cloud.firestore {
           'clothes', 'zone', 'x', 'y'
         ])
         && validClothes(request.resource.data)
+        && request.resource.data.zone in ['house', 'yard']
         && validHousePosition(request.resource.data)
         && (
           request.resource.data.clothes == resource.data.clothes
@@ -301,7 +307,6 @@ service cloud.firestore {
       allow create: if (isAdmin() || isViewer()) && validFurniture(request.resource.data);
       allow update: if isAdmin() || (
         isViewer()
-        && request.resource.data.createdBy == resource.data.createdBy
         && request.resource.data.createdAt == resource.data.createdAt
         && request.resource.data.type == resource.data.type
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
@@ -319,13 +324,13 @@ service cloud.firestore {
       allow create: if (isAdmin() || isViewer()) && validCat(request.resource.data);
       allow update: if isAdmin() || (
         isViewer()
-        && request.resource.data.createdBy == resource.data.createdBy
         && request.resource.data.createdAt == resource.data.createdAt
         && request.resource.data.name == resource.data.name
         && request.resource.data.color == resource.data.color
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
           'zone', 'x', 'y'
         ])
+        && request.resource.data.zone in ['house', 'yard']
         && validHousePosition(request.resource.data)
       );
       allow delete: if isAdmin() || (
@@ -371,12 +376,14 @@ service cloud.firestore {
       allow read: if isAdmin() || isViewer();
       allow create: if (isAdmin() || isViewer())
         && request.resource.data.natureSeeded is bool
-        && request.resource.data.houseSeeded is bool;
+        && request.resource.data.houseSeeded is bool
+        && request.resource.data.gardenDecorSeeded is bool;
       allow update: if (isAdmin() || isViewer())
         && request.resource.data.natureSeeded is bool
         && request.resource.data.houseSeeded is bool
+        && request.resource.data.gardenDecorSeeded is bool
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
-          'natureSeeded', 'houseSeeded'
+          'natureSeeded', 'houseSeeded', 'gardenDecorSeeded'
         ]);
     }
 
