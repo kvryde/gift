@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" shape-rendering="crispEdges">
+  <rect width="512" height="512" fill="#22362a"/>
+  <rect x="48" y="48" width="416" height="416" fill="#314b31"/>
+  <path d="M96 416h320v16H96Z" fill="#17271d"/>
+  <path d="M112 232h288v176H112Z" fill="#b95f4f" stroke="#673e35" stroke-width="20" stroke-linejoin="miter"/>
+  <path d="M112 232h32v176h-32Z" fill="#d88162"/>
+  <path d="M368 232h32v176h-32Z" fill="#93483d"/>
+  <path d="M72 176h368v72H72Z" fill="#c96b58" stroke="#673e35" stroke-width="20" stroke-linejoin="miter"/>
+  <path d="M72 176h368v20H72Z" fill="#e08a6e"/>
+  <path d="M216 176h80v232h-80Z" fill="#e8c767"/>
+  <path d="M216 176h16v232h-16Z" fill="#f6dd8b"/>
+  <path d="M72 200h368v40H72Z" fill="#e8c767"/>
+  <path d="M72 200h368v12H72Z" fill="#f6dd8b"/>
+  <path d="M208 168h32v-32h32v32h32v-32h32v32h-16v24h-96v-24Z" fill="#e8c767" stroke="#9b793b" stroke-width="12" stroke-linejoin="miter"/>
+  <path d="M208 168h32v-32h-48v-24h48v-24h32v48h32v-48h32v24h-48v24h32v32h-32v24h-96v-24Z" fill="#f3d58f" stroke="#9b793b" stroke-width="12" stroke-linejoin="miter"/>
+</svg>

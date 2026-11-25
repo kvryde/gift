@@ -1,0 +1,410 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    function isViewer() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/viewers/$(request.auth.uid));
+    }
+
+    function validViewerCopy() {
+      return request.resource.data.homeText is string
+        && request.resource.data.homeText.size() <= 5000
+        && request.resource.data.slimeText is string
+        && request.resource.data.slimeText.size() <= 5000
+        && request.resource.data.galleryText is string
+        && request.resource.data.galleryText.size() <= 5000
+        && request.resource.data.houseText is string
+        && request.resource.data.houseText.size() <= 5000;
+    }
+
+    function validSlime(data) {
+      return data.name is string
+        && data.name.size() >= 1
+        && data.name.size() <= 40
+        && data.color is string
+        && data.color.matches('^#[0-9a-fA-F]{6}$')
+        && data.eyes in ['happy', 'sleepy', 'star']
+        && data.accessory in ['none', 'crown', 'flower', 'glasses']
+        && data.createdBy == request.auth.uid;
+    }
+
+    function validGalleryPhoto(photo) {
+      return photo is map
+        && photo.keys().hasOnly(['url', 'path', 'addedAt'])
+        && photo.url is string
+        && (
+          (
+            photo.url.size() <= 180000
+            && photo.url.matches('^data:image/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$')
+          )
+          || (
+            photo.url.size() <= 2048
+            && photo.url.startsWith('https://')
+          )
+        )
+        && photo.get('path', '').size() <= 512
+        && photo.get('path', '').matches('^(|gallery/.+)$');
+    }
+
+    function validGalleryPhotos(photos) {
+      return photos is list
+        && photos.size() <= 4
+        && (photos.size() == 0 || validGalleryPhoto(photos[0]))
+        && (photos.size() < 2 || validGalleryPhoto(photos[1]))
+        && (photos.size() < 3 || validGalleryPhoto(photos[2]))
+        && (photos.size() < 4 || validGalleryPhoto(photos[3]));
+    }
+
+    function validGalleryPage(data) {
+      return data.text is string
+        && data.text.size() <= 5000
+        && validGalleryPhotos(data.photos)
+        && data.createdBy == request.auth.uid
+        && data.createdAt == request.time
+        && data.published is bool;
+    }
+
+    function validNaturePosition(x, y) {
+      return x is number && y is number
+        && x >= 0.06 && x <= 0.94
+        && y >= 0.28 && y <= 0.94;
+    }
+
+    function validBunny(data) {
+      return data.name is string
+        && data.name.size() >= 1
+        && data.name.size() <= 40
+        && data.color is string
+        && data.color.matches('^#[0-9a-fA-F]{6}$')
+        && data.habitat in ['bunnyRose', 'bunnyBlue', 'garden']
+        && validNaturePosition(data.x, data.y)
+        && data.createdBy == request.auth.uid
+        && data.createdAt == request.time;
+    }
+
+    function validTulip(data) {
+      return data.color is string
+        && data.color.matches('^#[0-9a-fA-F]{6}$')
+        && validNaturePosition(data.x, data.y)
+        && data.growth is int
+        && data.growth >= 0
+        && data.growth <= 4
+        && (data.lastWateredAt == null || data.lastWateredAt is timestamp)
+        && data.lastWateredBy is string
+        && data.createdBy == request.auth.uid
+        && data.createdAt == request.time;
+    }
+
+    function validHousePosition(data) {
+      return data.x is number && data.y is number
+        && data.x >= 0.06 && data.x <= 0.94
+        && data.y >= 0.22 && data.y <= 0.94
+        && data.zone in ['house', 'yard'];
+    }
+
+    function validInsideHouse(data) {
+      return data.zone == 'house'
+        && data.x >= 0.56 && data.x <= 0.94
+        && data.y >= 0.30 && data.y <= 0.88;
+    }
+
+    function validClothes(data) {
+      return data.clothes in [
+        'rose', 'sky', 'mint', 'lavender', 'peach', 'cloud', 'sunshine', 'berry',
+        'forest', 'cocoa', 'midnight', 'candy', 'ocean', 'lemon', 'violet', 'winter'
+      ];
+    }
+
+    function validCharacter(data) {
+      return data.key in ['girl', 'boy']
+        && data.gender == data.key
+        && data.name is string
+        && data.name.size() >= 1
+        && data.name.size() <= 40
+        && validClothes(data)
+        && validHousePosition(data)
+        && data.createdBy == request.auth.uid
+        && data.createdAt == request.time;
+    }
+
+    function validFurniture(data) {
+      return data.type in ['sofa', 'bed', 'table', 'plant', 'lamp', 'shelf', 'rug']
+        && validHousePosition(data)
+        && data.createdBy == request.auth.uid
+        && data.createdAt == request.time;
+    }
+
+    function validCat(data) {
+      return data.name is string
+        && data.name.size() >= 1
+        && data.name.size() <= 40
+        && data.color is string
+        && data.color.matches('^#[0-9a-fA-F]{6}$')
+        && validHousePosition(data)
+        && data.createdBy == request.auth.uid
+        && data.createdAt == request.time;
+    }
+
+    function validMix(data) {
+      return data.name is string
+        && data.name.size() >= 1
+        && data.name.size() <= 40
+        && data.colorA is string
+        && data.colorA.matches('^#[0-9a-fA-F]{6}$')
+        && data.colorB is string
+        && data.colorB.matches('^#[0-9a-fA-F]{6}$')
+        && data.resultColor is string
+        && data.resultColor.matches('^#[0-9a-fA-F]{6}$')
+        && data.eyes in ['happy', 'sleepy', 'star']
+        && data.accessory in ['none', 'crown', 'flower', 'glasses']
+        && data.createdBy == request.auth.uid
+        && data.createdAt == request.time;
+    }
+
+    match /site/content {
+      allow read: if true;
+      allow create, delete: if isAdmin();
+      allow update: if isAdmin() || (
+        isViewer()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'homeText',
+          'slimeText',
+          'galleryText',
+          'houseText'
+        ])
+        && validViewerCopy()
+      );
+    }
+
+    match /admins/{uid} {
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow write: if isAdmin();
+    }
+
+    match /viewers/{uid} {
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow write: if isAdmin();
+    }
+
+    match /slimes/{slimeId} {
+      allow read: if true;
+      allow create: if (isAdmin() || isViewer())
+        && validSlime(request.resource.data)
+        && request.resource.data.createdAt == request.time;
+      allow update: if isAdmin() || (
+        isViewer()
+        && resource.data.createdBy == request.auth.uid
+        && request.resource.data.createdBy == resource.data.createdBy
+        && request.resource.data.createdAt == resource.data.createdAt
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'name', 'color', 'eyes', 'accessory'
+        ])
+        && validSlime(request.resource.data)
+      );
+      allow delete: if isAdmin() || (
+        isViewer() && resource.data.createdBy == request.auth.uid
+      );
+    }
+
+    match /bunnies/{bunnyId} {
+      allow read: if true;
+      allow create: if (isAdmin() || isViewer())
+        && validBunny(request.resource.data);
+      allow update: if isAdmin() || (
+        isViewer()
+        && request.resource.data.createdBy == resource.data.createdBy
+        && request.resource.data.createdAt == resource.data.createdAt
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'x', 'y', 'habitat'
+        ])
+        && request.resource.data.habitat in ['bunnyRose', 'bunnyBlue', 'garden']
+        && validNaturePosition(request.resource.data.x, request.resource.data.y)
+      );
+      allow delete: if isAdmin() || (
+        isViewer() && resource.data.createdBy == request.auth.uid
+      );
+    }
+
+    match /tulips/{tulipId} {
+      allow read: if true;
+      allow create: if (isAdmin() || isViewer())
+        && validTulip(request.resource.data);
+      allow update: if isAdmin() || (
+        isViewer()
+        && request.resource.data.createdBy == resource.data.createdBy
+        && request.resource.data.createdAt == resource.data.createdAt
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'x', 'y', 'growth', 'lastWateredAt', 'lastWateredBy'
+        ])
+        && validNaturePosition(request.resource.data.x, request.resource.data.y)
+        && request.resource.data.growth is int
+        && request.resource.data.growth >= 0
+        && request.resource.data.growth <= 4
+        && (
+          (
+            request.resource.data.growth == resource.data.growth + 1
+            && request.resource.data.lastWateredAt == request.time
+            && request.resource.data.lastWateredBy == request.auth.uid
+            && (
+              resource.data.lastWateredAt == null
+              || request.time - resource.data.lastWateredAt >= duration.value(20, 'h')
+            )
+          )
+          || (
+            request.resource.data.growth == resource.data.growth
+            && request.resource.data.lastWateredAt == resource.data.lastWateredAt
+            && request.resource.data.lastWateredBy == resource.data.lastWateredBy
+          )
+        )
+      );
+      allow delete: if isAdmin() || (
+        isViewer() && resource.data.createdBy == request.auth.uid
+      );
+    }
+
+    match /characters/{characterId} {
+      allow read: if true;
+      allow create: if (isAdmin() || isViewer()) && validCharacter(request.resource.data);
+      allow update: if isAdmin() && (
+        request.resource.data.clothes == resource.data.clothes
+        || (resource.data.zone == 'house' && validInsideHouse(request.resource.data))
+      );
+      allow update: if isViewer()
+        && request.resource.data.createdBy == resource.data.createdBy
+        && request.resource.data.createdAt == resource.data.createdAt
+        && request.resource.data.key == resource.data.key
+        && request.resource.data.gender == resource.data.gender
+        && request.resource.data.name == resource.data.name
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'clothes', 'zone', 'x', 'y'
+        ])
+        && validClothes(request.resource.data)
+        && validHousePosition(request.resource.data)
+        && (
+          request.resource.data.clothes == resource.data.clothes
+          || (resource.data.zone == 'house' && validInsideHouse(request.resource.data))
+        );
+    }
+
+    match /furniture/{furnitureId} {
+      allow read: if true;
+      allow create: if (isAdmin() || isViewer()) && validFurniture(request.resource.data);
+      allow update: if isAdmin() || (
+        isViewer()
+        && request.resource.data.createdBy == resource.data.createdBy
+        && request.resource.data.createdAt == resource.data.createdAt
+        && request.resource.data.type == resource.data.type
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'zone', 'x', 'y'
+        ])
+        && validHousePosition(request.resource.data)
+      );
+      allow delete: if isAdmin() || (
+        isViewer() && resource.data.createdBy == request.auth.uid
+      );
+    }
+
+    match /cats/{catId} {
+      allow read: if true;
+      allow create: if (isAdmin() || isViewer()) && validCat(request.resource.data);
+      allow update: if isAdmin() || (
+        isViewer()
+        && request.resource.data.createdBy == resource.data.createdBy
+        && request.resource.data.createdAt == resource.data.createdAt
+        && request.resource.data.name == resource.data.name
+        && request.resource.data.color == resource.data.color
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'zone', 'x', 'y'
+        ])
+        && validHousePosition(request.resource.data)
+      );
+      allow delete: if isAdmin() || (
+        isViewer() && resource.data.createdBy == request.auth.uid
+      );
+    }
+
+    match /mixes/{mixId} {
+      allow read: if true;
+      allow create: if (isAdmin() || isViewer()) && validMix(request.resource.data);
+      allow delete: if isAdmin() || (
+        isViewer() && resource.data.createdBy == request.auth.uid
+      );
+    }
+
+    function validChatMessage(data) {
+      return data.keys().hasOnly(['text', 'senderId', 'senderName', 'senderRole', 'createdAt'])
+        && data.text is string
+        && data.text.size() >= 1
+        && data.text.size() <= 500
+        && data.senderId == request.auth.uid
+        && data.senderName is string
+        && data.senderName.size() >= 1
+        && data.senderName.size() <= 24
+        && data.senderRole in ['admin', 'viewer']
+        && (
+          (data.senderRole == 'admin' && isAdmin())
+          || (data.senderRole == 'viewer' && isViewer())
+        )
+        && data.createdAt == request.time;
+    }
+
+    match /chatMessages/{messageId} {
+      allow read: if isAdmin() || isViewer();
+      allow create: if (isAdmin() || isViewer())
+        && validChatMessage(request.resource.data);
+      allow delete: if isAdmin() || (
+        isViewer() && resource.data.senderId == request.auth.uid
+      );
+    }
+
+    match /meta/seedState {
+      allow read: if isAdmin() || isViewer();
+      allow create: if (isAdmin() || isViewer())
+        && request.resource.data.natureSeeded is bool
+        && request.resource.data.houseSeeded is bool;
+      allow update: if (isAdmin() || isViewer())
+        && request.resource.data.natureSeeded is bool
+        && request.resource.data.houseSeeded is bool
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'natureSeeded', 'houseSeeded'
+        ]);
+    }
+
+    match /galleryPages/{pageId} {
+      allow read: if resource.data.published == true
+        || isAdmin()
+        || (isViewer() && resource.data.createdBy == request.auth.uid);
+      allow create: if (isAdmin() || isViewer())
+        && validGalleryPage(request.resource.data)
+        && (isAdmin() || request.resource.data.published == false);
+      allow update: if isAdmin() || (
+        isViewer()
+        && resource.data.createdBy == request.auth.uid
+        && request.resource.data.createdBy == request.auth.uid
+        && request.resource.data.published == resource.data.published
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'text',
+          'photos'
+        ])
+        && request.resource.data.text is string
+        && request.resource.data.text.size() <= 5000
+        && validGalleryPhotos(request.resource.data.photos)
+      );
+      allow delete: if isAdmin() || (
+        isViewer()
+        && resource.data.createdBy == request.auth.uid
+        && resource.data.published == false
+      );
+    }
+  }
+}

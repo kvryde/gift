@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#1d2b24">
   <meta name="description" content="A little birthday quest with slimes, letters, and memories.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Birthday Quest">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
@@ -120,7 +126,10 @@
       font-weight: 800;
     }
     .hud-button:hover { color: var(--ink); border-color: rgba(255, 255, 255, .22); }
+    .hud-button.active { color: var(--gold); border-color: var(--gold); }
     .hud-button.primary { color: var(--bg); border-color: var(--mint); background: var(--mint); }
+    .install-shortcut { width: 36px; padding: 0; }
+    .install-shortcut .icon { width: 18px; height: 18px; vertical-align: middle; }
     .role-badge { color: var(--gold); font-size: .65rem; font-weight: 900; text-transform: uppercase; letter-spacing: .08em; }
 
     .editor-toolbar {
@@ -302,7 +311,24 @@
     @keyframes pop { 0% { transform: scale(.75); opacity: .3; } 55% { transform: scale(1.1, .9); } 100% { transform: scale(1); opacity: 1; } }
     @keyframes cardIn { from { opacity: 0; transform: translateY(10px) scale(.96); } to { opacity: 1; transform: none; } }
 
-    .download-slime { min-height: 34px; margin-top: .7rem; padding: .45rem .7rem; font-size: .65rem; }
+    .chat-panel { position: fixed; left: max(1rem, env(safe-area-inset-left)); bottom: calc(80px + env(safe-area-inset-bottom)); z-index: 75; display: flex; width: min(420px, calc(100vw - 2rem)); max-height: min(52vh, 480px); flex-direction: column; border: 3px solid #78985d; border-radius: 2px; color: #f4ecd5; background: #1d3022; box-shadow: inset 0 3px #314a34, 0 6px #0b150f; }
+    .chat-header { display: flex; align-items: center; justify-content: space-between; gap: .8rem; padding: .65rem .75rem; border-bottom: 2px solid #40573c; background: #263c2b; }
+    .chat-header h2 { margin: .15rem 0 0; font-family: "Silkscreen", monospace; font-size: .9rem; letter-spacing: -.04em; }
+    .chat-header .eyebrow { font-size: .52rem; }
+    .chat-close { width: 30px; height: 30px; padding: 0; }
+    .chat-messages { min-height: 132px; overflow-y: auto; padding: .75rem; background: #15251b; scrollbar-width: thin; scrollbar-color: #678454 #17271d; }
+    .chat-empty { margin: 0; padding: 1rem .5rem; color: #a9ba9b; font-size: .76rem; line-height: 1.6; text-align: center; }
+    .chat-message { margin-bottom: .55rem; padding: .5rem .6rem; border: 2px solid #40573c; background: #223728; box-shadow: 0 2px #101b14; }
+    .chat-message.own { margin-left: 2rem; border-color: #6d8e55; background: #2b432d; }
+    .chat-meta { display: flex; align-items: baseline; justify-content: space-between; gap: .6rem; margin-bottom: .2rem; }
+    .chat-name { color: #d5e8b7; font-family: "Silkscreen", monospace; font-size: .58rem; }
+    .chat-time { color: #8fa181; font-size: .56rem; }
+    .chat-text { margin: 0; color: #f4ecd5; font-size: .82rem; line-height: 1.45; overflow-wrap: anywhere; white-space: pre-wrap; }
+    .chat-form { display: flex; gap: .45rem; padding: .65rem; border-top: 2px solid #40573c; background: #223728; }
+    .chat-input { min-width: 0; flex: 1; min-height: 38px; padding: .5rem .6rem; border: 2px solid #4d6345; border-radius: 0; color: #35422e; background: #f4ecd5; box-shadow: inset 0 3px #d7ceb1; font-size: .8rem; }
+    .chat-input:disabled { opacity: .6; }
+    .chat-send { min-height: 38px; padding: .45rem .7rem; font-size: .68rem; }
+    .chat-note { margin: 0; padding: 0 .7rem .6rem; color: #a9ba9b; background: #223728; font-size: .62rem; line-height: 1.4; }
     .slime-arcade { margin-top: 1.1rem; padding: 1rem; }
     .arcade-header { display: flex; align-items: center; justify-content: space-between; gap: .8rem; margin-bottom: .8rem; }
     .arcade-header h2 { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: 1.5rem; font-weight: 400; }
@@ -441,6 +467,7 @@
       filter: drop-shadow(0 12px 14px rgba(0, 0, 0, .3));
     }
     .trash-bin.active { visibility: visible; opacity: 1; }
+    .trash-bin.over { filter: drop-shadow(0 0 10px rgba(255, 231, 160, .8)); transform: scale(1.08); }
     .trash-lid { position: absolute; top: 2px; left: 4px; width: 56px; height: 12px; border: 2px solid #513e59; border-radius: 5px; background: #b8adc9; transform-origin: 8px 100%; }
     .trash-lid::before { position: absolute; top: -6px; left: 18px; width: 20px; height: 5px; border: 2px solid #513e59; border-bottom: 0; border-radius: 4px 4px 0 0; background: #b8adc9; content: ""; }
     .trash-body { position: absolute; top: 13px; left: 8px; width: 48px; height: 54px; border: 2px solid #513e59; border-top: 0; border-radius: 3px 3px 9px 9px; background: linear-gradient(90deg, #8f819f, #b8adc9 45%, #9689a7); clip-path: polygon(7% 0, 93% 0, 86% 100%, 14% 100%); transform-origin: 50% 100%; }
@@ -557,7 +584,7 @@
     .tab-bar {
       z-index: 20;
       display: grid;
-      grid-template-columns: repeat(7, minmax(0, 1fr));
+      grid-template-columns: repeat(8, minmax(0, 1fr));
       min-height: 66px;
       padding: .45rem clamp(.5rem, 3vw, 2rem) max(.45rem, env(safe-area-inset-bottom));
       border-top: 1px solid var(--line);
@@ -685,7 +712,6 @@
     .game-card { border: 2px solid #506647; border-radius: 3px; background: #293e2e; box-shadow: inset 0 3px #3a5237, inset 0 -4px #1b2d21, var(--shadow); }
     .slime-preview-card { background: linear-gradient(180deg, #8fb9c6 0 70%, #789f52 70%, #5c803f 70%); }
     .preview-name { padding: .2rem .5rem; color: #fff5d6; background: #29402d; font-family: "Silkscreen", monospace; font-size: .78rem; }
-    .download-slime { background: #263d2c; }
     .text-input, .select-input, .color-grid, .gallery-page-copy textarea { border: 2px solid #4d6345; border-radius: 2px; background: #17291e; box-shadow: inset 0 3px #102016; }
     .option-button, .random-color, .photo-action, .house-small-button, .house-choice { border: 2px solid #526849; border-radius: 2px; background: #223728; box-shadow: inset 0 2px #3a5035, 0 2px #132117; }
     .option-button.active, .house-choice.active { color: #24321e; border-color: #d9e6a5; background: #b5c98d; }
@@ -771,6 +797,7 @@
     .tab-button { border: 2px solid transparent; border-radius: 2px; color: #9cad8e; }
     .tab-button.active { color: #f1e9c9; border-color: #5a744a; background: #314a33; box-shadow: inset 0 3px #45603b, inset 0 -3px #263d29; }
     .tab-button.active::after { width: 20px; height: 3px; border-radius: 0; background: #f0cf76; }
+    .chat-tab { letter-spacing: .04em; text-transform: uppercase; }
     .rotate-gate { background: #16251d; }
     .modal { border: 3px solid #65764c; border-radius: 2px; background: #293d2c; box-shadow: inset 0 4px #3c5337, 0 8px 0 #0e1811; }
     .modal-header { border-bottom: 2px solid #4c6242; }
@@ -779,6 +806,11 @@
     .toast { border: 2px solid #79935b; border-radius: 2px; background: #2c432f; box-shadow: 0 4px 0 #101b13; }
     .trash-lid, .trash-body { border-radius: 0; }
     [contenteditable="true"] { border-radius: 0; background: rgba(240, 207, 118, .12); box-shadow: 0 0 0 2px rgba(240, 207, 118, .55); }
+
+    @media (max-width: 900px) {
+      .tab-button { flex-direction: column; gap: .15rem; font-size: .58rem; }
+      .tab-button .icon { width: 19px; height: 19px; }
+    }
 
     @media (max-width: 800px) {
       .hud-center .xp-track { display: none; }
@@ -819,6 +851,8 @@
       .letter-body { font-size: .92rem; line-height: 1.65; }
       .gallery-toolbar { margin: .6rem 0 .8rem; padding: .7rem; }
       .toast { bottom: 66px; }
+      .chat-panel { bottom: calc(64px + env(safe-area-inset-bottom)); max-height: 46vh; }
+      .chat-messages { min-height: 88px; }
     }
 
     @media (max-width: 540px) {
@@ -826,6 +860,7 @@
       .brand { font-size: .62rem; }
       .brand-mark { width: 32px; height: 32px; }
       .player-chip { display: none; }
+      .chat-panel { left: .65rem; width: calc(100vw - 1.3rem); bottom: calc(66px + env(safe-area-inset-bottom)); }
       .hud-actions { gap: .3rem; }
       .hud-button { padding: .4rem .55rem; font-size: .62rem; }
       .tab-button { flex-direction: column; gap: .15rem; font-size: .58rem; }
@@ -858,6 +893,8 @@
     <symbol id="i-shirt" viewBox="0 0 24 24"><path d="m8 3-6 4 3 5 3-2v11h8V10l3 2 3-5-6-4a4 4 0 0 1-8 0Z"/></symbol>
     <symbol id="i-paw" viewBox="0 0 24 24"><ellipse cx="12" cy="16" rx="6" ry="5"/><circle cx="5" cy="9" r="2"/><circle cx="10" cy="5" r="2"/><circle cx="16" cy="5" r="2"/><circle cx="21" cy="9" r="2"/></symbol>
     <symbol id="i-mix" viewBox="0 0 24 24"><path d="M9 3h6M10 3v6L4 19a2 2 0 0 0 2 3h12a2 2 0 0 0 2-3L14 9V3"/><path d="M7 15h10M9 18h.01M14 17h.01"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M3 4h18v13H9l-6 4V4Z"/><path d="M7 9h10M7 13h6"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 20h16"/></symbol>
   </svg>
 
   <div class="rotate-gate" id="rotate-gate">
@@ -872,7 +909,7 @@
   <div class="game-app">
     <header class="hud">
       <button class="brand" type="button" data-go="home">
-        <span class="brand-mark"><svg class="icon"><use href="#i-slime"></use></svg></span>
+        <span class="brand-mark"><svg class="icon" shape-rendering="crispEdges"><use href="#i-gift"></use></svg></span>
         <span data-field="appName">Birthday Quest</span>
       </button>
       <div class="hud-center">
@@ -881,6 +918,8 @@
       </div>
       <div class="hud-actions">
         <span class="role-badge" id="role-badge" hidden></span>
+        <button class="hud-button install-shortcut" type="button" id="install-app" aria-label="Install Birthday Quest app" title="Install app"><svg class="icon"><use href="#i-download"></use></svg></button>
+        <button class="hud-button" type="button" id="chat-button" aria-controls="chat-panel" aria-expanded="false"><svg class="icon"><use href="#i-chat"></use></svg>Chat</button>
         <button class="hud-button" type="button" id="edit-button" hidden>Edit copy</button>
         <button class="hud-button" type="button" id="access-button" hidden>Access</button>
         <button class="hud-button primary" type="button" id="auth-button">Sign in</button>
@@ -933,7 +972,6 @@
           <div class="game-card slime-preview-card">
             <svg class="slime-preview" id="slime-preview" viewBox="0 0 240 190" aria-label="Slime preview"></svg>
             <span class="preview-name" id="preview-name">New slime</span>
-            <button class="button button-ghost download-slime" type="button" id="download-slime">Download slime PNG</button>
           </div>
           <div class="game-card slime-controls">
             <label><span class="control-label" data-field="slimeNameLabel">Slime name</span><input class="text-input" id="slime-name" maxlength="40" placeholder="Name your slime"></label>
@@ -1053,7 +1091,7 @@ You are loved more than this little game could ever hold.</p>
           <span class="nature-counter" id="rose-counter">0 bunnies</span>
         </div>
         <div class="nature-empty" id="rose-empty" hidden></div>
-        <div class="nature-hint">Drag a bunny to another habitat or into the garden</div>
+        <div class="nature-hint">Drag to move · Drop your bunny in the trash to delete</div>
       </section>
 
       <section class="app-page nature-page blue-habitat" id="page-bunnyBlue" data-page="bunnyBlue">
@@ -1071,7 +1109,7 @@ You are loved more than this little game could ever hold.</p>
           <span class="nature-counter" id="blue-counter">0 bunnies</span>
         </div>
         <div class="nature-empty" id="blue-empty" hidden></div>
-        <div class="nature-hint">Drag a bunny to another habitat or into the garden</div>
+        <div class="nature-hint">Drag to move · Drop your bunny in the trash to delete</div>
       </section>
 
       <section class="app-page nature-page garden-page" id="page-garden" data-page="garden">
@@ -1163,8 +1201,22 @@ You are loved more than this little game could ever hold.</p>
       <button class="tab-button" type="button" data-page-link="bunnyBlue" aria-selected="false"><svg class="icon"><use href="#i-bunny"></use></svg><span data-field="navBlue">Blue cage</span></button>
       <button class="tab-button" type="button" data-page-link="garden" aria-selected="false"><svg class="icon"><use href="#i-flower"></use></svg><span data-field="navGarden">Garden</span></button>
       <button class="tab-button" type="button" data-page-link="house" aria-selected="false"><svg class="icon"><use href="#i-house"></use></svg><span data-field="navHouse">Our house</span></button>
+      <button class="tab-button chat-tab" type="button" id="chat-nav-button" aria-controls="chat-panel" aria-expanded="false"><svg class="icon" shape-rendering="crispEdges"><use href="#i-chat"></use></svg><span>Chat</span></button>
     </nav>
   </div>
+
+  <aside class="chat-panel" id="chat-panel" aria-labelledby="chat-title" hidden>
+    <div class="chat-header">
+      <div><span class="eyebrow">World chat</span><h2 id="chat-title">Couple chat</h2></div>
+      <button class="modal-close chat-close" type="button" id="chat-close" aria-label="Close chat">×</button>
+    </div>
+    <div class="chat-messages" id="chat-messages" role="log" aria-live="polite" aria-relevant="additions"></div>
+    <form class="chat-form" id="chat-form">
+      <input class="chat-input" id="chat-input" type="text" maxlength="500" placeholder="Message your favorite player..." autocomplete="off" required>
+      <button class="button button-mint chat-send" type="submit" id="chat-send">Send</button>
+    </form>
+    <p class="chat-note" id="chat-note">Sign in as an admin or viewer to chat.</p>
+  </aside>
 
   <div class="modal-backdrop" id="auth-modal" hidden>
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="auth-title">
@@ -1345,6 +1397,12 @@ You are loved more than this little game could ever hold.</p>
     let activeHouseDrag = null;
     let mixing = false;
     let slimeGame = null;
+    let chatMessages = [];
+    let chatUnsubscribe = null;
+    let chatOpen = false;
+    let chatSending = false;
+    let deferredInstallPrompt = null;
+    let appInstalled = false;
     const houseWriteTimes = new Map();
     let toastTimer = null;
     let seedingContent = false;
@@ -1610,6 +1668,167 @@ You are loved more than this little game could ever hold.</p>
       applyEditableState();
     }
 
+    function isStandaloneApp() {
+      return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+    }
+
+    function updateInstallUi() {
+      $("#install-app").hidden = appInstalled || isStandaloneApp();
+    }
+
+    async function installApp() {
+      if (appInstalled || isStandaloneApp()) {
+        showToast("Birthday Quest is already installed.");
+        return;
+      }
+      if (deferredInstallPrompt) {
+        const prompt = deferredInstallPrompt;
+        deferredInstallPrompt = null;
+        updateInstallUi();
+        await prompt.prompt();
+        const choice = await prompt.userChoice;
+        if (choice.outcome === "accepted") showToast("Installing Birthday Quest...");
+        return;
+      }
+      if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+        showToast("Tap Share, then choose Add to Home Screen.");
+      } else {
+        showToast("Open your browser menu and choose Install app or Add to Home screen.");
+      }
+    }
+
+    function registerServiceWorker() {
+      if (!("serviceWorker" in navigator)
+        || (location.protocol !== "https:" && !["localhost", "127.0.0.1"].includes(location.hostname))) return;
+      const register = () => {
+        const scopeUrl = new URL("./", location.href);
+        navigator.serviceWorker.register(new URL("sw.js", scopeUrl), { scope: "./" }).catch(() => {});
+      };
+      if (document.readyState === "complete") register();
+      else window.addEventListener("load", register, { once: true });
+    }
+
+    function chatDisplayName() {
+      return role === "admin" ? "Admin" : "Player Two";
+    }
+
+    function syncChatListener() {
+      chatUnsubscribe?.();
+      chatUnsubscribe = null;
+      chatMessages = [];
+      if (!user || !role || !db || !fs) {
+        renderChatMessages();
+        return;
+      }
+      const query = fs.query(fs.collection(db, "chatMessages"), fs.orderBy("createdAt", "asc"), fs.limit(100));
+      chatUnsubscribe = fs.onSnapshot(query, (snapshot) => {
+        chatMessages = snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
+        renderChatMessages();
+      }, (error) => {
+        $("#chat-note").textContent = `Chat: ${error.message}`;
+      });
+    }
+
+    function formatChatTime(value) {
+      const date = value?.toDate?.() || (value ? new Date(value) : new Date());
+      return Number.isNaN(date.getTime()) ? "" : date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    }
+
+    function renderChatMessages() {
+      const feed = $("#chat-messages");
+      feed.replaceChildren();
+      if (!chatMessages.length) {
+        const empty = document.createElement("p");
+        empty.className = "chat-empty";
+        empty.textContent = user && role ? "No messages yet. Say hello to your favorite player." : "Sign in to open the couple chat.";
+        feed.append(empty);
+        return;
+      }
+      chatMessages.forEach((message) => {
+        const item = document.createElement("article");
+        item.className = `chat-message${message.senderId === user?.uid ? " own" : ""}`;
+        const meta = document.createElement("div");
+        meta.className = "chat-meta";
+        const name = document.createElement("span");
+        name.className = "chat-name";
+        name.textContent = message.senderName || (message.senderRole === "admin" ? "Admin" : "Player Two");
+        const time = document.createElement("time");
+        time.className = "chat-time";
+        time.dateTime = message.createdAt?.toDate?.().toISOString?.() || "";
+        time.textContent = formatChatTime(message.createdAt);
+        const text = document.createElement("p");
+        text.className = "chat-text";
+        text.textContent = message.text || "";
+        meta.append(name, time);
+        item.append(meta, text);
+        feed.append(item);
+      });
+      if (chatOpen) feed.scrollTop = feed.scrollHeight;
+    }
+
+    function updateChatUi() {
+      const enabled = Boolean(user && role && db && fs);
+      $("#chat-input").disabled = !enabled || chatSending;
+      $("#chat-send").disabled = !enabled || chatSending;
+      $("#chat-input").placeholder = enabled ? "Message your favorite player..." : "Sign in to send a message...";
+      $("#chat-note").textContent = !user
+        ? "Sign in as an admin or viewer to chat."
+        : !role
+          ? "Your account needs an admin or viewer role to chat."
+          : "Private to the two players · Press T to toggle chat";
+    }
+
+    function setChatOpen(open) {
+      chatOpen = Boolean(open);
+      $("#chat-panel").hidden = !chatOpen;
+      [$("#chat-button"), $("#chat-nav-button")].forEach((button) => {
+        button.setAttribute("aria-expanded", String(chatOpen));
+        button.classList.toggle("active", chatOpen);
+      });
+      if (chatOpen) {
+        if (currentPage === "slime" && ["running", "transition"].includes(slimeGame?.state.mode)) pauseSlimeGame();
+        updateChatUi();
+        renderChatMessages();
+        if (user && role) setTimeout(() => $("#chat-input").focus(), 30);
+      } else {
+        $("#chat-input").blur();
+      }
+    }
+
+    async function sendChatMessage(event) {
+      event.preventDefault();
+      const input = $("#chat-input");
+      const text = input.value.trim();
+      if (!user || !role) {
+        showToast("Sign in as an admin or viewer to chat.");
+        if (!user) openAuth();
+        return;
+      }
+      if (!db || !fs) {
+        showToast("Connect Firebase to use chat.");
+        return;
+      }
+      if (!text) return;
+      chatSending = true;
+      updateChatUi();
+      try {
+        await fs.addDoc(fs.collection(db, "chatMessages"), {
+          text: text.slice(0, 500),
+          senderId: user.uid,
+          senderName: chatDisplayName(),
+          senderRole: role,
+          createdAt: fs.serverTimestamp(),
+        });
+        input.value = "";
+      } catch (error) {
+        showToast(error.message);
+      } finally {
+        chatSending = false;
+        updateChatUi();
+        input.focus();
+      }
+    }
+
     function updateRoleUi() {
       $("#auth-button").textContent = user ? "Sign out" : "Sign in";
       $("#edit-button").hidden = !user || !role;
@@ -1620,6 +1839,8 @@ You are loved more than this little game could ever hold.</p>
       $$("[data-house-write]").forEach((button) => { button.hidden = !user || !role; });
       $("#role-badge").hidden = !role;
       $("#role-badge").textContent = role || "";
+      syncChatListener();
+      updateChatUi();
       renderSlimes();
       renderBunnies();
       renderTulips();
@@ -2221,65 +2442,6 @@ You are loved more than this little game could ever hold.</p>
       canvas.addEventListener("pointercancel", () => slimeGame.state.pointers.delete("canvas"));
     }
 
-    async function downloadSlimePng() {
-      const button = $("#download-slime");
-      button.disabled = true;
-      try {
-        const svg = $("#slime-preview").cloneNode(true);
-        svg.removeAttribute("class");
-        svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-        svg.setAttribute("width", "720");
-        svg.setAttribute("height", "570");
-        const source = new Blob([new XMLSerializer().serializeToString(svg)], { type: "image/svg+xml;charset=utf-8" });
-        const sourceUrl = URL.createObjectURL(source);
-        const image = new Image();
-        try {
-          await new Promise((resolve, reject) => {
-            image.onload = resolve;
-            image.onerror = () => reject(new Error("Could not prepare the slime image."));
-            image.src = sourceUrl;
-          });
-        } finally {
-          URL.revokeObjectURL(sourceUrl);
-        }
-        const canvas = document.createElement("canvas");
-        canvas.width = 720;
-        canvas.height = 570;
-        const context = canvas.getContext("2d");
-        context.imageSmoothingEnabled = false;
-        context.fillStyle = "#8fc2d8";
-        context.fillRect(0, 0, canvas.width, canvas.height);
-        context.fillStyle = "#d9edf0";
-        context.fillRect(54, 70, 150, 34);
-        context.fillRect(82, 48, 92, 30);
-        context.fillRect(520, 96, 128, 30);
-        context.fillRect(548, 74, 72, 28);
-        context.fillStyle = "#6e9e70";
-        context.fillRect(0, 430, 720, 140);
-        context.fillStyle = "#5d9b45";
-        context.fillRect(0, 430, 720, 20);
-        context.fillStyle = "#83bd57";
-        for (let x = 0; x < 720; x += 36) context.fillRect(x, 430, 18, 8);
-        context.drawImage(image, 0, 0, 720, 570);
-        const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
-        if (!blob) throw new Error("Could not create the PNG.");
-        const downloadUrl = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        const name = ($("#preview-name").textContent || "my-slime").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "my-slime";
-        link.href = downloadUrl;
-        link.download = `${name}.png`;
-        document.body.append(link);
-        link.click();
-        link.remove();
-        setTimeout(() => URL.revokeObjectURL(downloadUrl), 1000);
-        showToast("Slime PNG downloaded.");
-      } catch (error) {
-        showToast(error.message);
-      } finally {
-        button.disabled = false;
-      }
-    }
-
     function bunnySvg(color) {
       const safeColor = bunnyColors.includes(color) ? color : bunnyColors[0];
       const shade = shadeHex(safeColor, -28);
@@ -2358,25 +2520,19 @@ You are loved more than this little game could ever hold.</p>
         element.setAttribute("role", "button");
         element.style.left = `${Math.max(.07, Math.min(.93, Number(bunny.x) || .5)) * 100}%`;
         element.style.top = `${Math.max(.28, Math.min(.86, Number(bunny.y) || .7)) * 100}%`;
-        element.setAttribute("aria-label", `${bunny.name || "Bunny"}. Drag to move between habitats.`);
         element.innerHTML = bunnySvg(bunny.color);
         const name = document.createElement("span");
         name.className = "bunny-name";
         name.textContent = bunny.name || "Bunny";
         element.append(name);
-        if (canManageNatureItem(bunny)) {
-          const remove = document.createElement("button");
-          remove.type = "button";
-          remove.className = "nature-delete";
-          remove.textContent = "×";
-          remove.title = `Delete ${bunny.name || "bunny"}`;
-          remove.setAttribute("aria-label", `Delete ${bunny.name || "bunny"}`);
-          remove.addEventListener("pointerdown", (event) => event.stopPropagation());
-          remove.addEventListener("click", (event) => { event.stopPropagation(); deleteNatureItem("bunny", bunny, element); });
-          element.append(remove);
-        }
+        element.setAttribute("aria-label", `${bunny.name || "Bunny"}. Drag to move between habitats.${canManageNatureItem(bunny) ? " Drop in the trash or press Delete to remove." : ""}`);
         element.addEventListener("pointerdown", (event) => startNatureDrag("bunny", bunny, event));
         element.addEventListener("keydown", (event) => {
+          if (event.key === "Delete" && canManageNatureItem(bunny)) {
+            event.preventDefault();
+            deleteNatureItem("bunny", bunny, element);
+            return;
+          }
           if (event.key === "Enter" || event.key === " ") {
             event.preventDefault();
             showToast(requireNatureAccess() ? "Drag with a mouse or your finger to move this bunny." : "");
@@ -2457,6 +2613,11 @@ You are loved more than this little game could ever hold.</p>
       };
     }
 
+    function isOverTrash(clientX, clientY) {
+      const rect = $("#trash-bin").getBoundingClientRect();
+      return clientX >= rect.left - 10 && clientX <= rect.right + 10 && clientY >= rect.top - 10 && clientY <= rect.bottom + 10;
+    }
+
     function startNatureDrag(kind, item, event) {
       if (!event.isPrimary || event.button !== 0) return;
       if (!requireNatureAccess()) return;
@@ -2478,8 +2639,12 @@ You are loved more than this little game could ever hold.</p>
       activeNatureDrag = {
         kind, item, element, ghost, pointerId: event.pointerId,
         startX: event.clientX, startY: event.clientY, clientX: event.clientX, clientY: event.clientY,
-        moved: false,
+        moved: false, canTrash: canManageNatureItem(item), trashVisible: false,
       };
+      if (activeNatureDrag.canTrash) {
+        $("#trash-bin").classList.add("active");
+        activeNatureDrag.trashVisible = true;
+      }
       element.classList.add("dragging");
       viewport.classList.add("dragging-nature");
       try { element.setPointerCapture(event.pointerId); } catch {}
@@ -2508,6 +2673,7 @@ You are loved more than this little game could ever hold.</p>
       try { activeNatureDrag.element.releasePointerCapture(activeNatureDrag.pointerId); } catch {}
       activeNatureDrag.element.classList.remove("dragging");
       activeNatureDrag.ghost.remove();
+      if (activeNatureDrag.trashVisible) $("#trash-bin").classList.remove("active", "over");
       viewport.classList.remove("dragging-nature");
       activeNatureDrag = null;
     }
@@ -2518,6 +2684,11 @@ You are loved more than this little game could ever hold.</p>
       if (!drag.moved) {
         cleanupNatureDrag();
         if (drag.kind === "tulip") waterTulip(drag.item);
+        return;
+      }
+      if (drag.canTrash && isOverTrash(event.clientX, event.clientY)) {
+        cleanupNatureDrag();
+        await deleteNatureItem(drag.kind, drag.item, drag.element);
         return;
       }
       const viewportRect = viewport.getBoundingClientRect();
@@ -3872,10 +4043,18 @@ You are loved more than this little game could ever hold.</p>
     document.addEventListener("visibilitychange", () => { if (document.hidden) pauseSlimeGame(); });
 
     document.addEventListener("keydown", (event) => {
+      const typing = event.target.matches("input, textarea, select, [contenteditable='true']");
       if (event.key === "Escape") {
-        $$(".modal-backdrop").forEach((modal) => { if (!modal.hidden) closeModal(modal.id); });
+        if (chatOpen) setChatOpen(false);
+        else $$(".modal-backdrop").forEach((modal) => { if (!modal.hidden) closeModal(modal.id); });
       }
-      if (!editMode && !event.target.matches("input, textarea, select, [contenteditable='true']")) {
+      if (!editMode && !typing && !event.ctrlKey && !event.metaKey && !event.altKey) {
+        if (event.key.toLowerCase() === "t" && !$$(".modal-backdrop").some((modal) => !modal.hidden)) {
+          event.preventDefault();
+          setChatOpen(!chatOpen);
+          return;
+        }
+        if (chatOpen) return;
         const index = pages.indexOf(currentPage);
         if (event.key === "ArrowRight" && index < pages.length - 1) showPage(pages[index + 1]);
         if (event.key === "ArrowLeft" && index > 0) showPage(pages[index - 1]);
@@ -3919,6 +4098,22 @@ You are loved more than this little game could ever hold.</p>
     });
 
     $("#continue-portrait").addEventListener("click", () => document.body.classList.add("portrait-allowed"));
+    $("#install-app").addEventListener("click", installApp);
+    $("#chat-button").addEventListener("click", () => setChatOpen(!chatOpen));
+    $("#chat-nav-button").addEventListener("click", () => setChatOpen(!chatOpen));
+    $("#chat-close").addEventListener("click", () => setChatOpen(false));
+    $("#chat-form").addEventListener("submit", sendChatMessage);
+    window.addEventListener("beforeinstallprompt", (event) => {
+      event.preventDefault();
+      deferredInstallPrompt = event;
+      updateInstallUi();
+    });
+    window.addEventListener("appinstalled", () => {
+      deferredInstallPrompt = null;
+      appInstalled = true;
+      updateInstallUi();
+      showToast("Birthday Quest installed.");
+    });
     $("#edit-button").addEventListener("click", startEditing);
     $("#save-copy").addEventListener("click", saveContent);
     $("#cancel-copy").addEventListener("click", cancelEditing);
@@ -3988,7 +4183,6 @@ You are loved more than this little game could ever hold.</p>
       updateSlimePreview(true);
     });
     $("#create-slime").addEventListener("click", createSlime);
-    $("#download-slime").addEventListener("click", downloadSlimePng);
     $("#unwrap-gift").addEventListener("click", unwrapGift);
     $("#rewrap-gift").addEventListener("click", rewrapGift);
     $("#pet-home").addEventListener("click", () => {
@@ -4012,6 +4206,7 @@ You are loved more than this little game could ever hold.</p>
       const drag = activeNatureDrag;
       queueDragPosition(drag, event.clientX, event.clientY);
       if (Math.hypot(event.clientX - drag.startX, event.clientY - drag.startY) > 6) drag.moved = true;
+      if (drag.trashVisible) $("#trash-bin").classList.toggle("over", isOverTrash(event.clientX, event.clientY));
     }, { passive: false });
     document.addEventListener("pointerup", (event) => {
       if (activeNatureDrag && event.pointerId === activeNatureDrag.pointerId) finishNatureDrag(event);
@@ -4048,6 +4243,9 @@ You are loved more than this little game could ever hold.</p>
     renderBunnies();
     renderTulips();
     renderHouse();
+    updateInstallUi();
+    updateChatUi();
+    registerServiceWorker();
     showPage(location.hash.slice(1) || "home", false);
     initFirebase();
   </script>
