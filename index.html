@@ -173,6 +173,7 @@
     .custom-text-list-item span { overflow: hidden; color: #e4e8ce; font-size: .75rem; text-overflow: ellipsis; white-space: nowrap; }
 
     .page-viewport {
+      position: relative;
       display: flex;
       width: 100%;
       max-width: 1280px;
@@ -186,6 +187,148 @@
       touch-action: auto;
     }
     .page-viewport::-webkit-scrollbar { display: none; }
+    .world-character-layer {
+      position: absolute;
+      z-index: 12;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 800%;
+      pointer-events: none;
+    }
+    .world-character {
+      position: absolute;
+      bottom: max(5px, env(safe-area-inset-bottom));
+      z-index: 8;
+      width: clamp(46px, 6vw, 72px);
+      padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: grab;
+      pointer-events: auto;
+      touch-action: none;
+      transform: translate(-50%, -100%);
+      filter: drop-shadow(0 5px 4px rgba(20, 31, 27, .28));
+      user-select: none;
+      -webkit-user-select: none;
+      will-change: left, transform;
+    }
+    .world-character:active { cursor: grabbing; }
+    .world-character svg { display: block; width: 100%; overflow: visible; pointer-events: none; animation: chibiBreathe 2.8s ease-in-out infinite; transform-origin: 50% 100%; }
+    .world-character.walking svg { animation: chibiWalk .42s ease-in-out infinite; }
+    .world-character.dragging { opacity: .25; }
+    .world-character-label {
+      position: absolute;
+      bottom: -3px;
+      left: 50%;
+      padding: .1rem .3rem;
+      border: 1px solid rgba(73, 61, 50, .45);
+      color: #493d32;
+      background: rgba(245, 239, 217, .92);
+      font-family: "Silkscreen", monospace;
+      font-size: .46rem;
+      line-height: 1;
+      pointer-events: none;
+      transform: translateX(-50%);
+      white-space: nowrap;
+    }
+    .world-character-shadow {
+      position: absolute;
+      bottom: max(3px, env(safe-area-inset-bottom));
+      z-index: 7;
+      width: clamp(32px, 4.5vw, 54px);
+      height: 10px;
+      background: rgba(28, 43, 29, .28);
+      clip-path: polygon(12% 0, 88% 0, 100% 45%, 88% 100%, 12% 100%, 0 45%);
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      will-change: left, transform, opacity;
+    }
+    .world-slime-layer {
+      position: absolute;
+      z-index: 11;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 800%;
+      pointer-events: none;
+    }
+    .world-slime {
+      position: absolute;
+      z-index: 8;
+      width: clamp(48px, 6vw, 76px);
+      padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: grab;
+      pointer-events: auto;
+      touch-action: none;
+      transform: translate(-50%, -100%);
+      filter: drop-shadow(0 5px 4px rgba(20, 31, 27, .24));
+      user-select: none;
+      -webkit-user-select: none;
+      will-change: left, top, transform;
+    }
+    .world-slime:active { cursor: grabbing; }
+    .world-slime svg { display: block; width: 100%; overflow: visible; pointer-events: none; animation: worldSlimeIdle 2.6s ease-in-out infinite; transform-origin: 50% 100%; }
+    .world-slime.boing svg { animation: worldSlimeBoing .55s ease; }
+    .world-slime.dragging { opacity: .3; }
+    .world-slime-label {
+      position: absolute;
+      bottom: -2px;
+      left: 50%;
+      max-width: 110px;
+      overflow: hidden;
+      padding: .1rem .3rem;
+      border: 1px solid rgba(73, 61, 50, .4);
+      color: #493d32;
+      background: rgba(245, 239, 217, .9);
+      font-family: "Silkscreen", monospace;
+      font-size: .44rem;
+      line-height: 1;
+      pointer-events: none;
+      text-overflow: ellipsis;
+      transform: translateX(-50%);
+      white-space: nowrap;
+    }
+    .world-slime-shadow {
+      position: absolute;
+      z-index: 7;
+      width: clamp(30px, 4.5vw, 54px);
+      height: 10px;
+      background: rgba(28, 43, 29, .25);
+      clip-path: polygon(12% 0, 88% 0, 100% 45%, 88% 100%, 12% 100%, 0 45%);
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+    }
+    .slime-deploy {
+      position: absolute;
+      top: .35rem;
+      right: .35rem;
+      z-index: 2;
+      display: grid;
+      width: 28px;
+      height: 28px;
+      place-items: center;
+      padding: 0;
+      border: 1px solid #6d8c59;
+      border-radius: 2px;
+      color: #e8f5cf;
+      background: #314c34;
+      box-shadow: 0 2px #122016;
+      cursor: pointer;
+    }
+    .slime-deploy:hover { background: #47633d; }
+    .slime-deploy .icon { width: 15px; height: 15px; }
+    @keyframes worldSlimeIdle {
+      0%, 100% { transform: scale(1, 1); }
+      50% { transform: scale(1.035, .965); }
+    }
+    @keyframes worldSlimeBoing {
+      0%, 100% { transform: translateY(0) scale(1, 1); }
+      35% { transform: translateY(-12px) scale(.92, 1.08); }
+      65% { transform: translateY(0) scale(1.08, .9); }
+    }
     .app-page {
       position: relative;
       width: 100%;
@@ -469,6 +612,40 @@
     .arcade-help p { margin: 0; color: var(--muted); font-size: .7rem; line-height: 1.55; }
     .arcade-help .arcade-keys { font-size: .6rem; }
     .arcade-help .button { width: 100%; min-height: 36px; font-size: .65rem; }
+    .slime-craft { margin-top: 1.1rem; padding: 1rem; }
+    .craft-header { display: flex; align-items: center; justify-content: space-between; gap: .8rem; margin-bottom: .8rem; }
+    .craft-header h2 { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: 1.5rem; font-weight: 400; }
+    .craft-header .eyebrow { margin-bottom: .2rem; }
+    .craft-layout { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(210px, .75fr); gap: .9rem; }
+    .craft-products { min-width: 0; }
+    .product-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .5rem; }
+    .product-button { display: grid; min-width: 0; min-height: 74px; place-items: center; gap: .25rem; padding: .45rem; border: 2px solid var(--line); border-radius: 10px; color: var(--muted); background: rgba(255, 255, 255, .035); font-size: .62rem; font-weight: 900; line-height: 1.15; text-align: center; }
+    .product-button:hover { border-color: rgba(188, 232, 215, .35); }
+    .product-button.active { color: var(--ink); border-color: var(--mint); background: rgba(188, 232, 215, .13); box-shadow: inset 0 -3px rgba(188, 232, 215, .22); }
+    .product-button:disabled { cursor: not-allowed; opacity: .45; }
+    .product-icon { display: grid; width: 30px; height: 30px; place-items: center; border: 2px solid rgba(255, 255, 255, .25); background: var(--product-color); box-shadow: inset -5px -5px rgba(41, 57, 44, .2), 3px 3px rgba(0, 0, 0, .18); }
+    .product-icon svg { width: 22px; height: 22px; fill: rgba(255, 255, 255, .72); }
+    .craft-status { min-height: 2.8em; margin: .55rem 0 0; color: var(--muted); font-size: .68rem; line-height: 1.4; }
+    .craft-bench { display: flex; min-width: 0; align-items: stretch; flex-direction: column; gap: .55rem; padding: .65rem; border: 2px solid #526747; background: #182a1e; }
+    .craft-cauldron { position: relative; display: grid; min-height: 126px; flex: 1; overflow: hidden; place-items: center; border: 3px solid #202d25; background: linear-gradient(180deg, #233b2b 0 72%, #506f3e 72%); box-shadow: inset 0 4px #314a34, 0 4px #101c14; isolation: isolate; }
+    .craft-cauldron::before { position: absolute; bottom: 16px; left: 50%; z-index: 1; width: 74%; height: 56%; border: 4px solid #263329; background: #3e4b3d; clip-path: polygon(0 0, 100% 0, 88% 78%, 70% 100%, 30% 100%, 12% 78%); content: ""; transform: translateX(-50%); }
+    .craft-liquid { position: absolute; bottom: 24px; left: 50%; z-index: 2; width: 62%; height: 16px; background: var(--craft-color, #bce8d7); box-shadow: 0 -4px rgba(255, 255, 255, .2); transform: translateX(-50%); transition: background .3s; }
+    .craft-preview { position: relative; z-index: 3; width: min(122px, 72%); max-height: 108px; margin-bottom: 18px; filter: drop-shadow(0 5px 4px rgba(0, 0, 0, .25)); transform-origin: 50% 100%; }
+    .craft-bubble { position: absolute; z-index: 4; width: 9px; height: 9px; border: 2px solid #b9d7a1; background: rgba(185, 215, 161, .2); opacity: 0; pointer-events: none; }
+    .craft-bubble.one { bottom: 42px; left: 28%; }
+    .craft-bubble.two { bottom: 52px; left: 58%; width: 7px; height: 7px; }
+    .craft-bubble.three { bottom: 36px; left: 46%; width: 6px; height: 6px; }
+    .craft-cauldron.pouring .craft-preview { animation: craftPour .55s ease-in; }
+    .craft-cauldron.swirling .craft-preview { animation: craftSwirl .7s ease-in-out infinite; }
+    .craft-cauldron.bubbling .craft-bubble { animation: craftBubble .8s ease-out infinite; }
+    .craft-cauldron.bubbling .craft-bubble.two { animation-delay: .22s; }
+    .craft-cauldron.bubbling .craft-bubble.three { animation-delay: .44s; }
+    .craft-cauldron.revealing .craft-preview { animation: craftReveal .65s cubic-bezier(.2, .8, .2, 1); }
+    .craft-bench > .button { width: 100%; min-height: 38px; font-size: .68rem; }
+    @keyframes craftPour { from { opacity: .2; transform: translateY(-28px) scale(.7); } to { opacity: 1; transform: none; } }
+    @keyframes craftSwirl { 0%, 100% { transform: rotate(-4deg) scale(.94, 1.04); } 50% { transform: rotate(4deg) scale(1.05, .94); } }
+    @keyframes craftBubble { from { opacity: .8; transform: translateY(0) scale(.5); } to { opacity: 0; transform: translateY(-54px) scale(1.3); } }
+    @keyframes craftReveal { 0% { opacity: .3; transform: translateY(12px) scale(.72); } 65% { transform: translateY(-5px) scale(1.08, .92); } 100% { opacity: 1; transform: none; } }
 
     .gallery-toolbar { display: flex; min-height: 54px; align-items: center; justify-content: space-between; gap: .7rem; margin: .7rem 0 1rem; padding: .65rem .8rem; border: 1px solid var(--line); border-radius: 16px; background: rgba(255, 255, 255, .035); }
     .upload-status { color: var(--muted); font-size: .7rem; text-align: right; }
@@ -543,19 +720,18 @@
     .nature-counter { padding: .35rem .6rem; border: 1px solid rgba(255, 255, 255, .2); border-radius: 999px; color: #fff; background: rgba(20, 19, 41, .25); font-size: .6rem; font-weight: 900; backdrop-filter: blur(8px); }
     .nature-hint { position: absolute; bottom: .65rem; left: 50%; z-index: 4; max-width: 90%; padding: .38rem .7rem; border: 1px solid rgba(255, 255, 255, .2); border-radius: 999px; color: rgba(255, 255, 255, .92); background: rgba(20, 19, 41, .46); font-size: .6rem; font-weight: 800; text-align: center; pointer-events: none; transform: translateX(-50%); backdrop-filter: blur(8px); white-space: nowrap; }
     .nature-empty { position: absolute; bottom: 17%; left: 50%; z-index: 3; width: min(360px, 80%); padding: .75rem; border: 1px dashed rgba(255, 255, 255, .3); border-radius: 14px; color: #fff; background: rgba(20, 19, 41, .24); font-size: .72rem; text-align: center; transform: translateX(-50%); }
-    .bunny { position: absolute; z-index: 6; width: clamp(58px, 7.5vw, 92px); padding: 0; border: 0; background: transparent; cursor: grab; touch-action: none; transform: translate(-50%, -50%); filter: drop-shadow(0 9px 7px rgba(35, 25, 47, .25)); user-select: none; -webkit-user-select: none; }
+    .bunny { position: absolute; z-index: 6; width: clamp(58px, 7.5vw, 92px); padding: 0; border: 0; background: transparent; cursor: grab; touch-action: none; transform: translate(-50%, -50%); filter: drop-shadow(0 5px 4px rgba(35, 25, 47, .2)); user-select: none; -webkit-user-select: none; will-change: left, top; }
     .bunny:active { cursor: grabbing; }
     .bunny svg { display: block; width: 100%; overflow: visible; pointer-events: none; }
-    .bunny-idle { transform-origin: 50% 90%; animation: bunnyWander var(--wander-time, 7s) ease-in-out var(--wander-delay, 0s) infinite; }
+    .bunny-idle { transform-origin: 50% 90%; animation: bunnyIdle var(--wander-time, 7s) ease-in-out var(--wander-delay, 0s) infinite; }
     .bunny-idle .bunny-ear { transform-origin: 50% 90%; animation: earWiggle 4.5s ease-in-out var(--wander-delay, 0s) infinite; }
     .bunny:hover .bunny-idle, .bunny:focus-visible .bunny-idle { animation-play-state: paused; }
     .bunny.dragging { visibility: hidden; }
+    .bunny-shadow { position: absolute; z-index: 5; width: clamp(34px, 4.5vw, 56px); height: 11px; background: rgba(35, 25, 47, .26); clip-path: polygon(12% 0, 88% 0, 100% 45%, 88% 100%, 12% 100%, 0 45%); pointer-events: none; transform: translate(-50%, -50%); will-change: left, top, transform, opacity; }
     .bunny-name { position: absolute; bottom: -4px; left: 50%; padding: .12rem .35rem; border-radius: 999px; color: #34273e; background: rgba(255, 255, 255, .82); font-size: .52rem; font-weight: 900; pointer-events: none; transform: translateX(-50%); white-space: nowrap; }
-    @keyframes bunnyWander {
-      0%, 100% { transform: translate(0, 0) rotate(-1deg); }
-      25% { transform: translate(14px, -4px) rotate(1.5deg); }
-      50% { transform: translate(4px, -10px) rotate(-.5deg) scaleY(.98); }
-      75% { transform: translate(-12px, -3px) rotate(-2deg); }
+    @keyframes bunnyIdle {
+      0%, 100% { transform: translateY(0) scaleY(1); }
+      50% { transform: translateY(-1px) scaleY(.985); }
     }
     @keyframes earWiggle { 0%, 70%, 100% { transform: rotate(0); } 78% { transform: rotate(-6deg); } 88% { transform: rotate(4deg); } }
 
@@ -1044,26 +1220,57 @@
       .home-footer { margin-top: .7rem; font-size: .55rem; }
       .hero-wrap { min-height: 190px; }
       .hero-slime { width: min(230px, 75%); }
-      .slime-layout { grid-template-columns: minmax(190px, .75fr) minmax(310px, 1.25fr); gap: .7rem; }
-      .slime-preview-card { min-height: 210px; padding: .7rem; }
-      .slime-preview { width: min(190px, 78%); }
-      .preview-name { font-size: .95rem; }
-      .slime-controls { gap: .5rem; padding: .65rem; }
-      .control-label { margin-bottom: .25rem; font-size: .56rem; }
-      .text-input, .select-input { min-height: 34px; padding: .4rem .55rem; font-size: .66rem; }
-      .option-row { gap: .3rem; }
-      .option-button { min-height: 30px; padding: .3rem .45rem; font-size: .58rem; }
-      .color-grid { max-height: 100px; gap: .2rem; }
-      .slime-controls > .button { min-height: 34px; padding: .4rem .6rem; font-size: .64rem; }
-      .slime-arcade { margin-top: .6rem; padding: .65rem; }
-      .arcade-header h2 { font-size: 1rem; }
-      .arcade-stats { font-size: .58rem; }
+      #page-slime { display: grid; grid-template-columns: minmax(210px, .78fr) minmax(300px, 1.22fr); grid-template-rows: auto minmax(0, 1fr) auto; gap: .45rem .6rem; }
+      #page-slime .page-heading { grid-column: 1 / -1; grid-row: 1; margin-bottom: 0; }
+      #page-slime .page-heading p { display: none; }
+      #page-slime .slime-layout { grid-column: 1; grid-row: 2; grid-template-columns: minmax(76px, .42fr) minmax(126px, 1fr); gap: .4rem; min-height: 0; }
+      #page-slime .slime-preview-card { min-height: 0; padding: .45rem; }
+      #page-slime .slime-preview { width: min(126px, 100%); }
+      #page-slime .preview-name { font-size: .72rem; text-align: center; }
+      #page-slime .slime-controls { min-height: 0; gap: .38rem; padding: .45rem; overflow-y: auto; }
+      #page-slime .control-label { margin-bottom: .2rem; font-size: .5rem; }
+      #page-slime .text-input, #page-slime .select-input { min-height: 31px; padding: .32rem .42rem; font-size: .6rem; }
+      #page-slime .option-row { gap: .22rem; }
+      #page-slime .option-button { min-height: 27px; padding: .24rem .34rem; font-size: .52rem; }
+      #page-slime .color-grid { max-height: 82px; gap: .16rem; padding: .3rem; }
+      #page-slime .color-picker-footer { gap: .25rem; font-size: .5rem; }
+      #page-slime .random-color { min-height: 26px; padding: .22rem .35rem; font-size: .5rem; }
+      #page-slime .slime-controls > .button { min-height: 31px; padding: .32rem .45rem; font-size: .56rem; }
+      #page-slime .slime-craft { grid-column: 2; grid-row: 2; display: flex; min-height: 0; flex-direction: column; margin: 0; padding: .5rem; overflow: hidden; }
+      #page-slime .craft-header { flex: 0 0 auto; gap: .4rem; margin-bottom: .35rem; }
+      #page-slime .craft-header .eyebrow { display: none; }
+      #page-slime .craft-header h2 { font-size: .9rem; }
+      #page-slime .craft-layout { min-height: 0; flex: 1; grid-template-columns: minmax(0, 1.35fr) minmax(112px, .65fr); gap: .4rem; }
+      #page-slime .craft-products { min-height: 0; overflow-y: auto; }
+      #page-slime .product-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .28rem; }
+      #page-slime .product-button { min-height: 44px; gap: .12rem; padding: .18rem .12rem; font-size: .44rem; }
+      #page-slime .product-button > span:last-child { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      #page-slime .product-icon { width: 20px; height: 20px; border-width: 1px; }
+      #page-slime .product-icon svg { width: 15px; height: 15px; }
+      #page-slime .craft-status { min-height: 0; margin-top: .3rem; font-size: .52rem; line-height: 1.25; }
+      #page-slime .craft-bench { min-height: 0; gap: .3rem; padding: .35rem; border-width: 2px; }
+      #page-slime .craft-cauldron { min-height: 74px; }
+      #page-slime .craft-cauldron::before { bottom: 10px; border-width: 3px; }
+      #page-slime .craft-liquid { bottom: 16px; height: 11px; }
+      #page-slime .craft-preview { width: min(88px, 82%); max-height: 72px; margin-bottom: 12px; }
+      #page-slime .craft-bench > .button { min-height: 29px; padding: .28rem .4rem; font-size: .54rem; }
+      #page-slime .collection-head { display: none; }
+      #page-slime .slime-grid { grid-column: 1 / -1; grid-row: 3; display: flex; max-height: 52px; gap: .4rem; overflow-x: auto; overflow-y: hidden; padding-bottom: .2rem; }
+      #page-slime .slime-card { width: 104px; min-width: 104px; padding: .35rem; }
+      #page-slime .slime-card svg { height: 34px; }
+      #page-slime .slime-deploy { top: .2rem; right: .2rem; width: 22px; height: 22px; }
+      #page-slime .slime-deploy .icon { width: 13px; height: 13px; }
+      #page-slime .slime-card-name { margin-top: .1rem; font-size: .58rem; }
+      #page-slime .slime-card-owner { display: none; }
+      #page-slime .empty-state { min-width: 180px; padding: .5rem; font-size: .6rem; }
       .gift-stage { min-height: 200px; }
       .gift-box { width: min(200px, 58%); }
       .letter-reveal { padding: 1rem; }
       .letter-body { font-size: .82rem; line-height: 1.55; }
-      .wedding-layout { grid-template-columns: minmax(220px, .8fr) minmax(0, 1.2fr); }
-      .wedding-stage { min-height: 0; height: calc(100dvh - 162px); max-height: none; }
+      #page-wedding { display: grid; grid-template-rows: minmax(0, 1fr); }
+      .wedding-layout { min-height: 0; height: 100%; grid-template-columns: minmax(220px, .8fr) minmax(0, 1.2fr); }
+      .wedding-copy { min-height: 0; max-height: 100%; overflow-y: auto; }
+      .wedding-stage { min-height: 0; height: 100%; max-height: none; }
       .wedding-copy h1 { margin-bottom: .3rem; font-size: clamp(1.1rem, 2.3vw, 1.55rem); }
       .wedding-intro { margin-bottom: .45rem; font-size: .64rem; line-height: 1.35; }
       .wedding-actions { gap: .3rem; }
@@ -1154,6 +1361,26 @@
     }
 
     @media (max-height: 340px) and (orientation: landscape) {
+      .home-layout { min-height: 0; height: 100%; }
+      .home-copy { max-height: 100%; overflow-y: auto; }
+      .home-footer { display: none; }
+      .hero-wrap { min-height: 0; height: 100%; }
+      .hero-slime { width: min(170px, 72%); }
+      .wedding-intro, .wedding-note { display: none; }
+      .wedding-copy h1 { font-size: 1rem; }
+      .wedding-banner { top: 3%; }
+      #page-slime { grid-template-rows: auto minmax(0, 1fr); }
+      #page-slime .page-heading .eyebrow, #page-slime .collection-head, #page-slime .slime-grid { display: none; }
+      #page-slime .page-heading h1 { font-size: 1rem; }
+      #page-slime .product-button { min-height: 44px; }
+      #page-slime .craft-cauldron { min-height: 62px; }
+      #page-slime .craft-preview { max-height: 58px; }
+      #page-slime .craft-status { font-size: .48rem; }
+      .world-character { width: 42px; }
+      .world-character-label { font-size: .4rem; }
+      .world-slime { width: 44px; }
+      .world-slime-label { font-size: .4rem; }
+      .bunny { width: 44px; }
       .chat-panel { top: 50px; bottom: 50px; max-height: none; }
       .chat-header { min-height: 40px; padding: .3rem .5rem; }
       .chat-header .eyebrow { display: none; }
@@ -1204,6 +1431,7 @@
     <symbol id="i-mix" viewBox="0 0 24 24"><path d="M9 3h6M10 3v6L4 19a2 2 0 0 0 2 3h12a2 2 0 0 0 2-3L14 9V3"/><path d="M7 15h10M9 18h.01M14 17h.01"/></symbol>
     <symbol id="i-chat" viewBox="0 0 24 24"><path d="M3 4h18v13H9l-6 4V4Z"/><path d="M7 9h10M7 13h6"/></symbol>
     <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 20h16"/></symbol>
+    <symbol id="i-deploy" viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12Z"/><circle cx="12" cy="9" r="2.5"/></symbol>
   </svg>
 
   <div class="rotate-gate" id="rotate-gate">
@@ -1301,31 +1529,25 @@
             <button class="button button-mint" type="button" id="create-slime"><svg class="icon"><use href="#i-star"></use></svg><span data-field="slimeCreateButton">Create slime</span></button>
           </div>
         </div>
-        <section class="game-card slime-arcade" aria-labelledby="slime-game-title">
-          <div class="arcade-header">
-            <div><span class="eyebrow" data-field="gameEyebrow">Playable side quest</span><h2 id="slime-game-title" data-field="gameTitle">Slime Run</h2></div>
-            <div class="arcade-stats">
-              <span><em data-field="gameScoreLabel">Score</em> <strong id="game-score">0</strong></span>
-              <span><em data-field="gameHeartsLabel">Hearts</em> <strong id="game-hearts">♥♥♥</strong></span>
-              <span><em data-field="gameLevelLabel">Level</em> <strong id="game-level">1 / 3</strong></span>
-              <span><em data-field="gameCrystalsLabel">Crystals</em> <strong id="game-crystals">0 / 5</strong></span>
-            </div>
+        <section class="game-card slime-craft" aria-labelledby="slime-craft-title">
+          <div class="craft-header">
+            <div><span class="eyebrow" data-field="craftEyebrow">Product workshop</span><h2 id="slime-craft-title" data-field="craftTitle">Brew a new slime</h2></div>
+            <span class="role-badge" data-field="craftRule">Pick up to 3 products</span>
           </div>
-          <div class="arcade-layout">
-            <div class="arcade-screen-wrap">
-              <canvas id="slime-game" width="960" height="420" tabindex="0" aria-label="Slime Run game. Move with arrow keys or A and D. Jump with Space, W, or the up arrow." data-copy-aria="gameCanvasAria" data-field="gameCanvasFallback">Your browser needs Canvas to play Slime Run.</canvas>
-              <div class="arcade-touch" aria-label="Touch game controls" data-copy-aria="gameTouchAria">
-                <button type="button" data-game-control="left" aria-label="Move left" data-copy-aria="gameMoveLeftAria">←</button>
-                <button type="button" data-game-control="right" aria-label="Move right" data-copy-aria="gameMoveRightAria">→</button>
-                <button type="button" data-game-control="jump" aria-label="Jump" data-copy-aria="gameJumpAria"><span data-field="gameJumpButton">Jump ↑</span></button>
-              </div>
+          <div class="craft-layout">
+            <div class="craft-products">
+              <span class="control-label" data-field="craftProductsLabel">Product shelf</span>
+              <div class="product-grid" id="craft-products" aria-label="Slime making products" data-copy-aria="craftProductsAria"></div>
+              <p class="craft-status" id="craft-status" aria-live="polite" data-field="craftStatusReady">Choose the products you want to mix.</p>
             </div>
-            <aside class="arcade-help">
-              <p id="game-status" aria-live="polite" data-field="gameStatusReady">Collect every crystal, dodge the spikes, then hop into the portal.</p>
-              <p class="arcade-keys" data-field="gameKeyboardHelp">Keyboard: A / D or ← / → to move · Space / W / ↑ to jump</p>
-              <button class="button button-mint" type="button" id="start-slime-game" data-field="gameStartReady">Start game</button>
-              <button class="button button-ghost" type="button" id="pause-slime-game" hidden><span data-field="gamePauseButton">Pause</span></button>
-            </aside>
+            <div class="craft-bench">
+              <div class="craft-cauldron" id="craft-cauldron" aria-hidden="true">
+                <span class="craft-liquid"></span>
+                <svg class="craft-preview" id="craft-preview" viewBox="0 0 240 190"></svg>
+                <span class="craft-bubble one"></span><span class="craft-bubble two"></span><span class="craft-bubble three"></span>
+              </div>
+              <button class="button button-mint" type="button" id="craft-slime"><svg class="icon"><use href="#i-mix"></use></svg><span data-field="craftButton">Brew slime</span></button>
+            </div>
           </div>
         </section>
         <div class="collection-head"><h3 data-field="slimeCollectionTitle">Slime collection</h3><span class="role-badge" id="slime-count">0 friends</span></div>
@@ -1541,6 +1763,8 @@ You are loved more than this little game could ever hold.</p>
           </aside>
         </div>
       </section>
+      <div class="world-character-layer" id="world-characters" aria-label="Shane and Zyrell exploring the game" data-copy-aria="worldCharactersAria"></div>
+      <div class="world-slime-layer" id="world-slimes" aria-label="Slimes deployed in the world" data-copy-aria="worldSlimesAria"></div>
     </main>
 
     <nav class="tab-bar" aria-label="Game pages" data-copy-aria="gamePagesAria">
@@ -1716,33 +1940,47 @@ You are loved more than this little game could ever hold.</p>
       slimeMixing: "Mixing your little friend...",
       slimeCreatedCloud: "{name} bubbled into the collection.",
       slimeCreatedLocal: "{name} created for this session. Connect Firebase to save permanently.",
-      gameStatusReady: "Collect every crystal, dodge the spikes, then hop into the portal.",
-      gameStatusGameOver: "Out of hearts. Your slime is ready for another run!",
-      gameStatusOuch: "Ouch! Jump over spikes and blocky critters.",
-      gameStatusWon: "Course complete! Final score: {score}.",
-      gameStatusLevelClear: "Level clear! +250 points",
-      gameStatusNextLevel: "Collect every crystal, then reach the portal.",
-      gameStatusAllCrystals: "All crystals found! The portal is open.",
-      gameStatusCrystal: "Crystal collected! +100 points",
-      gameStatusPortalOne: "The portal needs {count} more crystal.",
-      gameStatusPortalMany: "The portal needs {count} more crystals.",
-      gameStatusResume: "Back in the run!",
-      gameStatusPaused: "Game paused.",
-      gameStartReady: "Start game",
-      gameStartPaused: "Resume game",
-      gameStartRunning: "Restart game",
-      gameStartAgain: "Play again",
-      gameOverlayPaused: "PAUSED",
-      gameOverlayGameOver: "GAME OVER",
-      gameOverlayWon: "COURSE CLEAR!",
-      gameOverlayLevelClear: "LEVEL CLEAR!",
-      gameOverlayReady: "SLIME RUN",
-      gameSubtitleReady: "Collect crystals. Dodge danger. Reach the portal.",
-      gameSubtitlePaused: "Press Resume when you are ready.",
-      gameSubtitleScore: "Score: {score}",
-      gameSubtitleFinalScore: "Final score: {score}",
-      gameSubtitleBonus: "+250 points",
-      gameToastComplete: "Slime Run complete — {score} points!",
+      craftEyebrow: "Product workshop",
+      craftTitle: "Brew a new slime",
+      craftRule: "Pick up to 3 products",
+      craftProductsLabel: "Product shelf",
+      craftProductsAria: "Slime making products",
+      craftStatusReady: "Choose the products you want to mix.",
+      craftStatusSelected: "{count} of 3 products ready.",
+      craftStatusLimit: "The cauldron can hold three products. Remove one first.",
+      craftStatusPouring: "Pouring your products into the cauldron...",
+      craftStatusSwirling: "Swirling the colors and textures...",
+      craftStatusBubbling: "Bubble, bubble... your slime is taking shape!",
+      craftStatusDone: "{name} is ready to join the collection.",
+      craftFailed: "The mixture fizzled. Try again.",
+      craftButton: "Brew slime",
+      craftNeedProducts: "Choose at least one product first.",
+      craftProductDew: "Moon Dew",
+      craftProductPetal: "Rose Petal",
+      craftProductMint: "Mint Leaf",
+      craftProductHoney: "Honey Drop",
+      craftProductBerry: "Berry Juice",
+      craftProductCloud: "Cloud Cream",
+      craftProductStar: "Star Dust",
+      craftProductCocoa: "Cocoa",
+      craftProductAria: "{name}. {selected}",
+      craftProductSelected: "Selected for the cauldron.",
+      craftProductAdd: "Tap to add to the cauldron.",
+      worldCharactersAria: "Shane and Zyrell exploring the game",
+      roamCharacterAria: "{name}, exploring {page}. Drag to move or let them walk.",
+      roamDragHint: "Drag {name} across the tabs to choose where they explore.",
+      worldSlimesAria: "Slimes deployed in the world",
+      slimeDeploy: "Deploy",
+      slimeDeployAria: "Deploy {name} into the current page.",
+      slimeDeployed: "{name} is exploring the {page} page.",
+      slimeDeployError: "Could not deploy slime.",
+      slimeWorldAria: "{name}. Drag to move between pages.",
+      slimeWorldMoveHint: "Drag this slime across the tabs to move it.",
+      slimeWorldOwnerOnly: "Only the slime's maker or the admin can move it.",
+      slimeWorldReturned: "Slime returned to the collection.",
+      slimeWorldMoveError: "Could not move slime",
+      slimeWorldDeleteError: "Could not remove deployed slime",
+      worldSlimesLoadError: "World slimes",
       galleryEmptySignedIn: "No gallery pages yet. Create the first four-photo memory.",
       galleryEmptySignedOut: "No gallery pages yet.",
       galleryNoFirebase: "Connect Firebase to enable the gallery.",
@@ -1930,8 +2168,6 @@ You are loved more than this little game could ever hold.</p>
       slimeCreateError: "Could not save slime: {error}",
       slimeDeleteError: "Could not delete slime: {error}",
       slimesLoadError: "Slimes: {error}",
-      gameLevelIndicator: "Level {current} of {total}",
-      gameCrystalIndicator: "{current} of {total}",
 
       natureNeedSignIn: "Sign in as a viewer or admin to arrange the garden.",
       natureNeedFirebase: "Connect Firebase to save bunny and tulip changes.",
@@ -2143,6 +2379,16 @@ You are loved more than this little game could ever hold.</p>
     const SLIME_COLORS = Array.from({ length: 100 }, (_, index) =>
       hslToHex((18 + index * 137.508) % 360, 58 + (index % 4) * 7, 56 + (index % 5) * 3)
     );
+    const SLIME_PRODUCTS = [
+      { id: "dew", label: "craftProductDew", color: "#9cc7da", shape: "drop" },
+      { id: "petal", label: "craftProductPetal", color: "#e7aaa1", shape: "petal" },
+      { id: "mint", label: "craftProductMint", color: "#9cc78c", shape: "leaf" },
+      { id: "honey", label: "craftProductHoney", color: "#f0cf76", shape: "drop" },
+      { id: "berry", label: "craftProductBerry", color: "#b98bd1", shape: "berry" },
+      { id: "cloud", label: "craftProductCloud", color: "#e9dfc2", shape: "cloud" },
+      { id: "star", label: "craftProductStar", color: "#f7dc74", shape: "star" },
+      { id: "cocoa", label: "craftProductCocoa", color: "#8b6252", shape: "square" },
+    ];
 
     const demoBunnies = [
       { id: "demo-mochi", color: bunnyColors[0], habitat: "bunnyBlue", x: .22, y: .69 },
@@ -2242,6 +2488,8 @@ You are loved more than this little game could ever hold.</p>
     let selectedEyes = "happy";
     let selectedAccessory = "none";
     let slimes = [];
+    let worldSlimes = [];
+    let activeWorldSlimeDrag = null;
     let galleryPages = [];
     let galleryIndex = 0;
     let photoViewerPhotos = [];
@@ -2271,12 +2519,18 @@ You are loved more than this little game could ever hold.</p>
     let blueDecorSeedPromise = null;
     const houseMotion = new Map();
     const catMotion = new Map();
+    const bunnyMotion = new Map();
+    const roamMotion = new Map();
     let houseMotionTicker = null;
+    let bunnyMotionTicker = null;
+    let roamMotionTicker = null;
     let selectedWardrobeCharacter = "girl";
     let placementFurniture = null;
     let activeHouseDrag = null;
+    let activeRoamDrag = null;
     let mixing = false;
-    let slimeGame = null;
+    let crafting = false;
+    let selectedProducts = [];
     let chatMessages = [];
     let chatUnsubscribe = null;
     let chatOpen = false;
@@ -2508,7 +2762,7 @@ You are loved more than this little game could ever hold.</p>
       });
       if (updateHash) history.replaceState(null, "", `#${pageId}`);
       document.title = documentTitle(pageId);
-      if (pageId !== "slime" && ["running", "transition"].includes(slimeGame?.state.mode)) pauseSlimeGame();
+      updateRoamingVisibility();
       if (pageId === "gallery") loadGalleryPages();
     }
 
@@ -2695,8 +2949,7 @@ You are loved more than this little game could ever hold.</p>
       renderWeddingScene();
       renderGalleryPages();
       renderChatMessages();
-      updateSlimeGameButtons();
-      if (slimeGame) drawSlimeGame();
+      renderCraftProducts();
       if (photoViewerPhotos.length) updatePhotoViewer();
       if (placementFurniture) {
         $("#house-hint").textContent = formatCopy("housePlacementHint", { item: furnitureTypeLabel(placementFurniture) }, `Tap a spot to place the ${furnitureTypeLabel(placementFurniture)}`);
@@ -3025,7 +3278,6 @@ You are loved more than this little game could ever hold.</p>
         button.classList.toggle("active", chatOpen);
       });
       if (chatOpen) {
-        if (currentPage === "slime" && ["running", "transition"].includes(slimeGame?.state.mode)) pauseSlimeGame();
         updateChatUi();
         renderChatMessages();
         if (user && role) setTimeout(() => $("#chat-input").focus(), 30);
@@ -3187,6 +3439,17 @@ You are loved more than this little game could ever hold.</p>
         owner.className = "slime-card-owner";
         owner.textContent = slime.createdBy === user?.uid ? copyText("slimeMadeByYou", "Made by you") : copyText("slimeOwnerOther", "Birthday universe");
         card.append(name, owner);
+        const deploy = document.createElement("button");
+        deploy.type = "button";
+        deploy.className = "slime-deploy";
+        deploy.innerHTML = '<svg class="icon" aria-hidden="true"><use href="#i-deploy"></use></svg>';
+        deploy.title = copyText("slimeDeploy", "Deploy");
+        deploy.setAttribute("aria-label", formatCopy("slimeDeployAria", { name: slime.name || copyText("slimeDefaultName", "Slime") }, `Deploy ${slime.name || "Slime"} into the current page.`));
+        deploy.addEventListener("click", (event) => {
+          event.stopPropagation();
+          deploySlime(slime);
+        });
+        card.append(deploy);
         const load = () => {
           if (performance.now() - Number(card.dataset.draggedAt || 0) < 400) return;
           selectedColor = SLIME_COLORS.includes(slime.color) ? slime.color : SLIME_COLORS[0];
@@ -3200,23 +3463,29 @@ You are loved more than this little game could ever hold.</p>
           showToast(formatCopy("slimeLoaded", { name: slime.name || copyText("slimeDefaultName", "Slime") }, `${slime.name || "Slime"} loaded into the lab.`));
         };
         card.addEventListener("click", load);
-        card.addEventListener("keydown", (event) => { if (event.key === "Enter" || event.key === " ") load(); });
+        card.addEventListener("keydown", (event) => { if (event.target === card && (event.key === "Enter" || event.key === " ")) load(); });
         if (role === "admin" || slime.createdBy === user?.uid) {
           card.classList.add("trash-draggable");
-          card.addEventListener("pointerdown", (event) => startTrashDrag(event, `slime:${slime.id}`, card, () => deleteSlime(slime, card)));
+          card.addEventListener("pointerdown", (event) => {
+            if (event.target.closest(".slime-deploy")) return;
+            startTrashDrag(event, `slime:${slime.id}`, card, () => deleteSlime(slime, card));
+          });
         }
         grid.append(card);
       });
     }
 
-    async function createSlime() {
+    async function createSlime(products = []) {
       if (!user || !role) {
         showToast(copyText("slimeNeedSignIn", "Sign in as a viewer or admin to save a slime."));
         openAuth();
-        return;
+        return false;
       }
       const name = $("#slime-name").value.trim() || copyText("slimePreviewName", "New slime");
-      const newSlime = { name, color: selectedColor, eyes: selectedEyes, accessory: selectedAccessory, createdBy: user.uid, createdAt: fs?.serverTimestamp ? fs.serverTimestamp() : Date.now() };
+      const safeProducts = Array.isArray(products)
+        ? products.filter((id) => SLIME_PRODUCTS.some((product) => product.id === id)).slice(0, 3)
+        : [];
+      const newSlime = { name, color: selectedColor, eyes: selectedEyes, accessory: selectedAccessory, products: safeProducts, createdBy: user.uid, createdAt: fs?.serverTimestamp ? fs.serverTimestamp() : Date.now() };
       const button = $("#create-slime");
       const preview = $("#slime-preview");
       const previewCard = preview.closest(".slime-preview-card");
@@ -3240,9 +3509,11 @@ You are loved more than this little game could ever hold.</p>
         showToast(db
           ? formatCopy("slimeCreatedCloud", { name }, `${name} bubbled into the collection.`)
           : formatCopy("slimeCreatedLocal", { name }, `${name} created for this session. Connect Firebase to save permanently.`));
+        return true;
       } catch (error) {
         updateSlimePreview();
         showAppError("slimeCreateError", "Could not save slime", error);
+        return false;
       } finally {
         preview.classList.remove("mixing");
         previewCard.classList.remove("mixing");
@@ -3260,449 +3531,331 @@ You are loved more than this little game could ever hold.</p>
       }
     }
 
-    const SLIME_LEVELS = [
-      {
-        platforms: [[120, 292, 150], [340, 236, 130], [540, 294, 150], [760, 246, 120]],
-        crystals: [[195, 258], [405, 202], [615, 260], [820, 212], [72, 326]],
-        spikes: [[282, 336, 38], [704, 336, 44]],
-        critters: [[465, 340, 430, 525, 62]],
-      },
-      {
-        platforms: [[70, 300, 120], [245, 244, 110], [420, 184, 120], [620, 254, 120], [800, 204, 110]],
-        crystals: [[130, 266], [300, 210], [480, 150], [680, 220], [855, 170]],
-        spikes: [[205, 336, 42], [560, 336, 42], [430, 154, 28]],
-        critters: [[365, 340, 340, 420, 74], [745, 340, 710, 790, 58]],
-      },
-      {
-        platforms: [[60, 286, 110], [220, 226, 100], [370, 166, 110], [540, 236, 110], [700, 176, 100], [840, 276, 70]],
-        crystals: [[115, 252], [270, 192], [425, 132], [595, 202], [750, 142], [875, 242]],
-        spikes: [[188, 336, 36], [500, 336, 48], [650, 336, 36], [380, 136, 26]],
-        critters: [[315, 340, 290, 370, 70], [595, 340, 565, 635, 84], [810, 340, 775, 830, 66]],
-      },
-    ];
-
-    function resetSlimeLevel() {
-      const state = slimeGame.state;
-      const level = SLIME_LEVELS[state.level - 1];
-      state.platforms = [{ x: 0, y: 366, w: 960, h: 54 }, ...level.platforms.map(([x, y, w]) => ({ x, y, w, h: 24 }))];
-      state.crystals = level.crystals.map(([x, y]) => ({ x, y, collected: false }));
-      state.spikes = level.spikes.map(([x, y, w]) => ({ x, y, w, h: 30 }));
-      state.critters = level.critters.map(([x, y, minX, maxX, speed]) => ({ x, y, w: 32, h: 26, minX, maxX, speed, direction: 1 }));
-      state.player = { x: 36, y: 330, w: 34, h: 36, vx: 0, vy: 0, onGround: false };
-      state.collected = 0;
-      state.jumpBuffer = 0;
-      state.coyote = 0;
-      state.invincible = 0;
-      state.transition = 0;
-      state.messageCooldown = 0;
-      updateSlimeGameStats();
+    function canManageWorldSlime(slime) {
+      return role === "admin" || slime.createdBy === user?.uid;
     }
 
-    function newSlimeGameState() {
-      return {
-        mode: "ready", level: 1, score: 0, hearts: 3, elapsed: 0, lastFrame: 0,
-        collected: 0, particles: [], keys: new Set(), pointers: new Map(), pausedFrom: null,
+    function worldSlimePageLabel(page) {
+      const key = pageTitleKeys[page];
+      return copyText(key, page) || page;
+    }
+
+    function applyWorldSlimePosition(slime, element, shadow) {
+      const pageIndex = Math.max(0, pages.indexOf(slime.page));
+      const x = Math.max(.08, Math.min(.92, Number(slime.x) || .5));
+      const y = Math.max(.68, Math.min(.92, Number(slime.y) || .86));
+      const left = `${(pageIndex + x) / pages.length * 100}%`;
+      const top = `${y * 100}%`;
+      if (element) {
+        if (element.style.left !== left) element.style.left = left;
+        if (element.style.top !== top) element.style.top = top;
+      }
+      if (shadow) {
+        if (shadow.style.left !== left) shadow.style.left = left;
+        if (shadow.style.top !== top) shadow.style.top = top;
+      }
+    }
+
+    function renderWorldSlimes() {
+      const layer = $("#world-slimes");
+      if (!layer) return;
+      layer.style.width = `${pages.length * 100}%`;
+      layer.replaceChildren();
+      worldSlimes.forEach((slime) => {
+        if (!pages.includes(slime.page)) return;
+        const shadow = document.createElement("span");
+        shadow.className = "world-slime-shadow";
+        shadow.setAttribute("aria-hidden", "true");
+        const element = document.createElement("button");
+        element.type = "button";
+        element.className = "world-slime";
+        element.dataset.worldSlimeId = slime.id;
+        element.innerHTML = slimeSvg(slime.color, slime.eyes, slime.accessory);
+        element.setAttribute("aria-label", formatCopy("slimeWorldAria", { name: slime.name || copyText("slimeDefaultName", "Slime") }, `${slime.name || "Slime"}. Drag to move between pages.`));
+        const label = document.createElement("span");
+        label.className = "world-slime-label";
+        label.textContent = slime.name || copyText("slimeUnnamed", "Unnamed slime");
+        element.append(label);
+        element.addEventListener("pointerdown", (event) => startWorldSlimeDrag(slime, event));
+        element.addEventListener("click", () => {
+          if (performance.now() - Number(element.dataset.draggedAt || 0) < 400) return;
+          element.classList.remove("boing");
+          void element.offsetWidth;
+          element.classList.add("boing");
+          if (!canManageWorldSlime(slime)) showToast(copyText("slimeWorldOwnerOnly", "Only the slime's maker or the admin can move it."));
+        });
+        applyWorldSlimePosition(slime, element, shadow);
+        layer.append(shadow, element);
+      });
+    }
+
+    async function deploySlime(slime) {
+      if (!user || !role) {
+        showToast(copyText("slimeNeedSignIn", "Sign in as a viewer or admin to save a slime."));
+        openAuth();
+        return;
+      }
+      const placement = {
+        slimeId: slime.id,
+        name: String(slime.name || copyText("slimeDefaultName", "Slime")).slice(0, 40),
+        color: /^#[0-9a-fA-F]{6}$/.test(slime.color || "") ? slime.color : SLIME_COLORS[0],
+        eyes: eyeStyles.includes(slime.eyes) ? slime.eyes : "happy",
+        accessory: accessories.includes(slime.accessory) ? slime.accessory : "none",
+        page: currentPage,
+        x: .18 + Math.random() * .64,
+        y: .78 + Math.random() * .1,
+        createdBy: user.uid,
+        createdAt: fs?.serverTimestamp ? fs.serverTimestamp() : Date.now(),
       };
-    }
-
-    function updateSlimeGameStats() {
-      if (!slimeGame) return;
-      const state = slimeGame.state;
-      $("#game-score").textContent = state.score;
-      $("#game-hearts").textContent = "♥".repeat(state.hearts) + "♡".repeat(Math.max(0, 3 - state.hearts));
-      $("#game-level").textContent = formatCopy("gameLevelIndicator", { current: state.level, total: SLIME_LEVELS.length }, `Level ${state.level} of ${SLIME_LEVELS.length}`);
-      $("#game-crystals").textContent = formatCopy("gameCrystalIndicator", { current: state.collected, total: state.crystals.length }, `${state.collected} of ${state.crystals.length}`);
-    }
-
-    function setSlimeGameStatus(message) {
-      $("#game-status").textContent = message;
-    }
-
-    function updateSlimeGameButtons() {
-      const state = slimeGame.state;
-      $("#start-slime-game").textContent = state.mode === "paused"
-        ? copyText("gameStartPaused", "Resume game")
-        : state.mode === "running" || state.mode === "transition"
-          ? copyText("gameStartRunning", "Restart game")
-          : state.mode === "ready"
-            ? copyText("gameStartReady", "Start game")
-            : copyText("gameStartAgain", "Play again");
-      $("#pause-slime-game").hidden = state.mode !== "running";
-    }
-
-    function slimeGameInput(state, action) {
-      if (state.keys.has(action)) return true;
-      return [...state.pointers.values()].includes(action);
-    }
-
-    function addSlimeParticles(x, y, color, count = 10) {
-      for (let index = 0; index < count; index += 1) {
-        slimeGame.state.particles.push({
-          x, y, vx: (Math.random() - .5) * 180, vy: -60 - Math.random() * 150,
-          life: .45 + Math.random() * .35, color, size: 4 + Math.floor(Math.random() * 5),
-        });
+      try {
+        let id;
+        if (db) {
+          id = await fs.addDoc(fs.collection(db, "worldSlimes"), placement);
+        } else {
+          id = `local-world-${Date.now()}`;
+        }
+        const deployed = { id, ...placement, createdAt: Date.now() };
+        const existing = worldSlimes.findIndex((item) => item.id === id);
+        if (existing >= 0) worldSlimes[existing] = deployed;
+        else worldSlimes.push(deployed);
+        renderWorldSlimes();
+        showToast(formatCopy("slimeDeployed", { name: placement.name, page: worldSlimePageLabel(currentPage) }, `${placement.name} is exploring the ${currentPage} page.`));
+      } catch (error) {
+        showAppError("slimeDeployError", "Could not deploy slime", error);
       }
     }
 
-    function hurtSlimePlayer() {
-      const state = slimeGame.state;
-      if (state.invincible > 0 || state.mode !== "running") return;
-      state.hearts -= 1;
-      state.invincible = 1.25;
-      addSlimeParticles(state.player.x + 17, state.player.y + 18, "#ff9fae", 14);
-      updateSlimeGameStats();
-      if (state.hearts <= 0) {
-        state.mode = "gameover";
-        slimeGame.stop?.();
-        setSlimeGameStatus(copyText("gameStatusGameOver", "Out of hearts. Your slime is ready for another run!"));
-        updateSlimeGameButtons();
-        drawSlimeGame();
+    function startWorldSlimeDrag(slime, event) {
+      if (!event.isPrimary || event.button !== 0) return;
+      if (!user || !role) {
+        showToast(copyText("slimeNeedSignIn", "Sign in as a viewer or admin to save a slime."));
+        openAuth();
         return;
       }
-      state.player.x = 36;
-      state.player.y = 330;
-      state.player.vx = 0;
-      state.player.vy = 0;
-      setSlimeGameStatus(copyText("gameStatusOuch", "Ouch! Jump over spikes and blocky critters."));
+      if (!canManageWorldSlime(slime)) {
+        showToast(copyText("slimeWorldOwnerOnly", "Only the slime's maker or the admin can move it."));
+        return;
+      }
+      event.preventDefault();
+      const element = event.currentTarget;
+      const shadow = element.previousElementSibling;
+      activeWorldSlimeDrag = {
+        item: slime, element, shadow, pointerId: event.pointerId,
+        startClientX: event.clientX, startClientY: event.clientY,
+        startPage: slime.page, startX: Number(slime.x), moved: false,
+      };
+      element.classList.add("dragging");
+      $("#trash-bin").classList.add("active");
+      try { element.setPointerCapture(event.pointerId); } catch {}
     }
 
-    function completeSlimeLevel() {
-      const state = slimeGame.state;
-      state.score += 250;
-      updateSlimeGameStats();
-      if (state.level >= SLIME_LEVELS.length) {
-        state.mode = "won";
-        slimeGame.stop?.();
-        setSlimeGameStatus(formatCopy("gameStatusWon", { score: state.score }, `Course complete! Final score: ${state.score}.`));
-        showToast(formatCopy("gameToastComplete", { score: state.score }, `Slime Run complete — ${state.score} points!`));
+    function moveWorldSlimeDrag(event) {
+      if (!activeWorldSlimeDrag || event.pointerId !== activeWorldSlimeDrag.pointerId) return;
+      event.preventDefault();
+      const drag = activeWorldSlimeDrag;
+      if (Math.hypot(event.clientX - drag.startClientX, event.clientY - drag.startClientY) > 6) drag.moved = true;
+      const startIndex = Math.max(0, pages.indexOf(drag.startPage));
+      const worldX = startIndex + drag.startX + (event.clientX - drag.startClientX) / Math.max(1, viewport.clientWidth);
+      const pageIndex = Math.max(0, Math.min(pages.length - 1, Math.floor(worldX)));
+      drag.item.page = pages[pageIndex];
+      drag.item.x = Math.max(.08, Math.min(.92, worldX - pageIndex));
+      if (drag.item.page !== currentPage) showPage(drag.item.page);
+      applyWorldSlimePosition(drag.item, drag.element, drag.shadow);
+      $("#trash-bin").classList.toggle("over", isOverTrash(event.clientX, event.clientY));
+    }
+
+    function cleanupWorldSlimeDrag() {
+      if (!activeWorldSlimeDrag) return;
+      const drag = activeWorldSlimeDrag;
+      try { drag.element.releasePointerCapture(drag.pointerId); } catch {}
+      drag.element.classList.remove("dragging");
+      $("#trash-bin").classList.remove("active", "over");
+      activeWorldSlimeDrag = null;
+    }
+
+    async function finishWorldSlimeDrag(event) {
+      if (!activeWorldSlimeDrag || event.pointerId !== activeWorldSlimeDrag.pointerId) return;
+      const drag = activeWorldSlimeDrag;
+      drag.element.dataset.draggedAt = String(performance.now());
+      if (drag.moved && isOverTrash(event.clientX, event.clientY)) {
+        cleanupWorldSlimeDrag();
+        await deleteWorldSlime(drag.item, drag.element);
+        return;
+      }
+      const page = drag.item.page;
+      const x = drag.item.x;
+      cleanupWorldSlimeDrag();
+      if (!drag.moved) return;
+      try {
+        if (db) await fs.updateDoc(fs.doc(db, "worldSlimes", drag.item.id), { page, x });
+      } catch (error) {
+        drag.item.page = drag.startPage;
+        drag.item.x = drag.startX;
+        renderWorldSlimes();
+        showAppError("slimeWorldMoveError", "Could not move slime", error);
+      }
+    }
+
+    function cancelWorldSlimeDrag() {
+      if (!activeWorldSlimeDrag) return;
+      const drag = activeWorldSlimeDrag;
+      drag.item.page = drag.startPage;
+      drag.item.x = drag.startX;
+      cleanupWorldSlimeDrag();
+      renderWorldSlimes();
+    }
+
+    async function deleteWorldSlime(slime, source) {
+      try {
+        if (db) {
+          const removed = await trashInteraction(`world-slime:${slime.id}`, source, () => fs.deleteDoc(fs.doc(db, "worldSlimes", slime.id)));
+          if (!removed) return;
+        } else {
+          worldSlimes = worldSlimes.filter((item) => item.id !== slime.id);
+          renderWorldSlimes();
+        }
+        showToast(copyText("slimeWorldReturned", "Slime returned to the collection."));
+      } catch (error) {
+        showAppError("slimeWorldDeleteError", "Could not remove deployed slime", error);
+      }
+    }
+
+    function craftProductIcon(shape) {
+      const icons = {
+        drop: '<path d="M12 2 5 13h14Z"/>',
+        petal: '<path d="M12 3c5 0 8 4 6 8-1 3-4 5-6 3-2-2-3-5 0-11Z"/>',
+        leaf: '<path d="M4 20C3 8 9 3 21 3c0 11-5 17-17 17Zm3-3 9-9"/>',
+        berry: '<path d="M5 9h14v5c0 5-14 5-14 0Zm7-6 4 4h-8Z"/>',
+        cloud: '<path d="M5 18h14v4H5Zm2-4h10v4H7Zm3-5h4v5h-4Zm-3 5H4v-4h3Zm13 0h3v-4h-3ZM10 4h4v4h-4Z"/>',
+        star: '<path d="m12 2 3 7 7 1-5 5 1 7-6-4-6 4 1-7-5-5 7-1Z"/>',
+        square: '<path d="M4 4h16v16H4Z"/>',
+      };
+      return `<svg viewBox="0 0 24 24" shape-rendering="crispEdges" aria-hidden="true">${icons[shape] || icons.square}</svg>`;
+    }
+
+    function renderCraftProducts() {
+      const grid = $("#craft-products");
+      if (!grid) return;
+      grid.replaceChildren();
+      SLIME_PRODUCTS.forEach((product) => {
+        const selected = selectedProducts.includes(product.id);
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `product-button${selected ? " active" : ""}`;
+        button.dataset.craftProduct = product.id;
+        button.setAttribute("aria-pressed", String(selected));
+        button.disabled = crafting || (selectedProducts.length >= 3 && !selected);
+        const name = copyText(product.label, product.id);
+        button.setAttribute("aria-label", formatCopy("craftProductAria", {
+          name,
+          selected: selected ? copyText("craftProductSelected", "Selected for the cauldron.") : copyText("craftProductAdd", "Tap to add to the cauldron."),
+        }, `${name}. ${selected ? "Selected for the cauldron." : "Tap to add to the cauldron."}`));
+        const icon = document.createElement("span");
+        icon.className = "product-icon";
+        icon.style.setProperty("--product-color", product.color);
+        icon.innerHTML = craftProductIcon(product.shape);
+        const label = document.createElement("span");
+        label.textContent = name;
+        button.append(icon, label);
+        button.addEventListener("click", () => toggleCraftProduct(product.id));
+        grid.append(button);
+      });
+    }
+
+    function toggleCraftProduct(id) {
+      if (crafting) return;
+      if (selectedProducts.includes(id)) {
+        selectedProducts = selectedProducts.filter((productId) => productId !== id);
+      } else if (selectedProducts.length < 3) {
+        selectedProducts.push(id);
       } else {
-        state.mode = "transition";
-        state.transition = 1.15;
-        setSlimeGameStatus(copyText("gameStatusLevelClear", "Level clear! +250 points"));
-      }
-      updateSlimeGameButtons();
-    }
-
-    function updateSlimeGame(time) {
-      const state = slimeGame.state;
-      const dt = state.lastFrame ? Math.min(.05, (time - state.lastFrame) / 1000) : 0;
-      state.lastFrame = time;
-      state.elapsed += dt;
-      state.messageCooldown = Math.max(0, state.messageCooldown - dt);
-      state.particles.forEach((particle) => {
-        particle.x += particle.vx * dt;
-        particle.y += particle.vy * dt;
-        particle.vy += 420 * dt;
-        particle.life -= dt;
-      });
-      state.particles = state.particles.filter((particle) => particle.life > 0);
-
-      if (state.mode === "transition") {
-        state.transition -= dt;
-        if (state.transition <= 0) {
-          state.level += 1;
-          resetSlimeLevel();
-          state.mode = "running";
-          setSlimeGameStatus(copyText("gameStatusNextLevel", "Collect every crystal, then reach the portal."));
-          updateSlimeGameButtons();
-        }
-        drawSlimeGame();
+        $("#craft-status").textContent = copyText("craftStatusLimit", "The cauldron can hold three products. Remove one first.");
         return;
       }
-      if (state.mode !== "running") return;
-
-      const player = state.player;
-      const left = slimeGameInput(state, "left");
-      const right = slimeGameInput(state, "right");
-      const jump = slimeGameInput(state, "jump");
-      if (jump && !state.jumpHeld) state.jumpBuffer = .14;
-      state.jumpHeld = jump;
-      state.jumpBuffer = Math.max(0, state.jumpBuffer - dt);
-      state.coyote = player.onGround ? .1 : Math.max(0, state.coyote - dt);
-      state.invincible = Math.max(0, state.invincible - dt);
-      player.vx = (Number(right) - Number(left)) * 250;
-      if (state.jumpBuffer > 0 && state.coyote > 0) {
-        player.vy = -620;
-        player.onGround = false;
-        state.jumpBuffer = 0;
-        state.coyote = 0;
-        addSlimeParticles(player.x + 17, player.y + 36, "#d8c79e", 5);
-      }
-      if (!jump && player.vy < -220) player.vy += 1500 * dt;
-      player.vy += 1500 * dt;
-      player.x = Math.max(8, Math.min(960 - player.w - 8, player.x + player.vx * dt));
-      const previousBottom = player.y + player.h;
-      player.y += player.vy * dt;
-      player.onGround = false;
-      if (player.vy >= 0) {
-        for (const platform of state.platforms) {
-          if (player.x + player.w > platform.x && player.x < platform.x + platform.w && previousBottom <= platform.y + 5 && player.y + player.h >= platform.y) {
-            player.y = platform.y - player.h;
-            player.vy = 0;
-            player.onGround = true;
-            break;
-          }
-        }
-      }
-
-      state.critters.forEach((critter) => {
-        critter.x += critter.speed * critter.direction * dt;
-        if (critter.x <= critter.minX || critter.x >= critter.maxX) critter.direction *= -1;
-      });
-
-      const overlaps = (a, b) => a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
-      state.crystals.forEach((crystal) => {
-        if (!crystal.collected && overlaps(player, { x: crystal.x - 13, y: crystal.y - 13, w: 26, h: 26 })) {
-          crystal.collected = true;
-          state.collected += 1;
-          state.score += 100;
-          addSlimeParticles(crystal.x, crystal.y, "#f7dc74", 12);
-          updateSlimeGameStats();
-          setSlimeGameStatus(state.collected === state.crystals.length
-            ? copyText("gameStatusAllCrystals", "All crystals found! The portal is open.")
-            : copyText("gameStatusCrystal", "Crystal collected! +100 points"));
-        }
-      });
-      if (state.invincible <= 0) {
-        const hitbox = { x: player.x + 4, y: player.y + 5, w: player.w - 8, h: player.h - 7 };
-        if (state.spikes.some((spike) => overlaps(hitbox, { x: spike.x + 4, y: spike.y + 8, w: spike.w - 8, h: spike.h - 8 })) || state.critters.some((critter) => overlaps(hitbox, critter))) hurtSlimePlayer();
-      }
-      if (player.y > 460) hurtSlimePlayer();
-      if (state.mode !== "running") return;
-
-      const portal = { x: 902, y: 294, w: 42, h: 72 };
-      if (overlaps(player, portal)) {
-        if (state.collected === state.crystals.length) completeSlimeLevel();
-        else if (state.messageCooldown <= 0) {
-          state.messageCooldown = 1.5;
-          const remaining = state.crystals.length - state.collected;
-          setSlimeGameStatus(formatCopy(remaining === 1 ? "gameStatusPortalOne" : "gameStatusPortalMany", { count: remaining }, `The portal needs ${remaining} more crystal${remaining === 1 ? "" : "s"}.`));
-        }
-      }
-      drawSlimeGame();
+      renderCraftProducts();
+      updateCraftPreview();
     }
 
-    function drawSlimeGame() {
-      const state = slimeGame.state;
-      const context = slimeGame.context;
-      const width = 960;
-      const height = 420;
-      slimeGame.canvas.dataset.mode = state.mode;
-      slimeGame.canvas.dataset.playerX = String(Math.round(state.player.x));
-      slimeGame.canvas.dataset.playerY = String(Math.round(state.player.y));
-      slimeGame.canvas.dataset.onGround = String(state.player.onGround);
-      context.imageSmoothingEnabled = false;
-      context.fillStyle = "#8fc2d8";
-      context.fillRect(0, 0, width, height);
-      context.fillStyle = "#d9edf0";
-      [[70, 54, 92, 24], [310, 88, 70, 20], [660, 46, 108, 26]].forEach(([x, y, w, h]) => {
-        context.fillRect(x + 18, y, w - 36, h);
-        context.fillRect(x, y + h * .45, w, h * .55);
-      });
-      context.fillStyle = "#6e9e70";
-      context.beginPath();
-      context.moveTo(0, 300);
-      for (let x = 0; x <= width; x += 60) context.lineTo(x, 300 - ((x / 60) % 3) * 24);
-      context.lineTo(width, 366);
-      context.lineTo(0, 366);
-      context.fill();
-      context.fillStyle = "#416f4a";
-      context.fillRect(0, 336, width, 30);
-
-      state.platforms.forEach((platform) => {
-        context.fillStyle = "#76543a";
-        context.fillRect(platform.x, platform.y, platform.w, platform.h);
-        context.fillStyle = "#a37b50";
-        for (let x = platform.x + 12; x < platform.x + platform.w; x += 30) context.fillRect(x, platform.y + 12, 10, 7);
-        context.fillStyle = "#5d9b45";
-        context.fillRect(platform.x, platform.y, platform.w, 10);
-        context.fillStyle = "#83bd57";
-        context.fillRect(platform.x, platform.y, platform.w, 4);
-      });
-
-      state.spikes.forEach((spike) => {
-        context.fillStyle = "#303942";
-        context.beginPath();
-        context.moveTo(spike.x, spike.y + spike.h);
-        context.lineTo(spike.x + spike.w * .25, spike.y + 8);
-        context.lineTo(spike.x + spike.w * .5, spike.y + spike.h);
-        context.lineTo(spike.x + spike.w * .75, spike.y + 8);
-        context.lineTo(spike.x + spike.w, spike.y + spike.h);
-        context.fill();
-        context.fillStyle = "#aab7b5";
-        context.fillRect(spike.x + spike.w * .25, spike.y + 12, 5, 12);
-        context.fillRect(spike.x + spike.w * .75, spike.y + 12, 5, 12);
-      });
-
-      state.critters.forEach((critter) => {
-        const bob = Math.sin(state.elapsed * 8 + critter.x) * 2;
-        context.fillStyle = "#313b35";
-        context.fillRect(critter.x + 3, critter.y + 8 + bob, critter.w - 6, critter.h - 8);
-        context.fillStyle = "#d7784d";
-        context.fillRect(critter.x + 6, critter.y + 5 + bob, critter.w - 12, critter.h - 7);
-        context.fillStyle = "#f0a05f";
-        context.fillRect(critter.x + 10, critter.y + 7 + bob, critter.w - 20, 6);
-        context.fillStyle = "#202c28";
-        context.fillRect(critter.x + 10, critter.y + 15 + bob, 4, 5);
-        context.fillRect(critter.x + 22, critter.y + 15 + bob, 4, 5);
-      });
-
-      state.crystals.forEach((crystal) => {
-        if (crystal.collected) return;
-        const y = crystal.y + Math.sin(state.elapsed * 4 + crystal.x) * 4;
-        context.fillStyle = "#735b2d";
-        context.fillRect(crystal.x - 10, y - 12, 20, 24);
-        context.fillStyle = "#f7dc74";
-        context.beginPath();
-        context.moveTo(crystal.x, y - 16);
-        context.lineTo(crystal.x + 12, y);
-        context.lineTo(crystal.x, y + 16);
-        context.lineTo(crystal.x - 12, y);
-        context.fill();
-        context.fillStyle = "#fff3bd";
-        context.fillRect(crystal.x - 3, y - 9, 5, 10);
-      });
-
-      const unlocked = state.collected === state.crystals.length;
-      context.fillStyle = "#293b36";
-      context.fillRect(898, 288, 50, 78);
-      context.fillStyle = unlocked ? (Math.floor(state.elapsed * 6) % 2 ? "#72d6b1" : "#b9a7ee") : "#718079";
-      context.fillRect(904, 294, 38, 72);
-      context.fillStyle = unlocked ? "#d8fff0" : "#9eaaa1";
-      context.fillRect(910, 302, 26, 60);
-      if (!unlocked) {
-        context.fillStyle = "#46564c";
-        context.fillRect(918, 324, 10, 14);
-        context.fillRect(915, 320, 16, 6);
-      }
-
-      if (!(state.invincible > 0 && Math.floor(state.elapsed * 14) % 2)) {
-        const player = state.player;
-        const color = selectedColor;
-        context.fillStyle = "rgba(31, 48, 35, .25)";
-        context.fillRect(player.x - 2, player.y + player.h - 4, player.w + 4, 7);
-        context.fillStyle = "#26362d";
-        context.fillRect(player.x + 3, player.y + 9, player.w - 6, player.h - 9);
-        context.fillStyle = color;
-        context.fillRect(player.x + 6, player.y + 5, player.w - 12, player.h - 8);
-        context.fillRect(player.x + 2, player.y + 17, player.w - 4, player.h - 20);
-        context.fillStyle = shadeHex(color, 30);
-        context.fillRect(player.x + 8, player.y + 7, 13, 6);
-        context.fillStyle = shadeHex(color, -28);
-        context.fillRect(player.x + player.w - 9, player.y + 17, 5, player.h - 23);
-        context.fillStyle = "#20312a";
-        context.fillRect(player.x + 9, player.y + 18, 5, 7);
-        context.fillRect(player.x + 22, player.y + 18, 5, 7);
-        context.fillRect(player.x + 15, player.y + 28, 7, 3);
-      }
-
-      state.particles.forEach((particle) => {
-        context.globalAlpha = Math.min(1, particle.life * 2);
-        context.fillStyle = particle.color;
-        context.fillRect(Math.round(particle.x), Math.round(particle.y), particle.size, particle.size);
-      });
-      context.globalAlpha = 1;
-
-      if (state.mode !== "running") {
-        context.fillStyle = "rgba(20, 31, 27, .7)";
-        context.fillRect(0, 0, width, height);
-        context.textAlign = "center";
-        context.fillStyle = "#fff4ce";
-        context.font = "bold 42px Silkscreen, monospace";
-        const overlays = {
-          paused: ["gameOverlayPaused", "gameSubtitlePaused"], gameover: ["gameOverlayGameOver", "gameSubtitleScore"],
-          won: ["gameOverlayWon", "gameSubtitleFinalScore"], transition: ["gameOverlayLevelClear", "gameSubtitleBonus"],
-          ready: ["gameOverlayReady", "gameSubtitleReady"],
-        };
-        const [titleKey, subtitleKey] = overlays[state.mode] || overlays.ready;
-        const titleDefaults = { gameOverlayPaused: "PAUSED", gameOverlayGameOver: "GAME OVER", gameOverlayWon: "COURSE CLEAR!", gameOverlayLevelClear: "LEVEL CLEAR!", gameOverlayReady: "SLIME RUN" };
-        const subtitleDefaults = {
-          gameSubtitleReady: "Collect crystals. Dodge danger. Reach the portal.", gameSubtitlePaused: "Press Resume when you are ready.",
-          gameSubtitleScore: "Score: {score}", gameSubtitleFinalScore: "Final score: {score}", gameSubtitleBonus: "+250 points",
-        };
-        context.fillText(copyText(titleKey, titleDefaults[titleKey]), width / 2, 180);
-        context.font = "22px Pixelify Sans, monospace";
-        context.fillStyle = "#e5f1df";
-        context.fillText(formatCopy(subtitleKey, { score: state.score }, subtitleDefaults[subtitleKey]), width / 2, 222);
-      }
+    function craftResultColor() {
+      const products = selectedProducts.map((id) => SLIME_PRODUCTS.find((product) => product.id === id)).filter(Boolean);
+      if (!products.length) return selectedColor;
+      return products.map((product) => product.color).reduce((color, next) => blendHex(color, next));
     }
 
-    function startSlimeGame() {
-      if (!slimeGame) initSlimeGame();
-      if (slimeGame.state.mode === "paused") {
-        slimeGame.state.mode = slimeGame.state.pausedFrom || "running";
-        slimeGame.state.pausedFrom = null;
-        slimeGame.state.lastFrame = 0;
-        slimeGame.stop = createFrameTicker(updateSlimeGame);
-        setSlimeGameStatus(copyText("gameStatusResume", "Back in the run!"));
-        updateSlimeGameButtons();
-        slimeGame.canvas.focus({ preventScroll: true });
+    function updateCraftPreview() {
+      const color = craftResultColor();
+      if (selectedProducts.length) {
+        selectedColor = color;
+        selectOption("#color-options", "color", selectedColor);
+        updateSlimePreview();
+      }
+      const station = $("#craft-cauldron");
+      station.style.setProperty("--craft-color", color);
+      $("#craft-preview").innerHTML = slimeSvg(color, selectedEyes, selectedAccessory);
+      $("#craft-status").textContent = selectedProducts.length
+        ? formatCopy("craftStatusSelected", { count: selectedProducts.length }, `${selectedProducts.length} of 3 products ready.`)
+        : copyText("craftStatusReady", "Choose the products you want to mix.");
+    }
+
+    async function craftSlime() {
+      if (crafting) return;
+      if (!selectedProducts.length) {
+        showToast(copyText("craftNeedProducts", "Choose at least one product first."));
         return;
       }
-      slimeGame.stop?.();
-      slimeGame.state = newSlimeGameState();
-      slimeGame.state.mode = "running";
-      resetSlimeLevel();
-      slimeGame.stop = createFrameTicker(updateSlimeGame);
-      setSlimeGameStatus(copyText("gameStatusNextLevel", "Collect every crystal, then reach the portal."));
-      updateSlimeGameButtons();
-      slimeGame.canvas.focus({ preventScroll: true });
-      drawSlimeGame();
-    }
-
-    function pauseSlimeGame() {
-      if (!slimeGame || !["running", "transition"].includes(slimeGame.state.mode)) return;
-      slimeGame.state.pausedFrom = slimeGame.state.mode;
-      slimeGame.state.mode = "paused";
-      slimeGame.stop?.();
-      slimeGame.state.keys.clear();
-      slimeGame.state.pointers.clear();
-      $$("[data-game-control]").forEach((button) => button.classList.remove("pressed"));
-      setSlimeGameStatus(copyText("gameStatusPaused", "Game paused."));
-      updateSlimeGameButtons();
-      drawSlimeGame();
-    }
-
-    function initSlimeGame() {
-      const canvas = $("#slime-game");
-      slimeGame = { canvas, context: canvas.getContext("2d"), state: newSlimeGameState(), stop: null };
-      resetSlimeLevel();
-      drawSlimeGame();
-      $("#start-slime-game").addEventListener("click", startSlimeGame);
-      $("#pause-slime-game").addEventListener("click", pauseSlimeGame);
-      $$("[data-game-control]").forEach((button) => {
-        button.addEventListener("pointerdown", (event) => {
-          event.preventDefault();
-          if (slimeGame.state.mode !== "running") return;
-          button.setPointerCapture(event.pointerId);
-          slimeGame.state.pointers.set(event.pointerId, button.dataset.gameControl);
-          button.classList.add("pressed");
-        });
-        const release = (event) => {
-          slimeGame.state.pointers.delete(event.pointerId);
-          button.classList.remove("pressed");
-        };
-        button.addEventListener("pointerup", release);
-        button.addEventListener("pointercancel", release);
-        button.addEventListener("lostpointercapture", release);
-      });
-      canvas.addEventListener("pointerdown", (event) => {
-        if (slimeGame.state.mode === "running") {
-          event.preventDefault();
-          canvas.setPointerCapture(event.pointerId);
-          slimeGame.state.pointers.set("canvas", "jump");
-          canvas.focus({ preventScroll: true });
+      if (!user || !role) {
+        showToast(copyText("slimeNeedSignIn", "Sign in as a viewer or admin to save a slime."));
+        openAuth();
+        return;
+      }
+      crafting = true;
+      const button = $("#craft-slime");
+      const station = $("#craft-cauldron");
+      const status = $("#craft-status");
+      const name = $("#slime-name").value.trim() || copyText("slimePreviewName", "New slime");
+      const products = [...selectedProducts];
+      selectedColor = craftResultColor();
+      selectOption("#color-options", "color", selectedColor);
+      updateSlimePreview();
+      button.disabled = true;
+      renderCraftProducts();
+      station.classList.remove("pouring", "swirling", "bubbling", "revealing");
+      try {
+        station.classList.add("pouring");
+        status.textContent = copyText("craftStatusPouring", "Pouring your products into the cauldron...");
+        const save = createSlime(products);
+        await new Promise((resolve) => setTimeout(resolve, 480));
+        station.classList.remove("pouring");
+        station.classList.add("swirling");
+        status.textContent = copyText("craftStatusSwirling", "Swirling the colors and textures...");
+        await new Promise((resolve) => setTimeout(resolve, 520));
+        station.classList.remove("swirling");
+        station.classList.add("bubbling");
+        status.textContent = copyText("craftStatusBubbling", "Bubble, bubble... your slime is taking shape!");
+        const saved = await save;
+        if (!saved) {
+          status.textContent = copyText("craftFailed", "The mixture fizzled. Try again.");
+          return;
         }
-      });
-      canvas.addEventListener("pointerup", () => slimeGame.state.pointers.delete("canvas"));
-      canvas.addEventListener("pointercancel", () => slimeGame.state.pointers.delete("canvas"));
+        station.classList.remove("bubbling");
+        station.classList.add("revealing");
+        $("#craft-preview").innerHTML = slimeSvg(selectedColor, selectedEyes, selectedAccessory);
+        status.textContent = formatCopy("craftStatusDone", { name }, `${name} is ready to join the collection.`);
+        selectedProducts = [];
+        await new Promise((resolve) => setTimeout(resolve, 650));
+      } finally {
+        station.classList.remove("pouring", "swirling", "bubbling", "revealing");
+        crafting = false;
+        button.disabled = false;
+        renderCraftProducts();
+        updateCraftPreview();
+      }
     }
 
     function bunnySvg(color) {
       const safeColor = bunnyColors.includes(color) ? color : bunnyColors[0];
       const shade = shadeHex(safeColor, -28);
       return `<svg viewBox="0 0 100 120" shape-rendering="crispEdges" aria-hidden="true">
-        <path d="M28 108h44v8H28Z" fill="#31442e" opacity=".25"/>
         <g class="bunny-idle" style="--wander-time:${6 + Math.random() * 4}s;--wander-delay:-${Math.random() * 6}s">
           <g class="bunny-ear"><path d="M26 8h16v44H26Z" fill="${safeColor}" stroke="#5b493c" stroke-width="3"/><path d="M31 14h6v30h-6Z" fill="#e7aaa1"/></g>
           <g class="bunny-ear"><path d="M58 8h16v44H58Z" fill="${safeColor}" stroke="#5b493c" stroke-width="3"/><path d="M63 14h6v30h-6Z" fill="#e7aaa1"/></g>
@@ -3762,22 +3915,117 @@ You are loved more than this little game could ever hold.</p>
       }
     }
 
+    function ensureBunnyMotion(bunny) {
+      const habitat = bunny.habitat === "garden" ? "garden" : "bunnyBlue";
+      const baseX = Math.max(.09, Math.min(.91, Number(bunny.x) || .5));
+      const baseY = Math.max(.28, Math.min(.86, Number(bunny.y) || .7));
+      let motion = bunnyMotion.get(bunny.id);
+      if (!motion) {
+        motion = {
+          habitat, baseX, baseY, x: baseX, y: baseY, vx: 0, vy: 0, onGround: true,
+          nextHop: performance.now() + 1600 + Math.random() * 5200,
+          savedX: Number(bunny.x), savedY: Number(bunny.y), savedHabitat: habitat,
+          element: null, shadow: null,
+        };
+        bunnyMotion.set(bunny.id, motion);
+      }
+      if (habitat !== motion.savedHabitat || Math.abs(Number(bunny.x) - motion.savedX) > .002 || Math.abs(Number(bunny.y) - motion.savedY) > .002) {
+        Object.assign(motion, {
+          habitat, baseX, baseY, x: baseX, y: baseY, vx: 0, vy: 0, onGround: true,
+          nextHop: performance.now() + 1200 + Math.random() * 4200,
+        });
+      }
+      motion.savedX = Number(bunny.x);
+      motion.savedY = Number(bunny.y);
+      motion.savedHabitat = habitat;
+      return motion;
+    }
+
+    function applyBunnyMotion(motion) {
+      if (!motion.element) return;
+      const air = Math.max(0, motion.baseY - motion.y);
+      const left = `${motion.x * 100}%`;
+      const top = `${motion.y * 100}%`;
+      if (motion.element.style.left !== left) motion.element.style.left = left;
+      if (motion.element.style.top !== top) motion.element.style.top = top;
+      if (motion.element.classList.contains("hopping") !== !motion.onGround) motion.element.classList.toggle("hopping", !motion.onGround);
+      const grounded = String(motion.onGround);
+      if (motion.element.dataset.grounded !== grounded) motion.element.dataset.grounded = grounded;
+      if (motion.shadow) {
+        const shadowLeft = `${motion.x * 100}%`;
+        const shadowTop = `${(motion.baseY + .035) * 100}%`;
+        const opacity = String(Math.max(.18, 1 - air * 3));
+        const scale = Math.max(.55, 1 - air * 1.8);
+        const transform = `translate(-50%, -50%) scale(${scale})`;
+        if (motion.shadow.style.left !== shadowLeft) motion.shadow.style.left = shadowLeft;
+        if (motion.shadow.style.top !== shadowTop) motion.shadow.style.top = shadowTop;
+        if (motion.shadow.style.opacity !== opacity) motion.shadow.style.opacity = opacity;
+        if (motion.shadow.style.transform !== transform) motion.shadow.style.transform = transform;
+      }
+    }
+
+    function updateBunnyMotion(time, previousTime) {
+      if (!naturePages.includes(currentPage)) return;
+      const delta = Math.min(.05, Math.max(.001, (time - previousTime) / 1000));
+      bunnyMotion.forEach((motion, id) => {
+        if (motion.habitat !== currentPage || !motion.element) return;
+        if (activeNatureDrag?.kind === "bunny" && activeNatureDrag.item.id === id) return;
+        if (motion.onGround && time >= motion.nextHop) {
+          motion.vy = -(.27 + Math.random() * .12);
+          motion.vx = (Math.random() - .5) * .17;
+          motion.onGround = false;
+          motion.nextHop = time + 5600 + Math.random() * 6800;
+        }
+        if (!motion.onGround) {
+          motion.vy += 1.28 * delta;
+          motion.x += motion.vx * delta;
+          motion.y += motion.vy * delta;
+          if (motion.x <= .09 || motion.x >= .91) {
+            motion.x = Math.max(.09, Math.min(.91, motion.x));
+            motion.vx = 0;
+          }
+          if (motion.y >= motion.baseY) {
+            motion.y = motion.baseY;
+            motion.baseX = motion.x;
+            motion.vx = 0;
+            motion.vy = 0;
+            motion.onGround = true;
+          }
+        }
+        applyBunnyMotion(motion);
+      });
+    }
+
+    function startBunnyMotion() {
+      if (bunnyMotionTicker) return;
+      let previousTime = performance.now();
+      bunnyMotionTicker = createFrameTicker((time) => {
+        updateBunnyMotion(time, previousTime);
+        previousTime = time;
+      });
+    }
+
     function renderBunnies() {
       const visibleBunnies = (natureLoaded ? bunnies : demoBunnies).map((bunny) =>
         bunny.habitat === "bunnyRose" ? { ...bunny, habitat: "bunnyBlue" } : bunny
       );
-      $$("[data-habitat-stage]").forEach((stage) => stage.querySelectorAll(".bunny").forEach((bunny) => bunny.remove()));
+      $$("[data-habitat-stage]").forEach((stage) => stage.querySelectorAll(".bunny, .bunny-shadow").forEach((bunny) => bunny.remove()));
+      const visibleIds = new Set();
       visibleBunnies.forEach((bunny) => {
         if (!naturePages.includes(bunny.habitat)) return;
+        visibleIds.add(bunny.id);
         const stage = $(`[data-habitat-stage="${bunny.habitat}"]`);
         if (!stage) return;
+        const motion = ensureBunnyMotion(bunny);
+        const shadow = document.createElement("span");
+        shadow.className = "bunny-shadow";
+        shadow.dataset.shadowFor = bunny.id;
+        shadow.setAttribute("aria-hidden", "true");
         const element = document.createElement("div");
         element.className = "bunny";
         element.dataset.trashKey = `bunny:${bunny.id}`;
         element.tabIndex = 0;
         element.setAttribute("role", "button");
-        element.style.left = `${Math.max(.07, Math.min(.93, Number(bunny.x) || .5)) * 100}%`;
-        element.style.top = `${Math.max(.28, Math.min(.86, Number(bunny.y) || .7)) * 100}%`;
         element.innerHTML = bunnySvg(bunny.color);
         const name = document.createElement("span");
         name.className = "bunny-name";
@@ -3796,8 +4044,12 @@ You are loved more than this little game could ever hold.</p>
             showToast(requireNatureAccess() ? copyText("bunnyMoveHint", "Drag with a mouse or your finger to move this bunny.") : "");
           }
         });
-        stage.append(element);
+        motion.element = element;
+        motion.shadow = shadow;
+        applyBunnyMotion(motion);
+        stage.append(shadow, element);
       });
+      [...bunnyMotion.keys()].forEach((id) => { if (!visibleIds.has(id)) bunnyMotion.delete(id); });
       const blueCount = visibleBunnies.filter((bunny) => bunny.habitat === "bunnyBlue").length;
       $("#blue-counter").textContent = formatCopy(blueCount === 1 ? "bunnyCountOne" : "bunnyCountMany", { count: blueCount }, `${blueCount} ${blueCount === 1 ? "bunny" : "bunnies"}`);
       $("#blue-empty").hidden = blueCount > 0;
@@ -3940,6 +4192,10 @@ You are loved more than this little game could ever hold.</p>
       event.preventDefault();
       const element = event.currentTarget;
       const rect = element.getBoundingClientRect();
+      if (kind === "bunny") {
+        const motion = bunnyMotion.get(item.id);
+        if (motion) Object.assign(motion, { vx: 0, vy: 0, onGround: true, nextHop: performance.now() + 1000000000 });
+      }
       const ghost = document.createElement("div");
       ghost.className = "drag-ghost";
       ghost.style.width = `${rect.width}px`;
@@ -3984,6 +4240,13 @@ You are loved more than this little game could ever hold.</p>
       try { activeNatureDrag.element.releasePointerCapture(activeNatureDrag.pointerId); } catch {}
       activeNatureDrag.element.classList.remove("dragging");
       activeNatureDrag.ghost.remove();
+      if (activeNatureDrag.kind === "bunny") {
+        const motion = bunnyMotion.get(activeNatureDrag.item.id);
+        if (motion) {
+          motion.nextHop = performance.now() + 1800 + Math.random() * 4200;
+          applyBunnyMotion(motion);
+        }
+      }
       if (activeNatureDrag.trashVisible) $("#trash-bin").classList.remove("active", "over");
       viewport.classList.remove("dragging-nature");
       activeNatureDrag = null;
@@ -4349,6 +4612,7 @@ You are loved more than this little game could ever hold.</p>
 
     function renderHouse() {
       renderCharacters();
+      renderRoamingCharacters();
       renderFurniture();
       renderCats();
       renderGardenFurniture();
@@ -4455,6 +4719,187 @@ You are loved more than this little game could ever hold.</p>
         layer.append(shadow, element);
       });
       [...houseMotion.keys()].forEach((id) => { if (!visibleIds.has(id)) houseMotion.delete(id); });
+    }
+
+    function ensureRoamMotion(person) {
+      const pageIndex = Math.max(0, pages.indexOf(currentPage));
+      const startX = pageIndex + (person.key === "boy" ? .7 : .24);
+      let motion = roamMotion.get(person.id);
+      if (!motion) {
+        motion = {
+          x: startX, targetX: startX, targetPage: currentPage, vx: 0, speed: .22,
+          jumpY: 0, jumpV: 0, onGround: true,
+          nextPlan: performance.now() + 1800 + Math.random() * 2600,
+          nextHop: performance.now() + 3200 + Math.random() * 5200,
+          element: null, shadow: null,
+        };
+        roamMotion.set(person.id, motion);
+      }
+      return motion;
+    }
+
+    function applyRoamMotion(motion) {
+      if (!motion.element) return;
+      const pageCount = pages.length;
+      const left = `${motion.x / pageCount * 100}%`;
+      const jump = Math.max(0, motion.jumpY);
+      const transform = `translate(-50%, calc(-100% - ${jump}px))`;
+      const walking = Math.abs(motion.vx) > .01 || activeRoamDrag?.item.id === motion.element.dataset.roamId;
+      if (motion.element.style.left !== left) motion.element.style.left = left;
+      if (motion.element.style.transform !== transform) motion.element.style.transform = transform;
+      if (motion.element.classList.contains("walking") !== walking) motion.element.classList.toggle("walking", walking);
+      if (motion.shadow) {
+        const scale = Math.max(.55, 1 - jump / 70);
+        const opacity = String(Math.max(.2, 1 - jump / 55));
+        if (motion.shadow.style.left !== left) motion.shadow.style.left = left;
+        if (motion.shadow.style.opacity !== opacity) motion.shadow.style.opacity = opacity;
+        const shadowTransform = `translate(-50%, -50%) scale(${scale})`;
+        if (motion.shadow.style.transform !== shadowTransform) motion.shadow.style.transform = shadowTransform;
+      }
+    }
+
+    function renderRoamingCharacters() {
+      const layer = $("#world-characters");
+      if (!layer) return;
+      layer.style.width = `${pages.length * 100}%`;
+      layer.replaceChildren();
+      const visibleIds = new Set();
+      visibleCharacters().forEach((person) => {
+        visibleIds.add(person.id);
+        const motion = ensureRoamMotion(person);
+        const shadow = document.createElement("span");
+        shadow.className = "world-character-shadow";
+        shadow.setAttribute("aria-hidden", "true");
+        const element = document.createElement("button");
+        element.type = "button";
+        element.className = "world-character";
+        element.dataset.roamId = person.id;
+        element.innerHTML = chibiSvg(person);
+        element.setAttribute("aria-label", formatCopy("roamCharacterAria", { name: characterName(person), page: worldSlimePageLabel(pages[Math.floor(motion.x)] || currentPage) }, `${characterName(person)}. Drag to move between pages.`));
+        const label = document.createElement("span");
+        label.className = "world-character-label";
+        label.textContent = characterName(person);
+        element.append(label);
+        element.addEventListener("pointerdown", (event) => startRoamDrag(person, event));
+        element.addEventListener("click", () => {
+          if (performance.now() - Number(element.dataset.draggedAt || 0) < 400) return;
+          showToast(copyText("roamDragHint", "Drag to move between pages."));
+        });
+        motion.element = element;
+        motion.shadow = shadow;
+        applyRoamMotion(motion);
+        layer.append(shadow, element);
+      });
+      [...roamMotion.keys()].forEach((id) => { if (!visibleIds.has(id)) roamMotion.delete(id); });
+      updateRoamingVisibility();
+    }
+
+    function updateRoamingVisibility() {
+      const layer = $("#world-characters");
+      if (layer) layer.hidden = currentPage === "house";
+    }
+
+    function updateRoamingMotion(time, previousTime) {
+      if (currentPage === "house" || chatOpen || editMode || $$(".modal-backdrop").some((modal) => !modal.hidden)) return;
+      const delta = Math.min(.05, Math.max(.001, (time - previousTime) / 1000));
+      visibleCharacters().forEach((person) => {
+        const motion = roamMotion.get(person.id);
+        if (!motion || (activeRoamDrag?.item.id === person.id)) return;
+        if (time >= motion.nextPlan && Math.abs(motion.targetX - motion.x) < .02) {
+          const currentIndex = Math.max(0, Math.min(pages.length - 1, Math.floor(motion.x)));
+          const offset = Math.floor(Math.random() * 5) - 2;
+          const targetIndex = Math.max(0, Math.min(pages.length - 1, currentIndex + offset));
+          motion.targetPage = pages[targetIndex];
+          motion.targetX = targetIndex + .16 + Math.random() * .68;
+          motion.speed = .18 + Math.random() * .1;
+          if (Math.abs(motion.targetX - motion.x) < .12) motion.targetX = Math.max(.12, Math.min(pages.length - .12, motion.x + (Math.random() < .5 ? -.3 : .3)));
+          motion.nextPlan = time + 4600 + Math.random() * 5200;
+        }
+        const distance = motion.targetX - motion.x;
+        const desiredVelocity = Math.abs(distance) > .012 ? Math.sign(distance) * motion.speed : 0;
+        motion.vx += (desiredVelocity - motion.vx) * Math.min(1, delta * 7);
+        motion.x += motion.vx * delta;
+        if (Math.abs(distance) < .015) {
+          motion.x = motion.targetX;
+          motion.vx = 0;
+          motion.nextPlan = time + 1400 + Math.random() * 2600;
+        }
+        motion.x = Math.max(.08, Math.min(pages.length - .08, motion.x));
+        if (motion.onGround && time >= motion.nextHop && Math.abs(motion.vx) > .02) {
+          motion.jumpV = 115;
+          motion.onGround = false;
+          motion.nextHop = time + 4800 + Math.random() * 7200;
+        }
+        if (!motion.onGround) {
+          motion.jumpV += 330 * delta;
+          motion.jumpY += motion.jumpV * delta;
+          if (motion.jumpY <= 0) {
+            motion.jumpY = 0;
+            motion.jumpV = 0;
+            motion.onGround = true;
+          }
+        }
+        applyRoamMotion(motion);
+      });
+    }
+
+    function startRoamingMotion() {
+      if (roamMotionTicker) return;
+      let previousTime = performance.now();
+      roamMotionTicker = createFrameTicker((time) => {
+        updateRoamingMotion(time, previousTime);
+        previousTime = time;
+      });
+    }
+
+    function startRoamDrag(person, event) {
+      if (!event.isPrimary || event.button !== 0 || currentPage === "house") return;
+      event.preventDefault();
+      const motion = ensureRoamMotion(person);
+      activeRoamDrag = {
+        item: person, motion, element: event.currentTarget, pointerId: event.pointerId,
+        startClientX: event.clientX, startX: motion.x, moved: false,
+      };
+      motion.vx = 0;
+      motion.targetX = motion.x;
+      motion.targetPage = pages[Math.floor(motion.x)];
+      motion.element.classList.add("dragging");
+      try { motion.element.setPointerCapture(event.pointerId); } catch {}
+    }
+
+    function moveRoamDrag(event) {
+      if (!activeRoamDrag || event.pointerId !== activeRoamDrag.pointerId) return;
+      event.preventDefault();
+      const drag = activeRoamDrag;
+      if (Math.hypot(event.clientX - drag.startClientX, event.clientY - drag.startClientY) > 5) drag.moved = true;
+      drag.motion.x = Math.max(.08, Math.min(pages.length - .08, drag.startX + (event.clientX - drag.startClientX) / Math.max(1, viewport.clientWidth)));
+      const pageIndex = Math.max(0, Math.min(pages.length - 1, Math.floor(drag.motion.x)));
+      if (pages[pageIndex] !== currentPage) showPage(pages[pageIndex]);
+      applyRoamMotion(drag.motion);
+    }
+
+    function finishRoamDrag(event) {
+      if (!activeRoamDrag || event.pointerId !== activeRoamDrag.pointerId) return;
+      const drag = activeRoamDrag;
+      drag.element.dataset.draggedAt = String(performance.now());
+      drag.element.classList.remove("dragging");
+      try { drag.element.releasePointerCapture(event.pointerId); } catch {}
+      drag.motion.targetX = drag.motion.x;
+      drag.motion.targetPage = pages[Math.floor(drag.motion.x)];
+      drag.motion.nextPlan = performance.now() + 1800 + Math.random() * 2800;
+      activeRoamDrag = null;
+      applyRoamMotion(drag.motion);
+    }
+
+    function cancelRoamDrag() {
+      if (!activeRoamDrag) return;
+      const drag = activeRoamDrag;
+      drag.motion.x = drag.startX;
+      drag.motion.targetX = drag.startX;
+      drag.motion.vx = 0;
+      drag.element.classList.remove("dragging");
+      activeRoamDrag = null;
+      applyRoamMotion(drag.motion);
     }
 
     function renderFurniture() {
@@ -5931,6 +6376,10 @@ You are loved more than this little game could ever hold.</p>
           slimes = snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
           renderSlimes();
         }, (error) => showAppError("slimesLoadError", "Slimes", error));
+        fs.onSnapshot(fs.collection(db, "worldSlimes"), (snapshot) => {
+          worldSlimes = snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
+          renderWorldSlimes();
+        }, (error) => showAppError("worldSlimesLoadError", "World slimes", error));
         fs.onSnapshot(fs.collection(db, "bunnies"), (snapshot) => {
           bunnies = snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
           natureLoaded = true;
@@ -5997,33 +6446,6 @@ You are loved more than this little game could ever hold.</p>
         if (field.dataset.field.startsWith("wedding")) requestAnimationFrame(fitWeddingCouple);
       }
     });
-
-    const gameKeyActions = { arrowleft: "left", a: "left", arrowright: "right", d: "right", arrowup: "jump", w: "jump", " ": "jump" };
-    document.addEventListener("keydown", (event) => {
-      if (!slimeGame || currentPage !== "slime" || event.target.matches("input, textarea, select, [contenteditable='true']")) return;
-      const action = gameKeyActions[event.key.toLowerCase()];
-      if (action && ["running", "paused"].includes(slimeGame.state.mode)) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        if (slimeGame.state.mode === "running") slimeGame.state.keys.add(action);
-        return;
-      }
-      if (event.key === "Enter" && document.activeElement === slimeGame.canvas && !["running", "transition"].includes(slimeGame.state.mode)) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        startSlimeGame();
-      } else if ((event.key === "Escape" || event.key.toLowerCase() === "p") && slimeGame.state.mode === "running") {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        pauseSlimeGame();
-      }
-    }, true);
-    document.addEventListener("keyup", (event) => {
-      const action = gameKeyActions[event.key.toLowerCase()];
-      if (action && slimeGame) slimeGame.state.keys.delete(action);
-    }, true);
-    window.addEventListener("blur", () => pauseSlimeGame());
-    document.addEventListener("visibilitychange", () => { if (document.hidden) pauseSlimeGame(); });
 
     document.addEventListener("keydown", (event) => {
       const typing = event.target.matches("input, textarea, select, [contenteditable='true']");
@@ -6218,7 +6640,8 @@ You are loved more than this little game could ever hold.</p>
       selectedColor = SLIME_COLORS[nextIndex];
       updateSlimePreview(true);
     });
-    $("#create-slime").addEventListener("click", createSlime);
+    $("#create-slime").addEventListener("click", () => createSlime());
+    $("#craft-slime").addEventListener("click", craftSlime);
     $("#unwrap-gift").addEventListener("click", unwrapGift);
     $("#rewrap-gift").addEventListener("click", rewrapGift);
     $("#pet-home").addEventListener("click", () => {
@@ -6290,20 +6713,44 @@ You are loved more than this little game could ever hold.</p>
       cleanupHouseDrag();
       renderHouse();
     });
+    document.addEventListener("pointermove", (event) => {
+      if (!activeRoamDrag || event.pointerId !== activeRoamDrag.pointerId) return;
+      moveRoamDrag(event);
+    }, { passive: false });
+    document.addEventListener("pointerup", (event) => {
+      if (activeRoamDrag && event.pointerId === activeRoamDrag.pointerId) finishRoamDrag(event);
+    });
+    document.addEventListener("pointercancel", (event) => {
+      if (activeRoamDrag && event.pointerId === activeRoamDrag.pointerId) cancelRoamDrag();
+    });
+    document.addEventListener("pointermove", (event) => {
+      if (!activeWorldSlimeDrag || event.pointerId !== activeWorldSlimeDrag.pointerId) return;
+      moveWorldSlimeDrag(event);
+    }, { passive: false });
+    document.addEventListener("pointerup", (event) => {
+      if (activeWorldSlimeDrag && event.pointerId === activeWorldSlimeDrag.pointerId) finishWorldSlimeDrag(event);
+    });
+    document.addEventListener("pointercancel", (event) => {
+      if (activeWorldSlimeDrag && event.pointerId === activeWorldSlimeDrag.pointerId) cancelWorldSlimeDrag();
+    });
 
     initHouseControls();
     initWeddingControls();
-    initSlimeGame();
     renderWeddingScene();
     renderContent();
     renderColorOptions();
+    renderCraftProducts();
     updateSlimePreview();
+    updateCraftPreview();
     renderSlimes();
+    renderWorldSlimes();
     renderGalleryPages();
     renderBunnies();
     renderTulips();
     renderHouse();
     startHouseMotion();
+    startBunnyMotion();
+    startRoamingMotion();
     updateInstallUi();
     updateChatUi();
     registerServiceWorker();
