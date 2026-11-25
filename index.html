@@ -4037,8 +4037,7 @@ You are loved more than this little game could ever hold.</p>
     }
 
     function chatDisplayName(senderRole = role) {
-      const admin = senderRole === "admin";
-      return copyText(admin ? "chatAdminName" : "chatViewerName", admin ? "Zyrel" : "Shane");
+      return senderRole === "admin" ? "Zyrel" : "Shane";
     }
 
     function chatMessageDisplayName(message) {
