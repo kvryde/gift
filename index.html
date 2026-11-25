@@ -4291,7 +4291,7 @@ You are loved more than this little game could ever hold.</p>
       popup.hidden = false;
       popup.classList.remove("visible");
       void popup.offsetWidth;
-      requestAnimationFrame(() => popup.classList.add("visible"));
+      popup.classList.add("visible");
       $("#picture-popup-image").focus?.();
     }
 
@@ -4308,10 +4308,7 @@ You are loved more than this little game could ever hold.</p>
       picturePopupUnsubscribe = null;
       closePicturePopup();
       if (!user || !role || !db || !fs) return;
-      let initialSnapshot = true;
       picturePopupUnsubscribe = fs.onSnapshot(fs.doc(db, "picturePopups", "current"), (snapshot) => {
-        const firstSnapshot = initialSnapshot;
-        initialSnapshot = false;
         if (!snapshot.exists()) return;
         const data = snapshot.data();
         const popupId = String(data.popupId || "");
@@ -4320,7 +4317,7 @@ You are loved more than this little game could ever hold.</p>
         try {
           seen = localStorage.getItem(picturePopupSeenKey()) || "";
         } catch {}
-        if (seen === popupId || (firstSnapshot && seen !== popupId)) return;
+        if (seen === popupId) return;
         showPicturePopup({ ...data, popupId });
       }, (error) => {
         console.warn("Picture popup listener:", error.code || "unavailable");
