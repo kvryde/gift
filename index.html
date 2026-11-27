@@ -210,7 +210,7 @@
       background: transparent;
       cursor: grab;
       pointer-events: auto;
-      touch-action: none;
+      touch-action: pan-x pan-y;
       transform: translate(-50%, -100%);
       filter: drop-shadow(0 5px 4px rgba(20, 31, 27, .28));
       user-select: none;
@@ -267,7 +267,7 @@
       background: transparent;
       cursor: grab;
       pointer-events: auto;
-      touch-action: none;
+      touch-action: pan-x pan-y;
       transform: translate(-50%, -100%);
       filter: drop-shadow(0 5px 4px rgba(20, 31, 27, .24));
       user-select: none;
@@ -429,6 +429,10 @@
       font-weight: 800;
     }
     .option-button.active { color: var(--ink); border-color: var(--purple); background: rgba(185, 167, 238, .14); }
+    .style-options { display: grid; max-height: 188px; grid-template-columns: repeat(auto-fill, minmax(78px, 1fr)); gap: .4rem; overflow-y: auto; padding: .35rem; border: 2px solid #40583b; background: #17291e; scrollbar-width: thin; scrollbar-color: #678454 #17271d; }
+    .style-option { min-width: 0; flex-direction: column; gap: .15rem; padding: .3rem .2rem; text-align: center; }
+    .style-option svg { width: 54px; max-width: 100%; height: 46px; }
+    .style-option span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .color-dot { width: 15px; height: 15px; border: 2px solid rgba(255, 255, 255, .35); border-radius: 50%; }
     .collection-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin: 1.4rem 0 .8rem; }
     .collection-head h3 { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: 1.35rem; font-weight: 400; }
@@ -438,6 +442,13 @@
     .slime-card svg { width: 100%; max-height: 130px; }
     .slime-card-name { display: block; overflow: hidden; margin-top: .35rem; font-size: .78rem; font-weight: 900; text-overflow: ellipsis; white-space: nowrap; }
     .slime-card-owner { display: block; margin-top: .15rem; color: var(--muted); font-size: .62rem; }
+    .slime-pending, .mix-pending { overflow: hidden; border-color: #b89a58; background: #2d3525; }
+    .slime-pending > svg { opacity: .62; filter: saturate(.35); animation: pendingSlime 1.8s ease-in-out infinite; }
+    .slime-pending-status, .mix-pending-status { display: flex; width: 100%; min-height: 24px; align-items: center; justify-content: center; gap: .3rem; margin-top: .3rem; color: #f0cf76; font: 700 .62rem "Silkscreen", monospace; }
+    .slime-mix-progress { width: 100%; height: 7px; overflow: hidden; border: 1px solid #16261b; background: #17271d; }
+    .slime-mix-progress i { display: block; width: var(--progress); height: 100%; background: #b5c98d; transition: width .35s linear; }
+    .mix-pending > svg { opacity: .62; filter: saturate(.35); animation: pendingSlime 1.8s ease-in-out infinite; }
+    @keyframes pendingSlime { 0%, 100% { transform: scale(.95, 1.04) rotate(-2deg); } 50% { transform: scale(1.04, .96) rotate(2deg); } }
     .empty-state { grid-column: 1 / -1; padding: 1.4rem; border: 1px dashed var(--line); border-radius: 16px; color: var(--muted); text-align: center; font-size: .78rem; line-height: 1.6; }
 
     .gift-page { display: grid; align-items: center; }
@@ -704,7 +715,8 @@
     .gallery-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .7rem; }
     .photo-memory-card { display: flex; min-width: 0; flex-direction: column; gap: .35rem; }
     .photo-slot { position: relative; min-height: 150px; overflow: hidden; border: 1px solid var(--line); border-radius: 15px; background: #100e22; }
-    .photo-slot img { width: 100%; height: 100%; min-height: 150px; aspect-ratio: 4 / 3; object-fit: cover; }
+    .photo-slot:not(.empty) { min-height: 0; }
+    .photo-slot img { display: block; width: 100%; height: auto; min-height: 0; aspect-ratio: auto; object-fit: contain; }
     .photo-slot.empty { display: grid; place-items: center; border-style: dashed; color: var(--muted); background: rgba(255, 255, 255, .02); text-align: center; }
     .photo-slot.empty button { display: grid; width: 100%; height: 100%; min-height: 150px; padding: 1rem; place-items: center; border: 0; color: inherit; background: transparent; font-size: .72rem; font-weight: 800; cursor: pointer; }
     .photo-slot.empty span { display: block; margin-top: .35rem; font-size: 1.4rem; }
@@ -712,7 +724,7 @@
     .photo-chat-heading { display: flex; align-items: center; justify-content: space-between; gap: .4rem; }
     .photo-chat-heading strong { font-family: "Silkscreen", monospace; font-size: .62rem; line-height: 1.3; }
     .photo-chat-heading span { color: #64705a; font-size: .58rem; }
-    .photo-chat-messages { display: flex; height: 88px; flex-direction: column; gap: .3rem; overflow-y: auto; padding: .35rem; border: 1px solid #b8a77f; background: rgba(255, 255, 255, .48); overscroll-behavior: contain; }
+    .photo-chat-messages { display: flex; height: auto; max-height: 180px; flex-direction: column; gap: .3rem; overflow-y: auto; padding: .35rem; border: 1px solid #b8a77f; background: rgba(255, 255, 255, .48); overscroll-behavior: contain; }
     .photo-chat-empty { margin: auto; color: #64705a; font-family: "Pixelify Sans", monospace; font-size: .68rem; line-height: 1.3; text-align: center; }
     .photo-chat-message { max-width: 94%; padding: .3rem .38rem; border: 1px solid #b8a77f; background: #fffaf0; box-shadow: 2px 2px rgba(80, 65, 40, .12); }
     .photo-chat-message.own { align-self: flex-end; background: #dcebd1; }
@@ -724,7 +736,11 @@
     .photo-chat-input:disabled { color: #69705f; background: #e2d8bf; }
     .photo-chat-send { min-height: 34px; padding: .3rem .5rem; font-size: .6rem; }
     .photo-chat-send:disabled { opacity: .55; cursor: not-allowed; }
-    .gallery-page-copy { margin-top: .9rem; }
+    .gallery-mode-bar { position: sticky; top: 0; z-index: 6; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .4rem; margin-bottom: .55rem; padding: .35rem .45rem; border: 2px solid #8b805e; color: #4d5943; background: #f4ecd5; box-shadow: 0 3px 0 rgba(77, 69, 48, .16); }
+    .gallery-mode-label { font-family: "Pixelify Sans", monospace; font-size: .82rem; font-weight: 700; }
+    .gallery-mode-actions { display: flex; flex-wrap: wrap; gap: .35rem; }
+    .gallery-page-copy { margin-top: .75rem; }
+    .gallery-page-text { max-height: none; overflow: visible; }
     .gallery-page-copy textarea { width: 100%; min-height: 86px; padding: .75rem; resize: vertical; border: 1px solid var(--line); border-radius: 12px; color: var(--ink); background: rgba(8, 7, 20, .4); font-family: Georgia, "Times New Roman", serif; font-size: .95rem; line-height: 1.65; }
     .gallery-page-text { margin: 0; color: #ddd6e8; font-family: Georgia, "Times New Roman", serif; font-size: .98rem; line-height: 1.7; white-space: pre-line; }
     .gallery-page-actions { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: .65rem; }
@@ -734,16 +750,17 @@
     .gallery-pager { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: .7rem; color: var(--muted); font-size: .68rem; }
     .gallery-page-status { color: var(--gold); font-weight: 900; text-transform: uppercase; letter-spacing: .05em; }
     .gallery-page-status.published { color: var(--mint); }
-    .photo-viewer { display: flex; width: min(1200px, 100%); max-height: calc(100dvh - 1rem); flex-direction: column; overflow: hidden; border: 3px solid #78985d; border-radius: 2px; background: #17251d; box-shadow: inset 0 3px #314a34, 0 8px #0b150f; }
+    .photo-viewer { display: flex; width: min(1200px, 96vw); max-height: calc(100dvh - 1rem); flex-direction: column; overflow: hidden; border: 3px solid #78985d; border-radius: 2px; background: #17251d; box-shadow: inset 0 3px #314a34, 0 8px #0b150f; }
     .photo-viewer-header { display: flex; align-items: center; justify-content: space-between; gap: .8rem; padding: .65rem .8rem; border-bottom: 3px solid #40573c; background: #263c2b; }
     .photo-viewer-header h2 { margin: 0; color: #f4ecd5; font-family: "Silkscreen", monospace; font-size: .9rem; }
-    .photo-viewer-stage { display: grid; min-height: 0; flex: 1; grid-template-columns: 52px minmax(0, 1fr) 52px; align-items: center; gap: .5rem; padding: .65rem; background: #0d1711; }
-    .photo-viewer-image { display: block; width: 100%; height: 100%; max-height: calc(100dvh - 130px); object-fit: contain; image-rendering: auto; }
+    .photo-viewer-stage { display: grid; min-height: 0; flex: 1; grid-template-columns: 52px minmax(0, 1fr) 52px; align-items: start; gap: .5rem; overflow-y: auto; overscroll-behavior: contain; padding: .65rem; background: #0d1711; touch-action: pan-x pan-y; }
+    .photo-viewer-image { display: block; width: 100%; height: auto; min-height: 0; max-height: none; object-fit: contain; image-rendering: auto; }
     .photo-viewer-nav { width: 46px; height: 64px; padding: 0; border: 2px solid #526747; color: #f4ecd5; background: #223728; box-shadow: 3px 3px #0b150f; font-size: 1.4rem; }
     .photo-viewer-nav:disabled { opacity: .3; }
     .photo-viewer-footer { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .65rem .8rem; border-top: 3px solid #40573c; color: #dce6cf; background: #223728; }
+    .photo-viewer-header, .photo-viewer-footer { flex: 0 0 auto; }
     .photo-viewer-count { flex: 0 0 auto; color: var(--gold); font-family: "Silkscreen", monospace; font-size: .68rem; }
-    .photo-viewer-caption { max-height: 3.2em; margin: 0; overflow-y: auto; font-family: Georgia, "Times New Roman", serif; font-size: .82rem; line-height: 1.5; text-align: right; white-space: pre-line; }
+    .photo-viewer-caption { min-width: 0; margin: 0; overflow-wrap: anywhere; font-family: Georgia, "Times New Roman", serif; font-size: .82rem; line-height: 1.5; text-align: right; white-space: pre-wrap; }
     .picture-popup { animation: picturePopupBackdrop .2s ease-out; }
     .picture-popup-card { width: min(620px, 78vw); max-height: 78dvh; overflow: hidden; border: 3px solid #93cf75; border-radius: 2px; background: #17251d; box-shadow: inset 0 3px #314a34, 0 8px #0b150f, 0 18px 50px rgba(0, 0, 0, .45); opacity: 0; transform: translateY(18px) scale(.72); }
     .picture-popup.visible .picture-popup-card { animation: picturePopupZoom .36s cubic-bezier(.2, .9, .25, 1.2) forwards; }
@@ -788,7 +805,7 @@
     .nature-counter { padding: .35rem .6rem; border: 1px solid rgba(255, 255, 255, .2); border-radius: 999px; color: #fff; background: rgba(20, 19, 41, .25); font-size: .6rem; font-weight: 900; backdrop-filter: blur(8px); }
     .nature-hint { position: absolute; bottom: .65rem; left: 50%; z-index: 4; max-width: 90%; padding: .38rem .7rem; border: 1px solid rgba(255, 255, 255, .2); border-radius: 999px; color: rgba(255, 255, 255, .92); background: rgba(20, 19, 41, .46); font-size: .6rem; font-weight: 800; text-align: center; pointer-events: none; transform: translateX(-50%); backdrop-filter: blur(8px); white-space: nowrap; }
     .nature-empty { position: absolute; bottom: 17%; left: 50%; z-index: 3; width: min(360px, 80%); padding: .75rem; border: 1px dashed rgba(255, 255, 255, .3); border-radius: 14px; color: #fff; background: rgba(20, 19, 41, .24); font-size: .72rem; text-align: center; transform: translateX(-50%); }
-    .bunny { position: absolute; z-index: 6; width: clamp(58px, 7.5vw, 92px); padding: 0; border: 0; background: transparent; cursor: grab; touch-action: none; transform: translate(-50%, -50%); filter: drop-shadow(0 5px 4px rgba(35, 25, 47, .2)); user-select: none; -webkit-user-select: none; will-change: left, top; }
+    .bunny { position: absolute; z-index: 6; width: clamp(58px, 7.5vw, 92px); padding: 0; border: 0; background: transparent; cursor: grab; touch-action: pan-x pan-y; transform: translate(-50%, -50%); filter: drop-shadow(0 5px 4px rgba(35, 25, 47, .2)); user-select: none; -webkit-user-select: none; will-change: left, top; }
     .bunny:active { cursor: grabbing; }
     .bunny svg { display: block; width: 100%; overflow: visible; pointer-events: none; }
     .bunny-idle { transform-origin: 50% 90%; animation: bunnyIdle var(--wander-time, 7s) ease-in-out var(--wander-delay, 0s) infinite; }
@@ -816,7 +833,7 @@
     .garden-spark.two { top: 38%; right: 12%; animation-delay: 1s; }
     .garden-spark.three { bottom: 21%; left: 23%; animation-delay: 2s; }
     @keyframes sparkle { 0%, 100% { opacity: .3; transform: scale(.7) rotate(0); } 50% { opacity: 1; transform: scale(1.2) rotate(35deg); } }
-    .tulip { position: absolute; z-index: 6; width: clamp(48px, 5.7vw, 74px); padding: 0; border: 0; background: transparent; cursor: grab; touch-action: none; transform: translate(-50%, -88%); filter: drop-shadow(0 7px 5px rgba(34, 61, 35, .22)); user-select: none; -webkit-user-select: none; }
+    .tulip { position: absolute; z-index: 6; width: clamp(48px, 5.7vw, 74px); padding: 0; border: 0; background: transparent; cursor: grab; touch-action: pan-x pan-y; transform: translate(-50%, -88%); filter: drop-shadow(0 7px 5px rgba(34, 61, 35, .22)); user-select: none; -webkit-user-select: none; }
     .tulip:active { cursor: grabbing; }
     .tulip svg { display: block; width: 100%; overflow: visible; pointer-events: none; }
     .tulip-bloom { transform-origin: 50% 88%; animation: tulipSway var(--sway-time, 5s) ease-in-out var(--sway-delay, 0s) infinite; }
@@ -830,7 +847,7 @@
     .garden-palette-options { display: flex; max-height: 150px; flex-wrap: wrap; gap: .35rem; overflow-y: auto; }
     .garden-palette-options .house-choice { min-width: 64px; color: #e9e2c8; border-color: #75613e; background: #2f3525; }
     .garden-palette-options svg { width: 32px; height: 30px; }
-    .garden-decor { position: absolute; z-index: 5; padding: 0; border: 0; background: transparent; cursor: grab; touch-action: none; transform: translate(-50%, -100%); filter: drop-shadow(0 7px 5px rgba(34, 61, 35, .22)); user-select: none; -webkit-user-select: none; }
+    .garden-decor { position: absolute; z-index: 5; padding: 0; border: 0; background: transparent; cursor: grab; touch-action: pan-x pan-y; transform: translate(-50%, -100%); filter: drop-shadow(0 7px 5px rgba(34, 61, 35, .22)); user-select: none; -webkit-user-select: none; }
     .garden-decor:active { cursor: grabbing; }
     .garden-decor svg { display: block; width: 100%; overflow: visible; pointer-events: none; }
     .garden-decor.dragging { visibility: hidden; }
@@ -872,10 +889,11 @@
     .trash-ghost, .trash-ghost * { animation: none !important; transition: none !important; }
     .page-viewport.dragging-nature { scroll-behavior: auto; scroll-snap-type: none; touch-action: none; user-select: none; cursor: grabbing; }
     .bunny, .tulip { min-width: 48px; min-height: 48px; }
-    .trash-draggable { cursor: grab; touch-action: none; user-select: none; }
+    .trash-draggable { cursor: grab; touch-action: pan-x pan-y; user-select: none; }
+    .trash-draggable.press-armed, .trash-draggable.press-armed * { cursor: grabbing !important; touch-action: none !important; user-select: none !important; }
     .trash-draggable:active { cursor: grabbing; }
     .trash-drag-source { opacity: .25; pointer-events: none; }
-    .gallery-page-handle { display: flex; align-items: center; justify-content: center; gap: .4rem; margin: -.35rem 0 .65rem; padding: .3rem; color: #6b624b; font-family: "Silkscreen", monospace; font-size: .6rem; cursor: grab; touch-action: none; user-select: none; }
+    .gallery-page-handle { display: flex; align-items: center; justify-content: center; gap: .4rem; margin: -.35rem 0 .65rem; padding: .3rem; color: #6b624b; font-family: "Silkscreen", monospace; font-size: .6rem; cursor: grab; touch-action: pan-x pan-y; user-select: none; }
     .gallery-page-handle::before { content: "⠿"; font-size: 1rem; }
 
     .house-page { background: radial-gradient(circle at 20% 15%, rgba(255, 224, 180, .12), transparent 24rem), #17172d; }
@@ -916,7 +934,7 @@
     .house-layer > .house-item { pointer-events: auto; }
     .house-choice-row label { min-width: 72px; flex: 1; }
     .house-choice-row .select-input { min-height: 32px; padding: .35rem .45rem; font-size: .6rem; }
-    .house-item { position: absolute; z-index: 5; transform: translate(-50%, -50%); cursor: grab; touch-action: none; filter: drop-shadow(0 7px 5px rgba(25, 24, 43, .22)); }
+    .house-item { position: absolute; z-index: 5; transform: translate(-50%, -50%); cursor: grab; touch-action: pan-x pan-y; filter: drop-shadow(0 7px 5px rgba(25, 24, 43, .22)); }
     .house-item:active { cursor: grabbing; }
     .house-furniture { transform: translate(-50%, -100%); will-change: left, top; }
     .house-furniture[data-furniture-type="rug"] { transform: translate(-50%, -50%); }
@@ -1462,6 +1480,35 @@
     }
 
     @media (orientation: landscape) and (max-height: 600px) {
+      #page-gallery { display: block; min-height: 0; height: 100%; overflow-y: auto; padding: .6rem 2.8rem .8rem .7rem; }
+      #page-gallery .page-heading { margin: 0 0 .35rem; }
+      #page-gallery .page-heading h1 { font-size: 1rem; }
+      #page-gallery .page-heading .eyebrow, #page-gallery .gallery-toolbar > div:first-child { display: none; }
+      #page-gallery .gallery-toolbar { min-height: 0; margin: 0 0 .35rem; padding: .3rem; }
+      #page-gallery .gallery-toolbar .button { width: auto; min-height: 30px; }
+      #page-gallery .gallery-stage { display: grid; height: auto; min-height: 0; grid-template-columns: 30px minmax(0, 1fr) 30px; gap: .3rem; }
+      #page-gallery .gallery-flip-wrap { height: auto; min-height: 0; }
+      #page-gallery .gallery-flip-button { position: sticky; top: 42dvh; width: 30px; height: 38px; font-size: 1rem; }
+      #page-gallery .gallery-sheet { height: auto; min-height: 0; padding: .4rem; overflow: visible; }
+      #page-gallery .gallery-grid { gap: .4rem; }
+      #page-gallery .photo-slot { height: auto; min-height: 0; }
+      #page-gallery .photo-slot img { width: 100%; height: auto; min-height: 0; aspect-ratio: auto; object-fit: contain; }
+      #page-gallery .photo-slot.empty { min-height: 74px; }
+      #page-gallery .photo-slot.empty button { height: 100%; min-height: 74px; }
+      #page-gallery .photo-chat-messages { height: auto; max-height: none; overflow: visible; }
+      #page-gallery .photo-chat-heading { display: flex; }
+      #page-gallery .photo-chat-heading span { display: none; }
+      #page-gallery .gallery-page-copy { margin-top: .5rem; }
+      #page-gallery .gallery-page-copy textarea { width: 100%; height: 70px; min-height: 70px; font-size: .74rem; }
+      #page-gallery .gallery-page-text { max-height: none; overflow: visible; font-size: .78rem; line-height: 1.45; }
+      #page-gallery .gallery-pager { margin-top: .45rem; }
+      .photo-viewer { width: min(1100px, 94vw); max-height: calc(100dvh - .5rem); }
+      .photo-viewer-stage { grid-template-columns: 36px minmax(0, 1fr) 36px; padding: .35rem; }
+      .photo-viewer-image { height: auto; max-height: none; }
+      .photo-viewer-nav { width: 32px; height: 44px; font-size: 1.1rem; }
+      .photo-viewer-footer { padding: .35rem .5rem; }
+      .photo-viewer-caption { max-height: none; overflow: visible; font-size: .68rem; line-height: 1.3; }
+      .trash-bin { bottom: calc(54px + env(safe-area-inset-bottom)); transform: scale(.82); transform-origin: 100% 100%; }
       .game-app { grid-template-rows: auto minmax(0, 1fr) auto; }
       .hud { min-height: 46px; padding: max(.25rem, env(safe-area-inset-top)) .7rem .25rem; gap: .5rem; }
       .brand-mark { width: 28px; height: 28px; border-radius: 2px; }
@@ -1608,15 +1655,16 @@
       #page-gallery .gallery-page-handle { margin: 0 0 .2rem; padding: .12rem; font-size: .5rem; }
       #page-gallery .gallery-page-handle::before { font-size: .8rem; }
       #page-gallery .gallery-grid { gap: .35rem; }
-      #page-gallery .photo-slot { height: clamp(70px, 22dvh, 112px); min-height: 0; }
-      #page-gallery .photo-slot img { height: 100%; min-height: 0; aspect-ratio: auto; }
-      #page-gallery .photo-slot.empty button { height: 100%; min-height: 0; padding: .25rem; font-size: .6rem; }
+      #page-gallery .photo-slot { height: auto; min-height: 0; }
+      #page-gallery .photo-slot img { height: auto; min-height: 0; aspect-ratio: auto; object-fit: contain; }
+      #page-gallery .photo-slot.empty { min-height: 70px; }
+      #page-gallery .photo-slot.empty button { height: 100%; min-height: 70px; padding: .25rem; font-size: .6rem; }
       #page-gallery .photo-slot.empty span { margin-top: .15rem; font-size: 1rem; }
       #page-gallery .photo-memory-card { gap: .22rem; }
       #page-gallery .photo-memory-chat { gap: .2rem; padding: .25rem; border-width: 1px; box-shadow: inset 0 0 0 1px #cbbb92; }
       #page-gallery .photo-chat-heading strong { font-size: .5rem; }
       #page-gallery .photo-chat-heading span { display: none; }
-      #page-gallery .photo-chat-messages { height: 48px; gap: .2rem; padding: .2rem; }
+      #page-gallery .photo-chat-messages { height: auto; max-height: none; gap: .2rem; overflow: visible; padding: .2rem; }
       #page-gallery .photo-chat-empty { font-size: .56rem; }
       #page-gallery .photo-chat-message { padding: .18rem .24rem; }
       #page-gallery .photo-chat-meta { font-size: .46rem; }
@@ -1624,12 +1672,11 @@
       #page-gallery .photo-chat-form { gap: .2rem; }
       #page-gallery .photo-chat-input { min-height: 30px; padding: .22rem .28rem; font-size: .64rem; }
       #page-gallery .photo-chat-send { min-height: 30px; padding: .2rem .35rem; font-size: .52rem; }
-      #page-gallery .gallery-page-copy { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: .3rem; margin-top: .3rem; }
-      #page-gallery .gallery-page-copy textarea { height: 40px; min-height: 40px; padding: .35rem; font-size: .72rem; line-height: 1.25; }
-      #page-gallery .gallery-page-text { max-height: 52px; overflow-y: auto; font-size: .76rem; line-height: 1.35; }
-      #page-gallery .gallery-page-actions, #page-gallery .gallery-admin-actions { flex-wrap: nowrap; gap: .3rem; margin: 0; }
-      #page-gallery .gallery-admin-actions { margin-top: .3rem; }
-      #page-gallery .gallery-page-actions .button, #page-gallery .gallery-admin-actions .button { min-height: 26px; padding: .25rem .4rem; font-size: .54rem; }
+      #page-gallery .gallery-page-copy { margin-top: .4rem; }
+      #page-gallery .gallery-page-copy textarea { height: 70px; min-height: 70px; padding: .35rem; font-size: .72rem; line-height: 1.35; }
+      #page-gallery .gallery-page-text { max-height: none; overflow: visible; font-size: .76rem; line-height: 1.45; }
+      #page-gallery .gallery-page-actions, #page-gallery .gallery-admin-actions { flex-wrap: wrap; gap: .3rem; margin-top: .3rem; }
+      #page-gallery .gallery-page-actions .button, #page-gallery .gallery-admin-actions .button { min-height: 28px; padding: .25rem .4rem; font-size: .58rem; }
       #page-gallery .gallery-pager { grid-column: 1; grid-row: 3; flex-direction: column; align-items: flex-start; align-self: start; gap: .2rem; margin: .3rem 0 0; font-size: .55rem; }
       .toast { bottom: 54px; max-width: 80vw; font-size: .68rem; }
       .trash-bin { bottom: calc(54px + env(safe-area-inset-bottom)); transform: scale(.82); transform-origin: 100% 100%; }
@@ -1645,9 +1692,10 @@
       .photo-viewer { max-height: calc(100dvh - .5rem); }
       .photo-viewer-header, .photo-viewer-footer { padding: .4rem .6rem; }
       .photo-viewer-stage { grid-template-columns: 42px minmax(0, 1fr) 42px; gap: .3rem; padding: .4rem; }
-      .photo-viewer-image { max-height: calc(100dvh - 112px); }
+      .photo-viewer-image { height: auto; min-height: 0; max-height: none; }
       .photo-viewer-nav { width: 38px; height: 54px; }
-      .photo-viewer-caption { max-height: 2.5em; font-size: .72rem; }
+      .photo-viewer-footer { max-height: 35dvh; overflow-y: auto; }
+      .photo-viewer-caption { max-height: none; overflow: visible; font-size: .72rem; }
     }
 
     @media (max-height: 340px) and (orientation: landscape) {
@@ -1664,16 +1712,22 @@
       #page-slime .page-heading h1 { font-size: 1rem; }
       #page-slime .product-button { min-height: 44px; }
       #page-slime .craft-cauldron { min-height: 62px; }
-      #page-slime .craft-preview { max-height: 58px; }
-      #page-slime .craft-status { font-size: .48rem; }
+      #page-slime .craft-preview { max-height: none; }
+      #page-slime .slime-layout { min-height: 0; overflow-y: auto; }
+      #page-slime .slime-controls { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: .3rem .6rem; }
+      #page-slime .slime-controls label, #page-slime .slime-controls fieldset { min-width: 0; margin: 0; }
+      #page-slime .slime-controls label { grid-column: 1 / -1; }
+      .slime-option-grid { max-height: 110px; overflow-y: auto; overscroll-behavior: contain; }
+      .slime-option-grid .option-button { min-width: 52px; min-height: 34px; padding: .25rem .35rem; font-size: .64rem; }
+      .slime-option-grid .option-button svg { width: 36px; height: 28px; }
       .world-character { width: 42px; }
       .world-character-label { font-size: .4rem; }
       .world-slime { width: 44px; }
       .world-slime-label { font-size: .4rem; }
       .bunny { width: 44px; }
-      #page-gallery .photo-slot { height: 54px; }
-      #page-gallery .photo-chat-messages { height: 36px; }
-      #page-gallery .photo-chat-heading { display: none; }
+      #page-gallery .photo-slot { height: auto; min-height: 0; }
+      #page-gallery .photo-chat-messages { height: auto; max-height: none; overflow: visible; }
+      #page-gallery .photo-chat-heading { display: flex; }
       #page-gallery .photo-chat-input, #page-gallery .photo-chat-send { min-height: 28px; }
       .chat-panel { top: 50px; bottom: 50px; max-height: none; }
       .chat-header { min-height: 40px; padding: .3rem .5rem; }
@@ -1836,22 +1890,13 @@
           </div>
           <div class="game-card slime-controls">
             <label><span class="control-label" data-field="slimeNameLabel">Slime name</span><input class="text-input" id="slime-name" maxlength="40" placeholder="Name your slime" data-copy-placeholder="slimeNamePlaceholder"></label>
-            <fieldset><legend class="control-label" data-field="slimeEyesLabel">Face</legend><div class="option-row" id="eye-options">
-              <button class="option-button active" type="button" data-eyes="happy"><span data-field="eyesHappy">Happy</span></button>
-              <button class="option-button" type="button" data-eyes="sleepy"><span data-field="eyesSleepy">Sleepy</span></button>
-              <button class="option-button" type="button" data-eyes="star"><span data-field="eyesStar">Starry</span></button>
-            </div></fieldset>
-            <fieldset><legend class="control-label" data-field="slimeAccessoryLabel">Accessory</legend><div class="option-row" id="accessory-options">
-              <button class="option-button active" type="button" data-accessory="none"><span data-field="accessoryNone">None</span></button>
-              <button class="option-button" type="button" data-accessory="crown"><span data-field="accessoryCrown">Crown</span></button>
-              <button class="option-button" type="button" data-accessory="flower"><span data-field="accessoryFlower">Flower</span></button>
-              <button class="option-button" type="button" data-accessory="glasses"><span data-field="accessoryGlasses">Glasses</span></button>
-            </div></fieldset>
+            <fieldset><legend class="control-label" data-field="slimeEyesLabel">Face</legend><div class="style-options" id="eye-options"></div></fieldset>
+            <fieldset><legend class="control-label" data-field="slimeAccessoryLabel">Accessory</legend><div class="style-options" id="accessory-options"></div></fieldset>
           </div>
         </div>
         <section class="game-card slime-craft" aria-labelledby="slime-craft-title">
           <div class="craft-header">
-            <div><span class="eyebrow" data-field="craftEyebrow">Color workshop</span><h2 id="slime-craft-title" data-field="craftTitle">Mix 3 slimes</h2></div>
+            <div><span class="eyebrow" data-field="craftEyebrow">Color workshop</span><h2 id="slime-craft-title" data-field="craftTitle">Mix 3 slimes · 5 min</h2></div>
             <span class="role-badge" id="craft-progress">5 / 100 colors</span>
           </div>
           <div class="craft-layout">
@@ -1859,7 +1904,7 @@
               <span class="control-label" data-field="craftProductsLabel">Five base slimes</span>
               <div class="product-grid" id="craft-products" aria-label="Five base slimes" data-copy-aria="craftProductsAria"></div>
               <div class="craft-selection" id="craft-selection" aria-label="Selected slimes"></div>
-              <p class="craft-status" id="craft-status" aria-live="polite" data-field="craftStatusReady">Pick any 3 base slimes. Repeats are allowed!</p>
+              <p class="craft-status" id="craft-status" aria-live="polite" data-field="craftStatusReady">Pick any 3 base slimes. Each batch takes 5 minutes; repeats are allowed!</p>
             </div>
             <div class="craft-bench">
               <div class="craft-cauldron" id="craft-cauldron" aria-hidden="true">
@@ -1867,7 +1912,7 @@
                 <svg class="craft-preview" id="craft-preview" viewBox="0 0 240 190"></svg>
                 <span class="craft-bubble one"></span><span class="craft-bubble two"></span><span class="craft-bubble three"></span>
               </div>
-              <button class="button button-mint" type="button" id="craft-slime" disabled><svg class="icon"><use href="#i-mix"></use></svg><span data-field="craftButton">Mix 3 slimes</span></button>
+              <button class="button button-mint" type="button" id="craft-slime" disabled><svg class="icon"><use href="#i-mix"></use></svg><span data-field="craftButton">Start 5-minute mix</span></button>
             </div>
           </div>
         </section>
@@ -1953,6 +1998,13 @@ You are loved more than this little game could ever hold.</p>
           <div class="gallery-flip-wrap">
             <div class="gallery-sheet" id="gallery-sheet">
               <div class="gallery-page-handle" id="gallery-page-handle" hidden data-field="galleryPageHandle">Drag page to trash</div>
+              <div class="gallery-mode-bar" id="gallery-mode-bar" hidden>
+                <span class="gallery-mode-label" id="gallery-mode-label">Saved page</span>
+                <div class="gallery-mode-actions">
+                  <button class="photo-action" type="button" id="gallery-edit-page" data-field="galleryEditPage">Edit page</button>
+                  <button class="photo-action publish" type="button" id="gallery-save-page" data-field="gallerySavePage" hidden>Save page</button>
+                </div>
+              </div>
               <div class="gallery-grid" id="gallery-grid"></div>
               <div class="gallery-page-copy" id="gallery-page-copy"></div>
               <div class="gallery-admin-actions" id="gallery-admin-actions"></div>
@@ -2084,7 +2136,7 @@ You are loved more than this little game could ever hold.</p>
                 <span class="mixer-stream a"></span><span class="mixer-stream b"></span>
                 <div class="mixer-cauldron"></div><span class="mix-bubble one"></span><span class="mix-bubble two"></span><span class="mix-bubble three"></span>
                 <svg class="mix-result" id="mix-result" viewBox="0 0 240 190" aria-label="Mixed slime" data-copy-aria="mixResultAria"></svg>
-                <span class="mix-status" id="mix-status" data-field="mixStatusReady">Two colors make something new</span>
+                <span class="mix-status" id="mix-status" data-field="mixStatusReady">Each batch mixes for 5 minutes</span>
               </div>
               <div class="house-choice-row">
                 <label><span class="control-label" data-field="mixColorA">Color A</span><select class="select-input" id="mix-color-a"></select></label>
@@ -2092,10 +2144,10 @@ You are loved more than this little game could ever hold.</p>
               </div>
               <label><span class="control-label" data-field="mixNameLabel">Mixture name</span><input class="text-input" id="mix-name" maxlength="40" placeholder="Name your new slime" data-copy-placeholder="mixNamePlaceholder"></label>
               <div class="house-choice-row">
-                <label><span class="control-label" data-field="mixFaceLabel">Face</span><select class="select-input" id="mix-eyes"><option value="happy" data-field="mixEyesHappy">Happy</option><option value="sleepy" data-field="mixEyesSleepy">Sleepy</option><option value="star" data-field="mixEyesStar">Starry</option></select></label>
-                <label><span class="control-label" data-field="mixExtraLabel">Extra</span><select class="select-input" id="mix-accessory"><option value="none" data-field="mixAccessoryNone">None</option><option value="crown" data-field="mixAccessoryCrown">Crown</option><option value="flower" data-field="mixAccessoryFlower">Flower</option><option value="glasses" data-field="mixAccessoryGlasses">Glasses</option></select></label>
+                <label><span class="control-label" data-field="mixFaceLabel">Face</span><select class="select-input" id="mix-eyes"></select></label>
+                <label><span class="control-label" data-field="mixExtraLabel">Extra</span><select class="select-input" id="mix-accessory"></select></label>
               </div>
-              <button class="button button-mint" type="button" id="mix-slime" data-house-write hidden><svg class="icon"><use href="#i-mix"></use></svg><span data-field="mixButton">Mix a new slime</span></button>
+              <button class="button button-mint" type="button" id="mix-slime" data-house-write hidden><svg class="icon"><use href="#i-mix"></use></svg><span data-field="mixButton">Start 5-minute mix</span></button>
               <div class="mix-list" id="mix-list"></div>
             </section>
           </aside>
@@ -2935,8 +2987,54 @@ You are loved more than this little game could ever hold.</p>
       installDone: "Birthday Quest installed.",
       homePetLiked: "The birthday slime likes you.",
     };
-    const eyeStyles = ["happy", "sleepy", "star"];
-    const accessories = ["none", "crown", "flower", "glasses"];
+    const EYE_STYLE_DEFINITIONS = [
+      { id: "happy", label: "Happy", copy: "eyesHappy", svg: '<path d="M88 104h16v16H88ZM136 104h16v16h-16Z" fill="#26362d"/><path d="M88 104h8v8h-8ZM136 104h8v8h-8Z" fill="#f5efd9"/><path d="M104 128h8v8h16v-8h8v8h-8v8h-16v-8h-8Z" fill="#26362d"/>' },
+      { id: "sleepy", label: "Sleepy", copy: "eyesSleepy", svg: '<path d="M88 112h8v4h8v-4h8M128 112h8v4h8v-4h8" fill="none" stroke="#26362d" stroke-width="4"/><path d="M112 136h16v8h-16Z" fill="#26362d"/>' },
+      { id: "star", label: "Starry", copy: "eyesStar", svg: '<path d="M96 100h8v8h8v8h-8v8h-8v-8h-8v-8h8ZM144 100h8v8h8v8h-8v8h-8v-8h-8v-8h8Z" fill="#26362d"/><path d="M104 128h8v8h16v-8h8v8h-8v8h-16v-8h-8Z" fill="#26362d"/>' },
+      { id: "wink", label: "Wink", svg: '<path d="M88 108h16v8H88ZM128 112h8v4h8v-4h8" fill="none" stroke="#26362d" stroke-width="4"/><path d="M104 128h8v8h16v-8h8v8h-8v8h-16v-8h-8Z" fill="#26362d"/>' },
+      { id: "heart", label: "Heart eyes", svg: '<path d="M96 100h8V92h8v-8h8v8h8v8h8v16h-8v8h-8v8h-8v-8h-8v-8h-8ZM128 100h8V92h8v-8h8v8h8v8h8v16h-8v8h-8v8h-8v-8h-8v-8h-8Z" fill="#c96f7c"/><path d="M104 128h8v8h16v-8h8v8h-8v8h-16v-8h-8Z" fill="#26362d"/>' },
+      { id: "angry", label: "Grumpy", svg: '<path d="M80 100h32v8H96v8H80ZM128 100h32v8h-16v8h-16Z" fill="#26362d"/><path d="M88 120h16v8H88ZM136 120h16v8h-16Z" fill="#26362d"/><path d="M108 140h24v8h-24Z" fill="#26362d"/>' },
+      { id: "excited", label: "Excited", svg: '<path d="M88 104h8v8h8v8h-8v8H88v-8h-8v-8h8ZM136 104h8v8h8v8h-8v8h-8v-8h-8v-8h8Z" fill="#26362d"/><path d="M104 136h32v12h-8v8h-16v-8h-8Z" fill="#26362d"/>' },
+      { id: "shy", label: "Shy", svg: '<path d="M88 112h16v8H88ZM136 112h16v8h-16Z" fill="#26362d"/><path d="M72 124h16v8H72ZM152 124h16v8h-16Z" fill="#e7aaa1"/><path d="M112 136h16v8h-16Z" fill="#26362d"/>' },
+      { id: "cool", label: "Cool", svg: '<path d="M80 104h48v16H80ZM112 104h48v16h-48ZM128 108h8v8h-8Z" fill="#26362d"/><path d="M96 104h12v8H96ZM136 104h12v8h-12Z" fill="#8fb9c6"/><path d="M112 132h8v4h8v-4h8" fill="none" stroke="#26362d" stroke-width="4"/>' },
+      { id: "curious", label: "Curious", svg: '<path d="M88 104h16v20H88ZM136 100h16v24h-16Z" fill="#26362d"/><path d="M88 104h8v8h-8ZM136 100h8v8h-8Z" fill="#f5efd9"/><path d="M120 128h8v12h-8Z" fill="#26362d"/>' },
+      { id: "joyful", label: "Joyful", svg: '<path d="M88 108h8v8h8v8h-8v8H88v-8h-8v-8h8ZM136 108h8v8h8v8h-8v8h-8v-8h-8v-8h8Z" fill="#26362d"/><path d="M104 132h32v8h-8v8h-16v-8h-8Z" fill="#26362d"/>' },
+      { id: "surprised", label: "Surprised", svg: '<path d="M88 100h16v24H88ZM136 100h16v24h-16Z" fill="#26362d"/><path d="M88 100h8v8h-8ZM136 100h8v8h-8Z" fill="#f5efd9"/><path d="M112 132h16v20h-16Z" fill="#26362d"/>' },
+      { id: "mischief", label: "Mischief", svg: '<path d="M88 108h16v8H88ZM136 104h8v8h8v8h-8v8h-8Z" fill="#26362d"/><path d="M104 132h8v4h8v8h8v-8h8v-4h8" fill="none" stroke="#26362d" stroke-width="4"/>' },
+      { id: "pout", label: "Pout", svg: '<path d="M88 104h16v8H88ZM136 104h16v8h-16Z" fill="#26362d"/><path d="M104 140h8v-8h16v8h-8v8h-8Z" fill="#26362d"/>' },
+      { id: "dizzy", label: "Dizzy", svg: '<path d="M88 108l16 8M104 108l-16 8M136 108l16 8M152 108l-16 8" stroke="#26362d" stroke-width="4"/><path d="M112 136h8v-8h8v16h-8v-8h-8Z" fill="#26362d"/>' },
+      { id: "determined", label: "Determined", svg: '<path d="M80 104h32v8H80ZM128 104h32v8h-32Z" fill="#26362d"/><path d="M88 120h16v8H88ZM136 120h16v8h-16Z" fill="#26362d"/><path d="M104 136h32v8h-32Z" fill="#26362d"/>' },
+      { id: "angel", label: "Angel", svg: '<path d="M88 104h8v8h8v8h-8v8H88v-8h-8v-8h8ZM136 104h8v8h8v8h-8v8h-8v-8h-8v-8h8Z" fill="#26362d"/><path d="M72 124h16v8H72ZM152 124h16v8h-16Z" fill="#e7aaa1"/><path d="M104 132h8v8h16v-8h8v8h-8v8h-16v-8h-8Z" fill="#26362d"/>' },
+      { id: "tears", label: "Teary", svg: '<path d="M88 104h16v12H88ZM136 104h16v12h-16Z" fill="#26362d"/><path d="M88 124h16v16h-8v8H88ZM136 124h16v16h-8v8h-8Z" fill="#8fc8e8"/><path d="M112 148h16v-8h8" fill="none" stroke="#26362d" stroke-width="4"/>' },
+      { id: "smirk", label: "Smirk", svg: '<path d="M88 104h16v12H88ZM136 104h16v12h-16Z" fill="#26362d"/><path d="M88 104h8v8h-8ZM136 104h8v8h-8Z" fill="#f5efd9"/><path d="M104 136h32v8h-8M136 144h8" fill="none" stroke="#26362d" stroke-width="4"/>' },
+      { id: "sparkle", label: "Sparkle", svg: '<path d="M96 100h8v8h8v8h-8v8h-8v-8h-8v-8h8ZM144 100h8v8h8v8h-8v8h-8v-8h-8v-8h8Z" fill="#f0cf76" stroke="#66502c" stroke-width="2"/><path d="M104 132h32v8h-8v8h-16v-8h-8Z" fill="#26362d"/>' },
+    ];
+    const ACCESSORY_DEFINITIONS = [
+      { id: "none", label: "None", copy: "accessoryNone", svg: "" },
+      { id: "crown", label: "Crown", copy: "accessoryCrown", svg: '<path d="M88 44V24h8v12h16V16h16v20h16V24h8v20Z" fill="#f0cf76" stroke="#66502c" stroke-width="3"/><path d="M96 36h48v8H96Z" fill="#ffe3a0"/><path d="M116 20h8v8h-8Z" fill="#e7aaa1"/>' },
+      { id: "flower", label: "Flower", copy: "accessoryFlower", svg: '<g transform="translate(168 52)"><path d="M-8-16h16v16h16v16H8v16H-8V16h-16V0h16Z" fill="#e7aaa1" stroke="#70483d" stroke-width="3"/><path d="M-8-8h16v16H-8Z" fill="#f0cf76"/></g>' },
+      { id: "glasses", label: "Glasses", copy: "accessoryGlasses", svg: '<g fill="none" stroke="#26362d" stroke-width="4"><path d="M80 104h32v24H80ZM128 104h32v24h-32ZM112 112h16M80 108l-12-4M160 108l12-4"/></g>' },
+      { id: "bow", label: "Bow", svg: '<g transform="translate(176 48)" fill="#f39ab8" stroke="#7d4657" stroke-width="3"><path d="M0 0h-24v-16h24ZM8 0h24v-16H8ZM0 0h8v16H0Z"/></g>' },
+      { id: "partyhat", label: "Party hat", svg: '<g stroke="#7d4657" stroke-width="3"><path d="M96 48L120 8l24 40Z" fill="#bd9bea"/><path d="M104 32h32M100 40h40" fill="none" stroke="#f0cf76"/><path d="M112 4h16v8h-16Z" fill="#9cc78c"/></g>' },
+      { id: "headphones", label: "Headphones", svg: '<path d="M72 112V80h8v-24h32v-16h16v16h32v24h8v32" fill="none" stroke="#70483d" stroke-width="8"/><path d="M64 104h16v40H64ZM160 104h16v40h-16Z" fill="#8fc8e8" stroke="#26362d" stroke-width="3"/>' },
+      { id: "cap", label: "Cap", svg: '<path d="M88 48h64v16h-64ZM152 56h32v12h-32Z" fill="#6d9fd2" stroke="#26362d" stroke-width="3"/><path d="M96 40h48v12H96Z" fill="#b8ddf2"/>' },
+      { id: "halo", label: "Halo", svg: '<ellipse cx="120" cy="24" rx="40" ry="12" fill="none" stroke="#f0cf76" stroke-width="7"/><path d="M96 28h48v6H96Z" fill="#fff4cf" opacity=".55"/>' },
+      { id: "horns", label: "Tiny horns", svg: '<path d="M88 48V24h16v8h8v16ZM152 48V24h-16v8h-8v16Z" fill="#e7aaa1" stroke="#70483d" stroke-width="3"/>' },
+      { id: "antenna", label: "Antenna", svg: '<path d="M120 48V24M112 16h16v16h-16Z" fill="none" stroke="#26362d" stroke-width="4"/><path d="M112 8h16v16h-16Z" fill="#bce8d7" stroke="#26362d" stroke-width="3"/>' },
+      { id: "chefhat", label: "Chef hat", svg: '<path d="M88 48V32h8V16h16v8h16v-8h16v16h8v16Z" fill="#f4ecd5" stroke="#66502c" stroke-width="3"/><path d="M88 40h64v12H88Z" fill="#e9dfc2"/>' },
+      { id: "bowtie", label: "Bow tie", svg: '<g transform="translate(120 148)" fill="#c96f7c" stroke="#70483d" stroke-width="3"><path d="M0 0h-24v-16h24ZM8 0h24v-16H8ZM0 0h8v16H0Z"/></g>' },
+      { id: "scarf", label: "Scarf", svg: '<path d="M72 144h96v16H72ZM144 152h16v32h-16Z" fill="#e99a86" stroke="#70483d" stroke-width="3"/><path d="M80 144h8v16h-8ZM96 144h8v16h-8ZM112 144h8v16h-8ZM128 144h8v16h-8Z" fill="#f0cf76"/>' },
+      { id: "sunglasses", label: "Shades", svg: '<g fill="#26362d" stroke="#26362d" stroke-width="4"><path d="M80 104h36v24H80ZM124 104h36v24h-36ZM116 108h8v8h-8ZM80 108l-12-4M160 108l12-4"/></g><path d="M88 108h8v8h-8ZM132 108h8v8h-8Z" fill="#8fb9c6"/>' },
+      { id: "mustache", label: "Mustache", svg: '<path d="M120 132h-8v-8h-16v8H80v16h16v-8h24v8h24v-16h-16v-8h-16Z" fill="#66502c" stroke="#3c2d1e" stroke-width="3"/>' },
+      { id: "candy", label: "Candy", svg: '<g transform="translate(168 132)"><path d="M0 0h24v16H0Z" fill="#f39ab8" stroke="#70483d" stroke-width="3"/><path d="M0 0h-16v-12h8v24h-8v-12ZM24 0h16v-12h-8v24h8v-12Z" fill="#bd9bea"/></g>' },
+      { id: "balloon", label: "Balloon", svg: '<g><path d="M176 64V24" stroke="#66502c" stroke-width="3"/><path d="M160 16h32v40h-8v8h-16v-8h-8Z" fill="#8fc8e8" stroke="#26362d" stroke-width="3"/><path d="M168 24h8v24h-8Z" fill="#d4f0df" opacity=".7"/></g>' },
+      { id: "mushroomhat", label: "Mushroom hat", svg: '<path d="M72 48h96v16H72Z" fill="#f4ecd5" stroke="#66502c" stroke-width="3"/><path d="M80 48V32h8V16h24v8h16v-8h24v16h8v16Z" fill="#c96f4f" stroke="#70483d" stroke-width="3"/><path d="M96 24h16v8H96ZM128 16h16v16h-16Z" fill="#f4ecd5"/>' },
+      { id: "ears", label: "Bunny ears", svg: '<path d="M88 48V8h16v40ZM136 48V8h16v40Z" fill="#f2c49d" stroke="#66502c" stroke-width="3"/><path d="M92 40V16h8v24ZM140 40V16h8v24Z" fill="#e7aaa1"/>' },
+      { id: "starclip", label: "Star clip", svg: '<g transform="translate(176 56)"><path d="M0-16h8v8h8v8H8v8H0V0h-8v-8h-8v-8h8Z" fill="#f0cf76" stroke="#66502c" stroke-width="3"/></g>' },
+    ];
+    const eyeStyles = EYE_STYLE_DEFINITIONS.map((item) => item.id);
+    const accessories = ACCESSORY_DEFINITIONS.map((item) => item.id);
+    const SLIME_MIXING_SECONDS = 300;
     const bunnyColors = ["#fff1f5", "#e8f3ff", "#eee5ff", "#ffe7c7", "#f4dfeb", "#dcefe4"];
     const tulipColors = ["#f39ab8", "#ffd36f", "#bd9bea", "#f7f1e5", "#ef8f8f"];
     const outfits = [
@@ -3225,6 +3323,10 @@ You are loved more than this little game could ever hold.</p>
     let photoViewerIndex = 0;
     let photoViewerCaption = "";
     let galleryFlipping = false;
+    let galleryEditing = false;
+    let galleryEditPageId = "";
+    let gallerySaveState = "saved";
+    const galleryDrafts = new Map();
     let photoUploading = false;
     let bunnies = [];
     let tulips = [];
@@ -3269,6 +3371,8 @@ You are loved more than this little game could ever hold.</p>
       if (Array.isArray(savedColors)) savedColors.forEach((color) => { if (SLIME_COLORS.includes(color)) unlockedSlimeColors.add(color); });
     } catch {}
     let achievementTimer = null;
+    let slimeBatchRefreshTimer = 0;
+    const celebratedSlimeBatches = new Set();
     let dishAchievementTimer = null;
     let cooking = false;
     let lastCookedDish = -1;
@@ -3546,8 +3650,7 @@ You are loved more than this little game could ever hold.</p>
               bin.classList.remove("active");
             }
           }
-          await remove();
-          return true;
+          return (await remove()) !== false;
         } catch (error) {
           element?.classList.remove("trash-source");
           throw error;
@@ -4397,30 +4500,142 @@ You are loved more than this little game could ever hold.</p>
 
     function slimeSvg(color, eyes = "happy", accessory = "none") {
       const safeColor = /^#[0-9a-fA-F]{6}$/.test(color || "") ? color : SLIME_COLORS[0];
-      const safeEyes = eyeStyles.includes(eyes) ? eyes : "happy";
-      const safeAccessory = accessories.includes(accessory) ? accessory : "none";
-      const face = safeEyes === "sleepy"
-        ? '<path d="M88 112h8v4h8v-4h8M128 112h8v4h8v-4h8" fill="none" stroke="#26362d" stroke-width="4"/>'
-        : safeEyes === "star"
-          ? '<path d="M96 100h8v8h8v8h-8v8h-8v-8h-8v-8h8ZM144 100h8v8h8v8h-8v8h-8v-8h-8v-8h8Z" fill="#26362d"/>'
-          : '<path d="M88 104h16v16H88ZM136 104h16v16h-16Z" fill="#26362d"/><path d="M88 104h8v8h-8ZM136 104h8v8h-8Z" fill="#f5efd9"/>';
-      const extras = safeAccessory === "crown"
-        ? '<path d="M88 44V24h8v12h16V16h16v20h16V24h8v20Z" fill="#f0cf76" stroke="#66502c" stroke-width="3"/><path d="M96 36h48v8H96Z" fill="#ffe3a0"/><path d="M116 20h8v8h-8Z" fill="#e7aaa1"/>'
-        : safeAccessory === "flower"
-          ? '<g transform="translate(168 52)"><path d="M-8-16h16v16h16v16H8v16H-8V16h-16V0h16Z" fill="#e7aaa1" stroke="#70483d" stroke-width="3"/><path d="M-8-8h16v16H-8Z" fill="#f0cf76"/></g>'
-          : safeAccessory === "glasses"
-            ? '<g fill="none" stroke="#26362d" stroke-width="4"><path d="M80 104h32v24H80ZM128 104h32v24h-32ZM112 112h16M80 108l-12-4M160 108l12-4"/></g>'
-            : "";
+      const face = EYE_STYLE_DEFINITIONS.find((item) => item.id === eyes)?.svg || EYE_STYLE_DEFINITIONS[0].svg;
+      const extras = ACCESSORY_DEFINITIONS.find((item) => item.id === accessory)?.svg || "";
       return `<g shape-rendering="crispEdges">
         <ellipse cx="120" cy="164" rx="76" ry="12" fill="#20372a" opacity=".28"/>
         <path d="M48 152H40v-24h8v-16h16v-8h16V88h16V64h16V40h24v8h16v16h16v16h16v8h16v16h16v48Z" fill="${safeColor}" stroke="#263b2c" stroke-width="4"/>
         <path d="M168 48h16v16h16v16h16v8h16v16h16v48h-16v-24h-16v-16h-16v-8h-16V96h-16V72h-16V48Z" fill="${shadeHex(safeColor, -30)}"/>
         <path d="M72 64h16V56h16v8h16v16H96V72H80v8H72Z" fill="${shadeHex(safeColor, 38)}"/>
         ${face}
-        <path d="M104 128h8v8h16v-8h8v8h-8v8h-16v-8h-8Z" fill="#26362d"/>
         <path d="M72 128h16v8H72ZM152 128h16v8h-16Z" fill="${shadeHex(safeColor, 55)}"/>
         ${extras}
       </g>`;
+    }
+
+    function slimeIcon(color, eyes = "happy", accessory = "none", className = "") {
+      return `<svg viewBox="0 0 240 190" class="${className}" aria-hidden="true">${slimeSvg(color, eyes, accessory)}</svg>`;
+    }
+
+    function eyeStyleLabel(definition) {
+      return definition.copy ? copyText(definition.copy, definition.label) : definition.label;
+    }
+
+    function accessoryLabel(definition) {
+      return definition.copy ? copyText(definition.copy, definition.label) : definition.label;
+    }
+
+    function renderSlimeStyleControls() {
+      const color = unlockedSlimeColors.has(selectedColor) ? selectedColor : SLIME_BASE_COLORS[0];
+      const eyesContainer = $("#eye-options");
+      eyesContainer.replaceChildren(...EYE_STYLE_DEFINITIONS.map((definition) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `option-button style-option${selectedEyes === definition.id ? " active" : ""}`;
+        button.dataset.eyes = definition.id;
+        button.setAttribute("aria-pressed", String(selectedEyes === definition.id));
+        button.innerHTML = slimeIcon(color, definition.id, "none");
+        const label = document.createElement("span");
+        label.textContent = eyeStyleLabel(definition);
+        button.append(label);
+        return button;
+      }));
+      const accessoryContainer = $("#accessory-options");
+      accessoryContainer.replaceChildren(...ACCESSORY_DEFINITIONS.map((definition) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `option-button style-option${selectedAccessory === definition.id ? " active" : ""}`;
+        button.dataset.accessory = definition.id;
+        button.setAttribute("aria-pressed", String(selectedAccessory === definition.id));
+        button.innerHTML = slimeIcon(color, selectedEyes, definition.id);
+        const label = document.createElement("span");
+        label.textContent = accessoryLabel(definition);
+        button.append(label);
+        return button;
+      }));
+      const mixEyes = $("#mix-eyes");
+      const previousEyes = mixEyes.value;
+      mixEyes.replaceChildren(...EYE_STYLE_DEFINITIONS.map((definition) => {
+        const option = document.createElement("option");
+        option.value = definition.id;
+        option.textContent = eyeStyleLabel(definition);
+        return option;
+      }));
+      mixEyes.value = eyeStyles.includes(previousEyes) ? previousEyes : selectedEyes;
+      const mixAccessory = $("#mix-accessory");
+      const previousAccessory = mixAccessory.value;
+      mixAccessory.replaceChildren(...ACCESSORY_DEFINITIONS.map((definition) => {
+        const option = document.createElement("option");
+        option.value = definition.id;
+        option.textContent = accessoryLabel(definition);
+        return option;
+      }));
+      mixAccessory.value = accessories.includes(previousAccessory) ? previousAccessory : selectedAccessory;
+    }
+
+    function batchCreatedAt(record) {
+      const value = record?.createdAt;
+      if (!value) return null;
+      try {
+        const millis = value.toMillis?.();
+        if (Number.isFinite(millis)) return millis;
+      } catch {}
+      if (value instanceof Date) return Number.isFinite(value.getTime()) ? value.getTime() : null;
+      if (typeof value === "number") return Number.isFinite(value) ? value : null;
+      if (typeof value === "string") {
+        const millis = Date.parse(value);
+        return Number.isFinite(millis) ? millis : null;
+      }
+      return null;
+    }
+
+    function slimeMixDuration(record) {
+      return Object.prototype.hasOwnProperty.call(record || {}, "mixingSeconds")
+        ? Math.max(0, Number(record.mixingSeconds) || 0) * 1000
+        : 0;
+    }
+
+    function slimeReadyAt(record) {
+      const duration = slimeMixDuration(record);
+      if (!duration) return batchCreatedAt(record);
+      const createdAt = batchCreatedAt(record);
+      return createdAt === null ? null : createdAt + duration;
+    }
+
+    function isSlimeReady(record, now = Date.now()) {
+      if (!Object.prototype.hasOwnProperty.call(record || {}, "mixingSeconds")) return true;
+      const readyAt = slimeReadyAt(record);
+      return readyAt !== null && now >= readyAt;
+    }
+
+    function slimeRemainingMs(record, now = Date.now()) {
+      const duration = slimeMixDuration(record);
+      if (!duration) return 0;
+      const readyAt = slimeReadyAt(record);
+      return Math.max(0, readyAt === null ? duration : readyAt - now);
+    }
+
+    function slimeMixProgress(record, now = Date.now()) {
+      const duration = slimeMixDuration(record);
+      if (!duration) return 1;
+      const createdAt = batchCreatedAt(record);
+      if (createdAt === null) return 0;
+      return Math.max(0, Math.min(1, (now - createdAt) / duration));
+    }
+
+    function formatSlimeCountdown(milliseconds) {
+      const totalSeconds = Math.max(0, Math.ceil(milliseconds / 1000));
+      return `${Math.floor(totalSeconds / 60)}:${String(totalSeconds % 60).padStart(2, "0")}`;
+    }
+
+    function slimePendingLabel(record) {
+      return formatCopy("slimeMixingCountdown", { time: formatSlimeCountdown(slimeRemainingMs(record)) }, `Mixing ${formatSlimeCountdown(slimeRemainingMs(record))}`);
+    }
+
+    function celebrateReadySlime(record, color, eyes, accessory) {
+      if (!Object.prototype.hasOwnProperty.call(record || {}, "mixingSeconds") || !record.id || celebratedSlimeBatches.has(record.id)) return;
+      celebratedSlimeBatches.add(record.id);
+      if (unlockSlimeColor(color)) showSlimeAchievement(color, eyes, accessory);
     }
 
     function animateSlimePreview(className) {
@@ -4456,13 +4671,14 @@ You are loved more than this little game could ever hold.</p>
       try { localStorage.setItem("birthday-quest-slime-colors", JSON.stringify([...unlockedSlimeColors])); } catch {}
       updateSlimeProgress();
       renderMixColorOptions();
+      renderSlimeStyleControls();
       return true;
     }
 
-    function showSlimeAchievement(color) {
+    function showSlimeAchievement(color, eyes = selectedEyes, accessory = selectedAccessory) {
       const popup = $("#slime-achievement");
       const messages = [copyText("achievementNice", "Nice one, baby!"), copyText("achievementWow", "Wow, galing!")];
-      popup.querySelector("svg").innerHTML = slimeSvg(color, selectedEyes, selectedAccessory);
+      popup.querySelector("svg").innerHTML = slimeSvg(color, eyes, accessory);
       $("#achievement-message").textContent = messages[Math.floor(Math.random() * messages.length)];
       $("#achievement-color").textContent = formatCopy("achievementColor", { color }, `New color unlocked: ${color}`);
       popup.hidden = false;
@@ -4473,12 +4689,34 @@ You are loved more than this little game could ever hold.</p>
       achievementTimer = setTimeout(() => { popup.hidden = true; }, 3400);
     }
 
+    function scheduleSlimeBatchRefresh() {
+      clearTimeout(slimeBatchRefreshTimer);
+      const pending = [...slimes, ...mixes].filter((record) => !isSlimeReady(record));
+      if (!pending.length) return;
+      const delay = Math.min(1000, Math.max(80, ...pending.map((record) => slimeRemainingMs(record))));
+      slimeBatchRefreshTimer = setTimeout(() => {
+        renderSlimes();
+        renderMixes();
+        scheduleSlimeBatchRefresh();
+      }, delay);
+    }
+
     function renderSlimes() {
-      slimes.forEach((slime) => unlockSlimeColor(slime.color));
+      let readyCount = 0;
+      slimes.forEach((slime) => {
+        if (!isSlimeReady(slime)) return;
+        readyCount += 1;
+        if (Object.prototype.hasOwnProperty.call(slime, "mixingSeconds")) celebrateReadySlime(slime, slime.color, slime.eyes, slime.accessory);
+        else unlockSlimeColor(slime.color);
+      });
       updateSlimeProgress();
+      const pendingCount = slimes.length - readyCount;
       const grid = $("#slime-grid");
       grid.replaceChildren();
-      $("#slime-count").textContent = formatCopy(slimes.length === 1 ? "slimeCountOne" : "slimeCountMany", { count: slimes.length }, `${slimes.length} ${slimes.length === 1 ? "friend" : "friends"}`);
+      $("#slime-count").textContent = pendingCount
+        ? formatCopy("slimeCountPending", { ready: readyCount, pending: pendingCount }, `${readyCount} ready · ${pendingCount} mixing`)
+        : formatCopy(slimes.length === 1 ? "slimeCountOne" : "slimeCountMany", { count: slimes.length }, `${slimes.length} ${slimes.length === 1 ? "friend" : "friends"}`);
+      scheduleSlimeBatchRefresh();
       if (!slimes.length) {
         const empty = document.createElement("div");
         empty.className = "empty-state";
@@ -4487,14 +4725,15 @@ You are loved more than this little game could ever hold.</p>
         return;
       }
       slimes.forEach((slime, index) => {
+        const ready = isSlimeReady(slime);
         const card = document.createElement("div");
-        card.className = "slime-card";
+        card.className = `slime-card${ready ? "" : " slime-pending"}`;
         card.dataset.trashKey = `slime:${slime.id}`;
         card.style.animationDelay = `${Math.min(index, 12) * 35}ms`;
         card.tabIndex = 0;
         card.setAttribute("role", "button");
-        card.setAttribute("aria-label", formatCopy("slimeCardAria", { name: slime.name || copyText("slimeDefaultName", "Slime"), manage: role === "admin" || slime.createdBy === user?.uid ? copyText("slimeCardManageAria", ", drag to the trash to delete") : "" }, `${slime.name || "Slime"}. Tap to load${role === "admin" || slime.createdBy === user?.uid ? ", drag to the trash to delete" : ""}.`));
-        card.innerHTML = slimeSvg(slime.color, slime.eyes, slime.accessory);
+        card.setAttribute("aria-label", formatCopy(ready ? "slimeCardAria" : "slimePendingAria", { name: slime.name || copyText("slimeDefaultName", "Slime"), time: formatSlimeCountdown(slimeRemainingMs(slime)), manage: role === "admin" || slime.createdBy === user?.uid ? copyText("slimeCardManageAria", ", drag to the trash to delete") : "" }, `${slime.name || "Slime"}. ${ready ? `Tap to load${role === "admin" || slime.createdBy === user?.uid ? ", drag to the trash to delete" : ""}.` : `Mixing for ${formatSlimeCountdown(slimeRemainingMs(slime))} more.`}`));
+        card.innerHTML = slimeIcon(ready ? slime.color : "#6f7468", slime.eyes, slime.accessory);
         const name = document.createElement("span");
         name.className = "slime-card-name";
         name.textContent = slime.name || copyText("slimeUnnamed", "Unnamed slime");
@@ -4502,9 +4741,20 @@ You are loved more than this little game could ever hold.</p>
         owner.className = "slime-card-owner";
         owner.textContent = slime.createdBy === user?.uid ? copyText("slimeMadeByYou", "Made by you") : copyText("slimeOwnerOther", "Birthday universe");
         card.append(name, owner);
+        if (!ready) {
+          const status = document.createElement("span");
+          status.className = "slime-pending-status";
+          status.textContent = slimePendingLabel(slime);
+          const progress = document.createElement("span");
+          progress.className = "slime-mix-progress";
+          progress.style.setProperty("--progress", `${slimeMixProgress(slime) * 100}%`);
+          progress.append(document.createElement("i"));
+          card.append(status, progress);
+        }
         const deploy = document.createElement("button");
         deploy.type = "button";
         deploy.className = "slime-deploy";
+        deploy.hidden = !ready;
         deploy.innerHTML = '<svg class="icon" aria-hidden="true"><use href="#i-deploy"></use></svg>';
         deploy.title = copyText("slimeDeploy", "Deploy");
         deploy.setAttribute("aria-label", formatCopy("slimeDeployAria", { name: slime.name || copyText("slimeDefaultName", "Slime") }, `Deploy ${slime.name || "Slime"} into the current page.`));
@@ -4515,6 +4765,10 @@ You are loved more than this little game could ever hold.</p>
         card.append(deploy);
         const load = () => {
           if (performance.now() - Number(card.dataset.draggedAt || 0) < 400) return;
+          if (!isSlimeReady(slime)) {
+            showToast(formatCopy("slimeStillMixing", { time: formatSlimeCountdown(slimeRemainingMs(slime)) }, `Still mixing — ready in ${formatSlimeCountdown(slimeRemainingMs(slime))}.`));
+            return;
+          }
           selectedColor = SLIME_COLORS.includes(slime.color) ? slime.color : SLIME_COLORS[0];
           selectedEyes = eyeStyles.includes(slime.eyes) ? slime.eyes : "happy";
           selectedAccessory = accessories.includes(slime.accessory) ? slime.accessory : "none";
@@ -4528,7 +4782,7 @@ You are loved more than this little game could ever hold.</p>
         card.addEventListener("keydown", (event) => { if (event.target === card && (event.key === "Enter" || event.key === " ")) load(); });
         if (role === "admin" || slime.createdBy === user?.uid) {
           card.classList.add("trash-draggable");
-          card.addEventListener("pointerdown", (event) => {
+          bindLongPressDrag(card, (event) => {
             if (event.target.closest(".slime-deploy")) return;
             startTrashDrag(event, `slime:${slime.id}`, card, () => deleteSlime(slime, card));
           });
@@ -4537,25 +4791,30 @@ You are loved more than this little game could ever hold.</p>
       });
     }
 
-    async function createSlime(products = []) {
+    async function createSlime(products = [], design = {}) {
       if (!user || !role) {
         showToast(copyText("slimeNeedSignIn", "Sign in as a viewer or admin to save a slime."));
         openAuth();
         return false;
       }
-      const name = $("#slime-name").value.trim() || copyText("slimePreviewName", "New slime");
+      const name = String(design.name || $("#slime-name").value.trim() || copyText("slimePreviewName", "New slime")).slice(0, 40);
+      const color = SLIME_COLORS.includes(design.color) ? design.color : selectedColor;
+      const eyes = eyeStyles.includes(design.eyes) ? design.eyes : selectedEyes;
+      const accessory = accessories.includes(design.accessory) ? design.accessory : selectedAccessory;
       const safeProducts = Array.isArray(products)
         ? products.filter((id) => SLIME_BASE_PRODUCTS.some((product) => product.id === id)).slice(0, 3)
         : [];
-      const newSlime = { name, color: selectedColor, eyes: selectedEyes, accessory: selectedAccessory, products: safeProducts, createdBy: user.uid, createdAt: fs?.serverTimestamp ? fs.serverTimestamp() : Date.now() };
-      const preview = $("#slime-preview");
-      const previewCard = preview.closest(".slime-preview-card");
-      preview.classList.remove("pop", "jelly");
-      preview.classList.add("mixing");
-      previewCard.classList.add("mixing");
-      $("#preview-name").textContent = copyText("slimeMixing", "Mixing your little friend...");
+      const newSlime = {
+        name,
+        color,
+        eyes,
+        accessory,
+        products: safeProducts,
+        mixingSeconds: SLIME_MIXING_SECONDS,
+        createdBy: user.uid,
+        createdAt: fs?.serverTimestamp ? fs.serverTimestamp() : Date.now(),
+      };
       try {
-        await new Promise((resolve) => setTimeout(resolve, 850));
         if (db) {
           await fs.addDoc(fs.collection(db, "slimes"), newSlime);
         } else {
@@ -4563,20 +4822,10 @@ You are loved more than this little game could ever hold.</p>
           renderSlimes();
         }
         gainXp(20);
-        $("#slime-name").value = "";
-        updateSlimePreview();
-        animateSlimePreview("pop");
-        showToast(db
-          ? formatCopy("slimeCreatedCloud", { name }, `${name} bubbled into the collection.`)
-          : formatCopy("slimeCreatedLocal", { name }, `${name} created for this session. Connect Firebase to save permanently.`));
         return true;
       } catch (error) {
-        updateSlimePreview();
         showAppError("slimeCreateError", "Could not save slime", error);
         return false;
-      } finally {
-        preview.classList.remove("mixing");
-        previewCard.classList.remove("mixing");
       }
     }
 
@@ -4629,13 +4878,13 @@ You are loved more than this little game could ever hold.</p>
         element.type = "button";
         element.className = "world-slime";
         element.dataset.worldSlimeId = slime.id;
-        element.innerHTML = slimeSvg(slime.color, slime.eyes, slime.accessory);
+        element.innerHTML = slimeIcon(slime.color, slime.eyes, slime.accessory);
         element.setAttribute("aria-label", formatCopy("slimeWorldAria", { name: slime.name || copyText("slimeDefaultName", "Slime") }, `${slime.name || "Slime"}. Drag to move between pages.`));
         const label = document.createElement("span");
         label.className = "world-slime-label";
         label.textContent = slime.name || copyText("slimeUnnamed", "Unnamed slime");
         element.append(label);
-        element.addEventListener("pointerdown", (event) => startWorldSlimeDrag(slime, event));
+        bindLongPressDrag(element, (event) => startWorldSlimeDrag(slime, event));
         element.addEventListener("click", () => {
           if (performance.now() - Number(element.dataset.draggedAt || 0) < 400) return;
           element.classList.remove("boing");
@@ -4652,6 +4901,10 @@ You are loved more than this little game could ever hold.</p>
       if (!user || !role) {
         showToast(copyText("slimeNeedSignIn", "Sign in as a viewer or admin to save a slime."));
         openAuth();
+        return;
+      }
+      if (!isSlimeReady(slime)) {
+        showToast(formatCopy("slimeStillMixing", { time: formatSlimeCountdown(slimeRemainingMs(slime)) }, `Still mixing — ready in ${formatSlimeCountdown(slimeRemainingMs(slime))}.`));
         return;
       }
       const placement = {
@@ -4726,6 +4979,7 @@ You are loved more than this little game could ever hold.</p>
 
     function cleanupWorldSlimeDrag() {
       if (!activeWorldSlimeDrag) return;
+      cancelPressGesture();
       const drag = activeWorldSlimeDrag;
       cancelAnimationFrame(drag.renderFrame);
       try { drag.element.releasePointerCapture(drag.pointerId); } catch {}
@@ -4808,7 +5062,7 @@ You are loved more than this little game could ever hold.</p>
         }, `${name}. Tap to add to the cauldron.`));
         const icon = document.createElement("span");
         icon.className = "product-icon";
-        icon.innerHTML = slimeSvg(product.color);
+        icon.innerHTML = slimeIcon(product.color);
         const label = document.createElement("span");
         label.textContent = name;
         button.append(icon, label);
@@ -4831,7 +5085,7 @@ You are loved more than this little game could ever hold.</p>
         slot.className = `craft-slot${product ? " filled" : ""}`;
         slot.disabled = crafting;
         if (product) {
-          slot.innerHTML = slimeSvg(product.color);
+          slot.innerHTML = slimeIcon(product.color);
           const label = document.createElement("span");
           label.textContent = `${index + 1}. ${copyText(product.label, product.id)}`;
           slot.append(label);
@@ -4887,11 +5141,11 @@ You are loved more than this little game could ever hold.</p>
       $("#craft-preview").innerHTML = slimeSvg(visibleColor, selectedEyes, selectedAccessory);
       $("#craft-status").textContent = selectedProducts.length === 3
         ? knownColor
-          ? formatCopy("craftStatusKnownThree", { color }, `Recipe ready! This mix makes ${color}.`)
-          : copyText("craftStatusLockedThree", "Recipe ready! A locked color is waiting to be created.")
+          ? formatCopy("craftStatusKnownThree", { color }, `Recipe ready! This mix makes ${color} after 5 minutes.`)
+          : copyText("craftStatusLockedThree", "Recipe ready! A locked color will appear after 5 minutes.")
         : selectedProducts.length
           ? formatCopy("craftStatusSelected", { count: selectedProducts.length, remaining: 3 - selectedProducts.length }, `${selectedProducts.length} of 3 slimes ready. Choose ${3 - selectedProducts.length} more.`)
-          : copyText("craftStatusReady", "Pick any 3 base slimes. Repeats are allowed!");
+          : copyText("craftStatusReady", "Pick any 3 base slimes. Each batch takes 5 minutes; repeats are allowed!");
       renderCraftProducts();
     }
 
@@ -4910,48 +5164,57 @@ You are loved more than this little game could ever hold.</p>
       const button = $("#craft-slime");
       const station = $("#craft-cauldron");
       const status = $("#craft-status");
-      const name = $("#slime-name").value.trim() || copyText("slimePreviewName", "New slime");
+      const design = {
+        name: $("#slime-name").value.trim() || copyText("slimePreviewName", "New slime"),
+        color: craftResultColor(),
+        eyes: selectedEyes,
+        accessory: selectedAccessory,
+      };
       const products = [...selectedProducts];
-      selectedColor = craftResultColor();
-      const newColor = !unlockedSlimeColors.has(selectedColor);
+      let started = false;
+      selectedColor = design.color;
       updateSlimePreview();
       button.disabled = true;
       renderCraftProducts();
       station.classList.remove("pouring", "swirling", "bubbling", "revealing");
       try {
+        const save = createSlime(products, design);
         station.classList.add("pouring");
         status.textContent = copyText("craftStatusPouring", "Pouring your products into the cauldron...");
-        const save = createSlime(products);
-        await new Promise((resolve) => setTimeout(resolve, 480));
+        await new Promise((resolve) => setTimeout(resolve, 380));
         station.classList.remove("pouring");
         station.classList.add("swirling");
         status.textContent = copyText("craftStatusSwirling", "Swirling the colors and textures...");
-        await new Promise((resolve) => setTimeout(resolve, 520));
+        await new Promise((resolve) => setTimeout(resolve, 480));
         station.classList.remove("swirling");
         station.classList.add("bubbling");
         status.textContent = copyText("craftStatusBubbling", "Bubble, bubble... your slime is taking shape!");
-        const saved = await save;
+        const saved = await Promise.all([save, new Promise((resolve) => setTimeout(resolve, 560))]).then(([result]) => result);
         if (!saved) {
           status.textContent = copyText("craftFailed", "The mixture fizzled. Try again.");
           return;
         }
-        station.classList.remove("bubbling");
-        station.classList.add("revealing");
-        $("#craft-preview").innerHTML = slimeSvg(selectedColor, selectedEyes, selectedAccessory);
-        status.textContent = formatCopy("craftStatusDone", { name }, `${name} is ready to join the collection.`);
-        if (newColor) {
-          unlockSlimeColor(selectedColor);
-          showSlimeAchievement(selectedColor);
-        }
-        updateSlimePreview();
-        station.style.setProperty("--craft-color", selectedColor);
+        started = true;
         selectedProducts = [];
-        await new Promise((resolve) => setTimeout(resolve, 650));
+        $("#slime-name").value = "";
+        station.style.setProperty("--craft-color", "#6f7468");
+        $("#craft-preview").innerHTML = slimeSvg("#6f7468", design.eyes, design.accessory);
+        updateSlimePreview();
+        status.textContent = copyText("craftBatchStarted", "Batch started! Ready in 5:00. You can start another now.");
+        showToast(formatCopy("craftBatchStartedToast", { name: design.name, time: "5:00" }, `${design.name} is mixing for 5:00. Start another batch anytime.`));
+      } catch (error) {
+        status.textContent = copyText("craftFailed", "The mixture fizzled. Try again.");
+        showAppError("slimeCreateError", "Could not save slime", error);
       } finally {
         station.classList.remove("pouring", "swirling", "bubbling", "revealing");
         crafting = false;
         renderCraftProducts();
         updateCraftPreview();
+        if (started) {
+          status.textContent = copyText("craftBatchStarted", "Batch started! Ready in 5:00. You can start another now.");
+          station.style.setProperty("--craft-color", "#6f7468");
+          $("#craft-preview").innerHTML = slimeSvg("#6f7468", design.eyes, design.accessory);
+        }
       }
     }
 
@@ -5213,7 +5476,7 @@ You are loved more than this little game could ever hold.</p>
         name.textContent = bunnyName(bunny);
         element.append(name);
         element.setAttribute("aria-label", formatCopy("bunnyAria", { name: bunnyName(bunny), manage: canManageNatureItem(bunny) ? copyText("bunnyManageAria", " Drop in the trash or press Delete to remove.") : "" }, `${bunnyName(bunny)}. Drag to move between habitats.${canManageNatureItem(bunny) ? " Drop in the trash or press Delete to remove." : ""}`));
-        element.addEventListener("pointerdown", (event) => startNatureDrag("bunny", bunny, event));
+        bindLongPressDrag(element, (event) => startNatureDrag("bunny", bunny, event));
         element.addEventListener("keydown", (event) => {
           if (event.key === "Delete" && canManageNatureItem(bunny)) {
             event.preventDefault();
@@ -5268,7 +5531,7 @@ You are loved more than this little game could ever hold.</p>
           : stageNames[growth];
         stageLabel.title = remaining > 0 ? formatCopy("tulipFullBloomTime", { time: formatTulipTime(Math.max(0, (tulipCreatedAt(tulip) || now) + 4 * TULIP_STAGE_MS - now)) }, `Full bloom in ${formatTulipTime(Math.max(0, (tulipCreatedAt(tulip) || now) + 4 * TULIP_STAGE_MS - now))}`) : stageNames[growth];
         element.append(stageLabel);
-        element.addEventListener("pointerdown", (event) => startNatureDrag("tulip", tulip, event));
+        bindLongPressDrag(element, (event) => startNatureDrag("tulip", tulip, event));
         element.addEventListener("keydown", (event) => {
           if (event.key === "Enter" || event.key === " ") {
             event.preventDefault();
@@ -5306,6 +5569,64 @@ You are loved more than this little game could ever hold.</p>
       };
     }
 
+    const LONG_PRESS_MS = 360;
+    let activePressGesture = null;
+    let longPressPointerId = null;
+    let suppressPressClickUntil = 0;
+
+    function cancelPressGesture(pointerId = null) {
+      if (!activePressGesture || (pointerId !== null && activePressGesture.pointerId !== pointerId)) return false;
+      clearTimeout(activePressGesture.timer);
+      if (activePressGesture.element?.hasPointerCapture?.(activePressGesture.pointerId)) {
+        try { activePressGesture.element.releasePointerCapture(activePressGesture.pointerId); } catch {}
+      }
+      activePressGesture.element?.classList.remove("press-armed");
+      activePressGesture = null;
+      return true;
+    }
+
+    function consumePressTap(event) {
+      let consumed = longPressPointerId === event.pointerId;
+      if (consumed) longPressPointerId = null;
+      if (activePressGesture?.pointerId === event.pointerId) {
+        consumed = consumed || activePressGesture.fired;
+        cancelPressGesture(event.pointerId);
+      }
+      if (consumed) suppressPressClickUntil = performance.now() + 400;
+      return consumed;
+    }
+
+    function bindLongPressDrag(element, startDrag) {
+      element.addEventListener("pointerdown", (event) => {
+        const control = event.target.closest("button, input, textarea, select, [contenteditable='true']");
+        if (!event.isPrimary || event.button !== 0 || activePressGesture || (control && control !== element)) return;
+        const gesture = { element, pointerId: event.pointerId, x: event.clientX, y: event.clientY, fired: false };
+        gesture.timer = setTimeout(() => {
+          if (activePressGesture !== gesture) return;
+          gesture.fired = true;
+          longPressPointerId = event.pointerId;
+          element.classList.add("press-armed");
+          navigator.vibrate?.(18);
+          try { element.setPointerCapture(event.pointerId); } catch {}
+          startDrag({
+            isPrimary: event.isPrimary,
+            button: event.button,
+            pointerId: event.pointerId,
+            clientX: event.clientX,
+            clientY: event.clientY,
+            currentTarget: element,
+            target: event.target,
+            preventDefault: () => event.preventDefault(),
+            stopPropagation: () => event.stopPropagation(),
+          });
+        }, LONG_PRESS_MS);
+        activePressGesture = gesture;
+      });
+      element.addEventListener("contextmenu", (event) => {
+        if (activePressGesture?.element === element) event.preventDefault();
+      });
+    }
+
     function isOverTrash(clientX, clientY) {
       const rect = $("#trash-bin").getBoundingClientRect();
       return clientX >= rect.left - 10 && clientX <= rect.right + 10 && clientY >= rect.top - 10 && clientY <= rect.bottom + 10;
@@ -5313,10 +5634,9 @@ You are loved more than this little game could ever hold.</p>
 
     function syncPersistentTrash() {
       const bin = $("#trash-bin");
-      const canManagePage = Boolean(user && role && ["house", "garden", "bunnyBlue"].includes(currentPage));
-      const persistent = canManagePage && window.matchMedia("(max-width: 900px)").matches;
-      bin.classList.toggle("mobile-persistent", persistent);
-      bin.setAttribute("aria-hidden", String(!canManagePage));
+      const dragging = Boolean(activeTrashDrag || activeNatureDrag?.canTrash || activeHouseDrag?.canTrash);
+      bin.classList.toggle("mobile-persistent", dragging && window.matchMedia("(max-width: 900px)").matches);
+      bin.setAttribute("aria-hidden", String(!dragging));
     }
 
     function startTrashDrag(event, key, source, remove, ghostSource = source, onTap = null) {
@@ -5329,16 +5649,19 @@ You are loved more than this little game could ever hold.</p>
       activeTrashDrag = { key, source, remove, onTap, pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, moved: false, ...ghostData };
       source.classList.add("trash-drag-source");
       $("#trash-bin").classList.add("active");
+      syncPersistentTrash();
       try { source.setPointerCapture(event.pointerId); } catch {}
     }
 
     function cleanupTrashDrag() {
       if (!activeTrashDrag) return;
+      cancelPressGesture();
       cancelAnimationFrame(activeTrashDrag.renderFrame);
       try { activeTrashDrag.source.releasePointerCapture(activeTrashDrag.pointerId); } catch {}
       activeTrashDrag.source.classList.remove("trash-drag-source");
       activeTrashDrag.ghost.remove();
       $("#trash-bin").classList.remove("active", "over");
+      syncPersistentTrash();
       activeTrashDrag = null;
     }
 
@@ -5354,7 +5677,11 @@ You are loved more than this little game could ever hold.</p>
       const dropped = isOverTrash(event.clientX, event.clientY);
       cleanupTrashDrag();
       if (!dropped) {
-        showToast(copyText("trashDropHint", "Drop on the trash bin to delete."));
+        if (String(drag.key).startsWith("gallery-page:") || String(drag.key).startsWith("gallery-photo:")) {
+          showToast(copyText("galleryDeleteConfirm", "Gallery delete cancelled. Hold and drag to the trash again to delete."));
+        } else {
+          showToast(copyText("trashDropHint", "Drop on the trash bin to delete."));
+        }
         return;
       }
       try {
@@ -5397,6 +5724,7 @@ You are loved more than this little game could ever hold.</p>
       if (activeNatureDrag.canTrash) {
         $("#trash-bin").classList.add("active");
         activeNatureDrag.trashVisible = true;
+        syncPersistentTrash();
       }
       element.classList.add("dragging");
       viewport.classList.add("dragging-nature");
@@ -5421,6 +5749,7 @@ You are loved more than this little game could ever hold.</p>
 
     function cleanupNatureDrag() {
       if (!activeNatureDrag) return;
+      cancelPressGesture();
       activeNatureDrag.stopFrame?.();
       cancelAnimationFrame(activeNatureDrag.renderFrame);
       try { activeNatureDrag.element.releasePointerCapture(activeNatureDrag.pointerId); } catch {}
@@ -5435,6 +5764,7 @@ You are loved more than this little game could ever hold.</p>
       }
       if (activeNatureDrag.trashVisible) $("#trash-bin").classList.remove("active", "over");
       viewport.classList.remove("dragging-nature");
+      syncPersistentTrash();
       activeNatureDrag = null;
     }
 
@@ -6002,7 +6332,7 @@ You are loved more than this little game could ever hold.</p>
           ? `${characterName(person)} ${copyText("houseInsideSuffix", "· inside")}`
           : characterName(person);
         element.append(label);
-        element.addEventListener("pointerdown", (event) => startHouseDrag("character", person, event));
+        bindLongPressDrag(element, (event) => startHouseDrag("character", person, event));
         element.addEventListener("keydown", (event) => {
           if (event.key === "Enter" || event.key === " ") {
             event.preventDefault();
@@ -6138,7 +6468,7 @@ You are loved more than this little game could ever hold.</p>
         mug.setAttribute("aria-hidden", "true");
         mug.innerHTML = coffeeSvg(readyCoffee || cafeDrinks[1]);
         element.append(label, mug);
-        element.addEventListener("pointerdown", (event) => startRoamDrag(person, event));
+        bindLongPressDrag(element, (event) => startRoamDrag(person, event));
         element.addEventListener("click", () => {
           if (performance.now() - Number(element.dataset.draggedAt || 0) < 400) return;
           showToast(copyText("roamDragHint", "Drag to move between pages."));
@@ -6340,6 +6670,7 @@ You are loved more than this little game could ever hold.</p>
 
     function cleanupRoamDrag() {
       if (!activeRoamDrag) return;
+      cancelPressGesture();
       const drag = activeRoamDrag;
       cancelAnimationFrame(drag.renderFrame);
       try { drag.element.releasePointerCapture(drag.pointerId); } catch {}
@@ -6494,7 +6825,7 @@ You are loved more than this little game could ever hold.</p>
         element.style.zIndex = item.type === "rug" ? "1" : String(5 + Math.round((motion?.y ?? Number(item.y) ?? .84) * 20));
         element.setAttribute("aria-label", formatCopy("houseFurnitureAria", { name: furnitureTypeLabel(item.type), manage: canManageHouseItem(item) ? copyText("houseManageAria", " Drop in the trash to delete.") : "" }, `${furnitureTypeLabel(item.type)}. Tap to use or drag to move.${canManageHouseItem(item) ? " Drop in the trash to delete." : ""}`));
         element.innerHTML = furnitureSvg(item.type);
-        element.addEventListener("pointerdown", (event) => startHouseDrag("furniture", item, event));
+        bindLongPressDrag(element, (event) => startHouseDrag("furniture", item, event));
         element.addEventListener("keydown", (event) => {
           if (event.key === "Enter" || event.key === " ") {
             event.preventDefault();
@@ -6531,7 +6862,7 @@ You are loved more than this little game could ever hold.</p>
           element.style.width = ["arch", "swing", "fountain", "parasol"].includes(item.type) ? "94px" : "72px";
           element.setAttribute("aria-label", formatCopy("houseDecorAria", { name: furnitureTypeLabel(item.type), manage: canManageHouseItem(item) ? copyText("houseManageAria", " Drop in the trash to delete.") : "" }, `${furnitureTypeLabel(item.type)}. Tap to play or drag to move.${canManageHouseItem(item) ? " Drop in the trash to delete." : ""}`));
           element.innerHTML = furnitureSvg(item.type);
-          element.addEventListener("pointerdown", (event) => startNatureDrag("decor", item, event));
+          bindLongPressDrag(element, (event) => startNatureDrag("decor", item, event));
           element.addEventListener("click", () => {
             if (performance.now() - Number(element.dataset.draggedAt || 0) < 350) return;
             useGardenDecor(item, element);
@@ -6630,16 +6961,22 @@ You are loved more than this little game could ever hold.</p>
         motion.element = element;
         motion.shadow = shadow;
         applyHouseMotion(motion);
-        element.addEventListener("pointerdown", (event) => startHouseDrag("cat", cat, event));
+        bindLongPressDrag(element, (event) => startHouseDrag("cat", cat, event));
         layer.append(shadow, element);
       });
       [...catMotion.keys()].forEach((id) => { if (!visibleIds.has(id)) catMotion.delete(id); });
     }
 
     function renderMixes() {
-      mixes.forEach((mix) => unlockSlimeColor(nearestSlimeColor(mix.resultColor)));
+      mixes.forEach((mix) => {
+        if (!isSlimeReady(mix)) return;
+        const color = nearestSlimeColor(mix.resultColor);
+        if (Object.prototype.hasOwnProperty.call(mix, "mixingSeconds")) celebrateReadySlime(mix, color, mix.eyes, mix.accessory);
+        else unlockSlimeColor(color);
+      });
       const list = $("#mix-list");
       list.replaceChildren();
+      scheduleSlimeBatchRefresh();
       if (!mixes.length) {
         const empty = document.createElement("span");
         empty.className = "house-empty";
@@ -6648,25 +6985,41 @@ You are loved more than this little game could ever hold.</p>
         return;
       }
       mixes.forEach((mix) => {
+        const ready = isSlimeReady(mix);
+        const color = nearestSlimeColor(mix.resultColor);
         const card = document.createElement("div");
-        card.className = "mix-card";
+        card.className = `mix-card${ready ? "" : " mix-pending"}`;
         card.dataset.trashKey = `mixes:${mix.id}`;
         card.tabIndex = 0;
         card.setAttribute("role", "button");
-        card.setAttribute("aria-label", formatCopy("mixAria", { name: mix.name || copyText("mixDefaultName", "Mixed slime"), manage: canManageHouseItem(mix) ? copyText("mixManageAria", ", drag to the trash to delete") : "" }, `${mix.name || "Mixed slime"}. Tap to load${canManageHouseItem(mix) ? ", drag to the trash to delete" : ""}.`));
-        card.innerHTML = slimeSvg(mix.resultColor, mix.eyes, mix.accessory);
+        card.setAttribute("aria-label", formatCopy(ready ? "mixAria" : "slimePendingAria", { name: mix.name || copyText("mixDefaultName", "Mixed slime"), time: formatSlimeCountdown(slimeRemainingMs(mix)), manage: canManageHouseItem(mix) ? copyText("mixManageAria", ", drag to the trash to delete") : "" }, `${mix.name || "Mixed slime"}. ${ready ? `Tap to load${canManageHouseItem(mix) ? ", drag to the trash to delete" : ""}.` : `Mixing for ${formatSlimeCountdown(slimeRemainingMs(mix))} more.`}`));
+        card.innerHTML = slimeIcon(ready ? color : "#6f7468", mix.eyes, mix.accessory);
         const name = document.createElement("span");
         name.textContent = mix.name || copyText("mixDefaultName", "Mixed slime");
         card.append(name);
+        if (!ready) {
+          const status = document.createElement("span");
+          status.className = "mix-pending-status";
+          status.textContent = slimePendingLabel(mix);
+          const progress = document.createElement("span");
+          progress.className = "slime-mix-progress";
+          progress.style.setProperty("--progress", `${slimeMixProgress(mix) * 100}%`);
+          progress.append(document.createElement("i"));
+          card.append(status, progress);
+        }
         const load = () => {
           if (performance.now() - Number(card.dataset.draggedAt || 0) < 400) return;
+          if (!isSlimeReady(mix)) {
+            showToast(formatCopy("slimeStillMixing", { time: formatSlimeCountdown(slimeRemainingMs(mix)) }, `Still mixing — ready in ${formatSlimeCountdown(slimeRemainingMs(mix))}.`));
+            return;
+          }
           loadMixInLab(mix);
         };
         card.addEventListener("click", load);
         card.addEventListener("keydown", (event) => { if (event.key === "Enter" || event.key === " ") load(); });
         if (canManageHouseItem(mix)) {
           card.classList.add("trash-draggable");
-          card.addEventListener("pointerdown", (event) => startTrashDrag(event, `mixes:${mix.id}`, card, () => deleteHouseItem("mixes", mix, card)));
+          bindLongPressDrag(card, (event) => startTrashDrag(event, `mixes:${mix.id}`, card, () => deleteHouseItem("mixes", mix, card)));
         }
         list.append(card);
       });
@@ -6772,6 +7125,7 @@ You are loved more than this little game could ever hold.</p>
       if (activeHouseDrag.canTrash) {
         $("#trash-bin").classList.add("active");
         activeHouseDrag.trashVisible = true;
+        syncPersistentTrash();
       }
       if (kind === "character") {
         const motion = houseMotion.get(item.id);
@@ -6787,6 +7141,7 @@ You are loved more than this little game could ever hold.</p>
 
     function cleanupHouseDrag() {
       if (!activeHouseDrag) return;
+      cancelPressGesture();
       cancelAnimationFrame(activeHouseDrag.renderFrame);
       try { activeHouseDrag.element.releasePointerCapture(activeHouseDrag.pointerId); } catch {}
       activeHouseDrag.element.classList.remove("dragging");
@@ -6800,6 +7155,7 @@ You are loved more than this little game could ever hold.</p>
       activeHouseDrag.ghost.remove();
       $("#house-stage").classList.remove("dragging-house");
       if (activeHouseDrag.trashVisible) $("#trash-bin").classList.remove("active", "over");
+      syncPersistentTrash();
       activeHouseDrag = null;
     }
 
@@ -7672,42 +8028,37 @@ You are loved more than this little game could ever hold.</p>
       const first = $("#mix-color-a").value;
       const second = $("#mix-color-b").value;
       const resultColor = nearestSlimeColor(blendHex(first, second));
-      const newColor = !unlockedSlimeColors.has(resultColor);
-      const name = $("#mix-name").value.trim() || copyText("mixDefaultMixName", "Bubble mix");
+      const name = $("#mix-name").value.trim().slice(0, 40) || copyText("mixDefaultMixName", "Bubble mix");
+      const eyes = eyeStyles.includes($("#mix-eyes").value) ? $("#mix-eyes").value : "happy";
+      const accessory = accessories.includes($("#mix-accessory").value) ? $("#mix-accessory").value : "none";
+      const mixture = { name, colorA: first, colorB: second, resultColor, eyes, accessory, mixingSeconds: SLIME_MIXING_SECONDS, createdBy: user.uid, createdAt: fs?.serverTimestamp ? fs.serverTimestamp() : Date.now() };
+      let started = false;
       button.disabled = true;
       station.classList.remove("pouring", "swirling", "bubbling", "revealing");
       try {
+        const save = db ? fs.addDoc(fs.collection(db, "mixes"), mixture) : Promise.resolve(null);
+        if (!db) {
+          mixes.unshift({ ...mixture, id: `local-${Date.now()}`, createdAt: Date.now() });
+          renderMixes();
+        }
         station.classList.add("pouring");
         status.textContent = copyText("mixPouring", "Pouring the first color...");
-        await new Promise((resolve) => setTimeout(resolve, 700));
+        await new Promise((resolve) => setTimeout(resolve, 520));
         station.classList.remove("pouring");
         station.classList.add("swirling");
         status.textContent = copyText("mixSwirling", "Swirling the colors together...");
-        await new Promise((resolve) => setTimeout(resolve, 700));
+        await new Promise((resolve) => setTimeout(resolve, 520));
         station.classList.remove("swirling");
         station.classList.add("bubbling");
         status.textContent = copyText("mixBubbling", "Bubble, bubble... something is forming!");
-        const mixture = { name, colorA: first, colorB: second, resultColor, eyes: $("#mix-eyes").value, accessory: $("#mix-accessory").value, createdBy: user.uid, createdAt: fs?.serverTimestamp ? fs.serverTimestamp() : Date.now() };
-        const save = db ? fs.addDoc(fs.collection(db, "mixes"), mixture) : Promise.resolve(null);
-        await Promise.all([save, new Promise((resolve) => setTimeout(resolve, 800))]);
-        station.classList.remove("bubbling");
-        station.classList.add("revealing");
-        $("#mix-result").innerHTML = slimeSvg(resultColor, mixture.eyes, mixture.accessory);
-        status.textContent = formatCopy("mixAlive", { name }, `${name} is alive!`);
-        if (newColor) {
-          unlockSlimeColor(resultColor);
-          showSlimeAchievement(resultColor);
-        }
-        if (!db) {
-          mixes.unshift({ ...mixture, id: `local-${Date.now()}` });
-          renderMixes();
-        }
+        await Promise.all([save, new Promise((resolve) => setTimeout(resolve, 620))]);
+        started = true;
+        station.style.setProperty("--mix-color", "#6f7468");
+        $("#mix-result").innerHTML = slimeSvg("#6f7468", eyes, accessory);
         $("#mix-name").value = "";
         gainXp(25);
-        await new Promise((resolve) => setTimeout(resolve, 850));
-        showToast(db
-          ? formatCopy("mixJoinedCloud", { name }, `${name} joined your mixture collection.`)
-          : formatCopy("mixMadeLocal", { name }, `${name} was made for this session.`));
+        status.textContent = copyText("mixBatchStarted", "Batch started! Ready in 5:00. Start another anytime.");
+        showToast(formatCopy("mixBatchStartedToast", { name, time: "5:00" }, `${name} is mixing for 5:00. Start another batch anytime.`));
       } catch (error) {
         status.textContent = copyText("mixFailed", "The mixture fizzled. Try again.");
         showAppError("houseMixError", "Could not save mixture", error);
@@ -7715,11 +8066,20 @@ You are loved more than this little game could ever hold.</p>
         station.classList.remove("pouring", "swirling", "bubbling", "revealing");
         button.disabled = false;
         mixing = false;
-        setTimeout(() => { if (!mixing) status.textContent = copyText("mixStatusReady", "Two colors make something new"); }, 1400);
+        if (started) {
+          status.textContent = copyText("mixBatchStarted", "Batch started! Ready in 5:00. Start another anytime.");
+          station.style.setProperty("--mix-color", "#6f7468");
+        } else {
+          setTimeout(() => { if (!mixing) status.textContent = copyText("mixStatusReady", "Each batch mixes for 5 minutes"); }, 1400);
+        }
       }
     }
 
     function loadMixInLab(mix) {
+      if (!isSlimeReady(mix)) {
+        showToast(formatCopy("slimeStillMixing", { time: formatSlimeCountdown(slimeRemainingMs(mix)) }, `Still mixing — ready in ${formatSlimeCountdown(slimeRemainingMs(mix))}.`));
+        return;
+      }
       selectedColor = nearestSlimeColor(mix.resultColor);
       selectedEyes = eyeStyles.includes(mix.eyes) ? mix.eyes : "happy";
       selectedAccessory = accessories.includes(mix.accessory) ? mix.accessory : "none";
@@ -8455,8 +8815,8 @@ You are loved more than this little game could ever hold.</p>
       grid.replaceChildren();
       copy.replaceChildren();
       adminActions.replaceChildren();
-      prev.disabled = galleryFlipping || galleryIndex <= 0;
-      next.disabled = galleryFlipping || galleryIndex >= galleryPages.length - 1;
+      prev.disabled = galleryFlipping || gallerySaveState === "saving" || galleryIndex <= 0;
+      next.disabled = galleryFlipping || gallerySaveState === "saving" || galleryIndex >= galleryPages.length - 1;
 
       if (!galleryPages.length) {
         const empty = document.createElement("div");
@@ -8467,6 +8827,7 @@ You are loved more than this little game could ever hold.</p>
         grid.append(empty);
         copy.hidden = true;
         adminActions.hidden = true;
+        $("#gallery-mode-bar").hidden = true;
         $("#gallery-page-handle").hidden = true;
         $("#gallery-page-indicator").textContent = copyText("galleryNoPages", "No gallery pages");
         $("#gallery-page-status").textContent = "";
@@ -8478,10 +8839,16 @@ You are loved more than this little game could ever hold.</p>
       const page = currentGalleryPage();
       const pagePhotos = Array.isArray(page.photos) ? page.photos : [];
       const manageable = canManageGalleryPage(page);
+      const editing = manageable && galleryEditing && galleryEditPageId === page.id;
+      if (!manageable) {
+        galleryEditing = false;
+        galleryEditPageId = "";
+        gallerySaveState = "saved";
+      }
       $("#gallery-sheet").dataset.trashKey = `gallery-page:${page.id}`;
-      $("#gallery-page-handle").hidden = !manageable || galleryFlipping;
       copy.hidden = false;
       adminActions.hidden = false;
+      updateGalleryModeUi();
 
       for (let index = 0; index < 4; index += 1) {
         const photo = pagePhotos[index];
@@ -8500,21 +8867,23 @@ You are loved more than this little game could ever hold.</p>
           slot.tabIndex = 0;
           slot.setAttribute("role", "button");
           slot.setAttribute("aria-label", formatCopy("galleryPhotoAria", { current: index + 1 }, `Gallery memory ${index + 1}. Tap to view full screen.`));
-          const openPhoto = () => openPhotoViewer(pagePhotos, index, page.text || "");
+          const openPhoto = () => {
+            if (performance.now() - Number(slot.dataset.draggedAt || 0) < 400) return;
+            openPhotoViewer(pagePhotos, index, page.text || "");
+          };
+          slot.addEventListener("click", openPhoto);
           slot.addEventListener("keydown", (event) => {
             if (event.key === "Enter" || event.key === " ") {
               event.preventDefault();
               openPhoto();
             }
           });
-          if (manageable && !galleryFlipping) {
+          if (editing && !galleryFlipping) {
             slot.classList.add("trash-draggable");
-            slot.setAttribute("aria-label", formatCopy("galleryPhotoManageAria", { current: index + 1 }, `Gallery memory ${index + 1}. Tap to view full screen or drag to the trash to delete.`));
-            slot.addEventListener("pointerdown", (event) => startTrashDrag(event, slot.dataset.trashKey, slot, () => deleteGalleryPhoto(photo, slot), slot, openPhoto));
-          } else {
-            slot.addEventListener("click", openPhoto);
+            slot.setAttribute("aria-label", formatCopy("galleryPhotoManageAria", { current: index + 1 }, `Gallery memory ${index + 1}. Tap to view full screen or hold and drag to the trash to delete.`));
+            bindLongPressDrag(slot, (event) => startTrashDrag(event, slot.dataset.trashKey, slot, () => deleteGalleryPhoto(photo, slot), slot));
           }
-        } else if (manageable) {
+        } else if (editing) {
           const add = document.createElement("button");
           add.type = "button";
           add.innerHTML = "<span>+</span>";
@@ -8533,20 +8902,17 @@ You are loved more than this little game could ever hold.</p>
         grid.append(card);
       }
 
-      if (manageable) {
+      if (editing) {
         const textarea = document.createElement("textarea");
         textarea.maxLength = 5000;
-        textarea.value = page.text || "";
+        textarea.value = galleryDrafts.get(page.id) ?? page.text ?? "";
         textarea.placeholder = copyText("galleryNotePlaceholder", "Write the note for this four-photo page...");
-        const actions = document.createElement("div");
-        actions.className = "gallery-page-actions";
-        const save = document.createElement("button");
-        save.className = "photo-action publish";
-        save.type = "button";
-        save.textContent = copyText("gallerySaveText", "Save page text");
-        save.addEventListener("click", () => saveGalleryText(textarea.value));
-        actions.append(save);
-        copy.append(textarea, actions);
+        textarea.addEventListener("input", () => {
+          galleryDrafts.set(page.id, textarea.value);
+          gallerySaveState = "dirty";
+          updateGalleryModeUi();
+        });
+        copy.append(textarea);
       } else {
         const text = document.createElement("p");
         text.className = "gallery-page-text";
@@ -8591,22 +8957,84 @@ You are loved more than this little game could ever hold.</p>
         await loadGalleryPages();
         const index = galleryPages.findIndex((page) => page.id === snapshot.id);
         galleryIndex = index >= 0 ? index : 0;
+        galleryEditing = true;
+        galleryEditPageId = snapshot.id;
+        gallerySaveState = "dirty";
         renderGalleryPages();
+        $("#gallery-page-copy textarea")?.focus();
         showToast(copyText("galleryPageCreated", "New shared gallery page created. Both players can view it."));
       } catch (error) {
         showAppError("galleryCreateError", "Could not create gallery page", error);
       }
     }
 
-    async function saveGalleryText(text) {
+    function storeGalleryDraft() {
+      if (!galleryEditing || !galleryEditPageId) return;
+      const textarea = $("#gallery-page-copy textarea");
+      if (textarea) galleryDrafts.set(galleryEditPageId, textarea.value);
+    }
+
+    function updateGalleryModeUi() {
       const page = currentGalleryPage();
+      const manageable = Boolean(page && canManageGalleryPage(page));
+      const editing = manageable && galleryEditing && galleryEditPageId === page?.id;
+      $("#gallery-mode-bar").hidden = !manageable;
+      $("#gallery-edit-page").hidden = !manageable || editing || gallerySaveState === "saving";
+      $("#gallery-save-page").hidden = !editing;
+      $("#gallery-save-page").disabled = gallerySaveState === "saving";
+      $("#gallery-save-page").textContent = gallerySaveState === "saving"
+        ? copyText("gallerySavingPage", "Saving...")
+        : copyText("gallerySavePage", "Save page");
+      $("#gallery-mode-label").textContent = gallerySaveState === "error"
+        ? copyText("gallerySaveErrorShort", "Not saved")
+        : editing
+          ? gallerySaveState === "dirty"
+            ? copyText("galleryUnsavedPage", "Unsaved changes")
+            : copyText("galleryEditingPage", "Editing page")
+          : galleryDrafts.has(page?.id)
+            ? copyText("galleryDraftPage", "Unsaved draft")
+            : copyText("gallerySavedPage", "Saved page");
+      $("#gallery-page-handle").hidden = !editing || galleryFlipping;
+    }
+
+    function beginGalleryEdit() {
+      const page = currentGalleryPage();
+      if (!page || !canManageGalleryPage(page) || galleryFlipping || gallerySaveState === "saving") return;
+      storeGalleryDraft();
+      galleryEditing = true;
+      galleryEditPageId = page.id;
+      gallerySaveState = galleryDrafts.has(page.id) ? "dirty" : "saved";
+      renderGalleryPages();
+      $("#gallery-page-copy textarea")?.focus();
+    }
+
+    async function saveGalleryText(text, pageId = galleryEditPageId) {
+      const page = galleryPages.find((item) => item.id === pageId);
       if (!page || !canManageGalleryPage(page)) return;
+      const savedText = text.slice(0, 5000);
+      const isCurrentEdit = galleryEditing && galleryEditPageId === page.id;
+      gallerySaveState = "saving";
+      updateGalleryModeUi();
       try {
-        await fs.updateDoc(fs.doc(db, "galleryPages", page.id), { text: text.slice(0, 5000) });
-        await loadGalleryPages();
+        await fs.updateDoc(fs.doc(db, "galleryPages", page.id), { text: savedText });
+        page.text = savedText;
+        galleryDrafts.delete(page.id);
+        gallerySaveState = "saved";
+        if (isCurrentEdit) {
+          galleryEditing = false;
+          galleryEditPageId = "";
+          renderGalleryPages();
+        } else {
+          updateGalleryModeUi();
+        }
         showToast(copyText("galleryTextSaved", "Gallery page text saved."));
       } catch (error) {
-        showAppError("galleryTextSaveError", "Could not save gallery text", error);
+        galleryDrafts.set(page.id, text);
+        if (isCurrentEdit) {
+          gallerySaveState = "error";
+          updateGalleryModeUi();
+        }
+        showAppError("galleryTextSaveError", "Could not save gallery page", error);
       }
     }
 
@@ -8722,7 +9150,8 @@ You are loved more than this little game could ever hold.</p>
 
     async function deleteGalleryPhoto(photo, source) {
       const page = currentGalleryPage();
-      if (!page || !canManageGalleryPage(page)) return;
+      if (!page || !canManageGalleryPage(page) || !galleryEditing || galleryEditPageId !== page.id) return;
+      if (!window.confirm(copyText("galleryPhotoDeleteConfirm", "Delete this photo and its memory chat?"))) return;
       try {
         const removed = await trashInteraction(`gallery-photo:${page.id}:${galleryPhotoKey(photo)}`, source, async () => {
           await fs.updateDoc(fs.doc(db, "galleryPages", page.id), { photos: fs.arrayRemove(photo) });
@@ -8734,6 +9163,9 @@ You are loved more than this little game could ever hold.</p>
           }
           await deleteLegacyGalleryFile(photo.path);
           await loadGalleryPages();
+          const index = galleryPages.findIndex((item) => item.id === page.id);
+          if (index >= 0) galleryIndex = index;
+          renderGalleryPages();
         });
         if (removed) showToast(copyText("galleryPhotoRemoved", "Photo removed."));
       } catch (error) {
@@ -8753,7 +9185,8 @@ You are loved more than this little game could ever hold.</p>
     }
 
     async function deleteGalleryPage(page, source) {
-      if (!canManageGalleryPage(page)) return;
+      if (!canManageGalleryPage(page) || !galleryEditing || galleryEditPageId !== page.id) return;
+      if (!window.confirm(copyText("galleryPageDeleteConfirm", "Delete this entire gallery page, its photos, and all memory chats?"))) return;
       try {
         const removed = await trashInteraction(`gallery-page:${page.id}`, source, async () => {
           const pagePhotos = Array.isArray(page.photos) ? page.photos : [];
@@ -8772,6 +9205,10 @@ You are loved more than this little game could ever hold.</p>
             }
             await fs.deleteDoc(fs.doc(db, "galleryPages", page.id));
           }
+          galleryDrafts.delete(page.id);
+          galleryEditing = false;
+          galleryEditPageId = "";
+          gallerySaveState = "saved";
           await loadGalleryPages();
         });
         if (removed) showToast(copyText("galleryPageDeleted", "Gallery page deleted."));
@@ -8781,9 +9218,13 @@ You are loved more than this little game could ever hold.</p>
     }
 
     function flipGallery(direction) {
-      if (galleryFlipping || galleryPages.length < 2) return;
+      if (galleryFlipping || gallerySaveState === "saving" || galleryPages.length < 2) return;
       const nextIndex = galleryIndex + direction;
       if (nextIndex < 0 || nextIndex >= galleryPages.length) return;
+      storeGalleryDraft();
+      galleryEditing = false;
+      galleryEditPageId = "";
+      gallerySaveState = "saved";
       galleryFlipping = true;
       const sheet = $("#gallery-sheet");
       const outClass = direction > 0 ? "flip-out-next" : "flip-out-prev";
@@ -9097,6 +9538,12 @@ You are loved more than this little game could ever hold.</p>
     }
 
     document.addEventListener("click", (event) => {
+      const pressed = event.target.closest(".press-armed");
+      if (pressed || performance.now() < suppressPressClickUntil) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        return;
+      }
       const go = event.target.closest("[data-go]");
       if (go && !editMode) showPage(go.dataset.go);
       const pageLink = event.target.closest("[data-page-link]");
@@ -9151,7 +9598,7 @@ You are loved more than this little game could ever hold.</p>
     });
 
     let touchStart = null;
-    const touchNavigationIgnore = "input, textarea, select, [contenteditable='true'], .bunny, .tulip, .garden-decor, .house-item, #slime-game, .arcade-touch";
+    const touchNavigationIgnore = "input, textarea, select, [contenteditable='true'], .bunny, .tulip, .garden-decor, .house-item, .world-character, .world-slime, .photo-slot, .gallery-page-handle, .slime-card, .mix-card, #slime-game, .arcade-touch";
     viewport.addEventListener("touchstart", (event) => {
       touchStart = null;
       if (event.touches.length === 1 && !event.target.closest(touchNavigationIgnore)) {
@@ -9316,16 +9763,21 @@ You are loved more than this little game could ever hold.</p>
     $("#revoke-role").addEventListener("click", revokeRole);
 
     $("#slime-name").addEventListener("input", () => updateSlimePreview());
-    $$("#eye-options [data-eyes]").forEach((button) => button.addEventListener("click", () => {
+    $("#eye-options").addEventListener("click", (event) => {
+      const button = event.target.closest("[data-eyes]");
+      if (!button) return;
       selectedEyes = button.dataset.eyes;
       selectOption("#eye-options", "eyes", selectedEyes);
       updateSlimePreview(true);
-    }));
-    $$("#accessory-options [data-accessory]").forEach((button) => button.addEventListener("click", () => {
+      renderSlimeStyleControls();
+    });
+    $("#accessory-options").addEventListener("click", (event) => {
+      const button = event.target.closest("[data-accessory]");
+      if (!button) return;
       selectedAccessory = button.dataset.accessory;
       selectOption("#accessory-options", "accessory", selectedAccessory);
       updateSlimePreview(true);
-    }));
+    });
     $("#craft-slime").addEventListener("click", craftSlime);
     $("#unwrap-gift").addEventListener("click", unwrapGift);
     $("#rewrap-gift").addEventListener("click", rewrapGift);
@@ -9339,18 +9791,49 @@ You are loved more than this little game could ever hold.</p>
     });
     $("#photo-input").addEventListener("change", (event) => uploadPhoto(event.target.files[0]));
     $("#new-gallery-page").addEventListener("click", createGalleryPage);
+    $("#gallery-edit-page").addEventListener("click", beginGalleryEdit);
+    $("#gallery-save-page").addEventListener("click", () => {
+      storeGalleryDraft();
+      const pageId = galleryEditPageId;
+      const text = galleryDrafts.get(pageId) ?? $("#gallery-page-copy textarea")?.value ?? "";
+      saveGalleryText(text, pageId);
+    });
     $("#gallery-prev").addEventListener("click", () => flipGallery(-1));
     $("#gallery-next").addEventListener("click", () => flipGallery(1));
     $("#photo-viewer-prev").addEventListener("click", () => stepPhotoViewer(-1));
     $("#photo-viewer-next").addEventListener("click", () => stepPhotoViewer(1));
-    $("#gallery-page-handle").addEventListener("pointerdown", (event) => {
+    bindLongPressDrag($("#gallery-page-handle"), (pointerEvent) => {
       const page = currentGalleryPage();
-      if (!page || !canManageGalleryPage(page) || galleryFlipping) return;
-      startTrashDrag(event, `gallery-page:${page.id}`, $("#gallery-sheet"), () => deleteGalleryPage(page, $("#gallery-sheet")), event.currentTarget);
+      if (!page || !canManageGalleryPage(page) || !galleryEditing || galleryEditPageId !== page.id || galleryFlipping) return;
+      startTrashDrag(pointerEvent, `gallery-page:${page.id}`, $("#gallery-sheet"), () => deleteGalleryPage(page, $("#gallery-sheet")), $("#gallery-page-handle"));
     });
     $$("[data-add-bunny]").forEach((button) => button.addEventListener("click", () => addBunny(button.dataset.addBunny)));
     $("#plant-tulip").addEventListener("click", plantTulip);
 
+    document.addEventListener("pointermove", (event) => {
+      if (!activePressGesture || event.pointerId !== activePressGesture.pointerId) return;
+      if (activePressGesture?.fired) return;
+      if (Math.hypot(event.clientX - activePressGesture.x, event.clientY - activePressGesture.y) > 9) cancelPressGesture(event.pointerId);
+    }, { passive: true });
+    document.addEventListener("pointerup", (event) => {
+      if (consumePressTap(event)) event.preventDefault();
+    }, { capture: true });
+    document.addEventListener("pointercancel", (event) => {
+      if (longPressPointerId === event.pointerId) longPressPointerId = null;
+      cancelPressGesture(event.pointerId);
+    });
+    window.addEventListener("blur", () => {
+      longPressPointerId = null;
+      cancelPressGesture();
+    });
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) cancelPressGesture();
+      else {
+        renderSlimes();
+        renderMixes();
+        scheduleSlimeBatchRefresh();
+      }
+    });
     document.addEventListener("pointermove", (event) => {
       if (!activeTrashDrag || event.pointerId !== activeTrashDrag.pointerId) return;
       event.preventDefault();
@@ -9422,6 +9905,7 @@ You are loved more than this little game could ever hold.</p>
       if (activeWorldSlimeDrag && event.pointerId === activeWorldSlimeDrag.pointerId) cancelWorldSlimeDrag();
     });
 
+    renderSlimeStyleControls();
     initHouseControls();
     initWeddingControls();
     renderWeddingScene();

@@ -33,8 +33,17 @@ service cloud.firestore {
         && data.name.size() <= 40
         && data.color is string
         && data.color.matches('^#[0-9a-fA-F]{6}$')
-        && data.eyes in ['happy', 'sleepy', 'star']
-        && data.accessory in ['none', 'crown', 'flower', 'glasses']
+        && data.eyes in [
+          'happy', 'sleepy', 'star', 'wink', 'heart', 'angry', 'excited', 'shy',
+          'cool', 'curious', 'joyful', 'surprised', 'mischief', 'pout', 'dizzy',
+          'determined', 'angel', 'tears', 'smirk', 'sparkle'
+        ]
+        && data.accessory in [
+          'none', 'crown', 'flower', 'glasses', 'bow', 'partyhat', 'headphones',
+          'cap', 'halo', 'horns', 'antenna', 'chefhat', 'bowtie', 'scarf',
+          'sunglasses', 'mustache', 'candy', 'balloon', 'mushroomhat', 'ears', 'starclip'
+        ]
+        && (!('mixingSeconds' in data) || data.mixingSeconds == 300)
         && (
           !('products' in data)
           || (
@@ -196,8 +205,17 @@ service cloud.firestore {
         && data.colorB.matches('^#[0-9a-fA-F]{6}$')
         && data.resultColor is string
         && data.resultColor.matches('^#[0-9a-fA-F]{6}$')
-        && data.eyes in ['happy', 'sleepy', 'star']
-        && data.accessory in ['none', 'crown', 'flower', 'glasses']
+        && data.eyes in [
+          'happy', 'sleepy', 'star', 'wink', 'heart', 'angry', 'excited', 'shy',
+          'cool', 'curious', 'joyful', 'surprised', 'mischief', 'pout', 'dizzy',
+          'determined', 'angel', 'tears', 'smirk', 'sparkle'
+        ]
+        && data.accessory in [
+          'none', 'crown', 'flower', 'glasses', 'bow', 'partyhat', 'headphones',
+          'cap', 'halo', 'horns', 'antenna', 'chefhat', 'bowtie', 'scarf',
+          'sunglasses', 'mustache', 'candy', 'balloon', 'mushroomhat', 'ears', 'starclip'
+        ]
+        && (!('mixingSeconds' in data) || data.mixingSeconds == 300)
         && data.createdBy == request.auth.uid
         && data.createdAt == request.time;
     }
@@ -251,6 +269,7 @@ service cloud.firestore {
       allow read: if true;
       allow create: if (isAdmin() || isViewer())
         && validSlime(request.resource.data)
+        && request.resource.data.mixingSeconds == 300
         && request.resource.data.createdAt == request.time;
       allow update: if isAdmin() || (
         isViewer()
@@ -388,10 +407,25 @@ service cloud.firestore {
 
     match /mixes/{mixId} {
       allow read: if true;
-      allow create: if (isAdmin() || isViewer()) && validMix(request.resource.data);
+      allow create: if (isAdmin() || isViewer())
+        && validMix(request.resource.data)
+        && request.resource.data.mixingSeconds == 300;
       allow delete: if isAdmin() || (
         isViewer() && resource.data.createdBy == request.auth.uid
       );
+    }
+
+    function deployableSlimeSource(data) {
+      let source = get(/databases/$(database)/documents/slimes/$(data.slimeId));
+      return exists(/databases/$(database)/documents/slimes/$(data.slimeId))
+        && source.data.name == data.name
+        && source.data.color == data.color
+        && source.data.eyes == data.eyes
+        && source.data.accessory == data.accessory
+        && (
+          !('mixingSeconds' in source.data)
+          || request.time >= source.data.createdAt + duration.value(source.data.mixingSeconds, 's')
+        );
     }
 
     function validWorldSlime(data) {
@@ -407,8 +441,16 @@ service cloud.firestore {
         && data.name.size() <= 40
         && data.color is string
         && data.color.matches('^#[0-9a-fA-F]{6}$')
-        && data.eyes in ['happy', 'sleepy', 'star']
-        && data.accessory in ['none', 'crown', 'flower', 'glasses']
+        && data.eyes in [
+          'happy', 'sleepy', 'star', 'wink', 'heart', 'angry', 'excited', 'shy',
+          'cool', 'curious', 'joyful', 'surprised', 'mischief', 'pout', 'dizzy',
+          'determined', 'angel', 'tears', 'smirk', 'sparkle'
+        ]
+        && data.accessory in [
+          'none', 'crown', 'flower', 'glasses', 'bow', 'partyhat', 'headphones',
+          'cap', 'halo', 'horns', 'antenna', 'chefhat', 'bowtie', 'scarf',
+          'sunglasses', 'mustache', 'candy', 'balloon', 'mushroomhat', 'ears', 'starclip'
+        ]
         && data.page in ['home', 'slime', 'gift', 'wedding', 'gallery', 'bunnyBlue', 'garden', 'house', 'kitchen', 'cafe']
         && data.x is number
         && data.x >= 0.08
@@ -422,7 +464,9 @@ service cloud.firestore {
 
     match /worldSlimes/{worldSlimeId} {
       allow read: if true;
-      allow create: if (isAdmin() || isViewer()) && validWorldSlime(request.resource.data);
+      allow create: if (isAdmin() || isViewer())
+        && validWorldSlime(request.resource.data)
+        && deployableSlimeSource(request.resource.data);
       allow update: if isAdmin() || (
         isViewer()
         && resource.data.createdBy == request.auth.uid
