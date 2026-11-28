@@ -27,6 +27,20 @@ service cloud.firestore {
         && request.resource.data.houseText.size() <= 5000;
     }
 
+    function validCloudMessage(data) {
+      return data.keys().hasOnly(['text', 'durationSeconds', 'slot', 'createdBy', 'createdAt'])
+        && data.text is string
+        && data.text.size() >= 1
+        && data.text.size() <= 120
+        && data.durationSeconds is int
+        && data.durationSeconds in [20, 30, 60, 300, 900, 3600]
+        && data.slot is int
+        && data.slot >= 0
+        && data.slot <= 3
+        && data.createdBy == request.auth.uid
+        && data.createdAt == request.time;
+    }
+
     function validSlime(data) {
       return data.name is string
         && data.name.size() >= 1
@@ -144,7 +158,7 @@ service cloud.firestore {
         && (
           (!('worldPage' in data) && !('worldX' in data))
           || (
-            data.worldPage in ['home', 'slime', 'gift', 'wedding', 'gallery', 'bunnyBlue', 'garden', 'house', 'kitchen', 'cafe']
+            data.worldPage in ['home', 'slime', 'gift', 'wedding', 'gallery', 'bunnyBlue', 'garden', 'house', 'kitchen', 'cafe', 'picnic']
             && data.worldX is number
             && data.worldX >= 0.08 && data.worldX <= 0.92
             && (data.zone == 'yard' || data.worldPage == 'house')
@@ -451,7 +465,7 @@ service cloud.firestore {
           'cap', 'halo', 'horns', 'antenna', 'chefhat', 'bowtie', 'scarf',
           'sunglasses', 'mustache', 'candy', 'balloon', 'mushroomhat', 'ears', 'starclip'
         ]
-        && data.page in ['home', 'slime', 'gift', 'wedding', 'gallery', 'bunnyBlue', 'garden', 'house', 'kitchen', 'cafe']
+        && data.page in ['home', 'slime', 'gift', 'wedding', 'gallery', 'bunnyBlue', 'garden', 'house', 'kitchen', 'cafe', 'picnic']
         && data.x is number
         && data.x >= 0.08
         && data.x <= 0.92
@@ -471,7 +485,7 @@ service cloud.firestore {
         isViewer()
         && resource.data.createdBy == request.auth.uid
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['page', 'x', 'y'])
-        && request.resource.data.page in ['home', 'slime', 'gift', 'wedding', 'gallery', 'bunnyBlue', 'garden', 'house', 'kitchen', 'cafe']
+        && request.resource.data.page in ['home', 'slime', 'gift', 'wedding', 'gallery', 'bunnyBlue', 'garden', 'house', 'kitchen', 'cafe', 'picnic']
         && request.resource.data.x is number
         && request.resource.data.x >= 0.08
         && request.resource.data.x <= 0.92
@@ -508,6 +522,13 @@ service cloud.firestore {
       allow delete: if isAdmin() || (
         isViewer() && resource.data.senderId == request.auth.uid
       );
+    }
+
+    match /cloudMessages/{messageId} {
+      allow read: if isAdmin() || isViewer();
+      allow create: if isAdmin() && validCloudMessage(request.resource.data);
+      allow update: if false;
+      allow delete: if isAdmin();
     }
 
     function validPicturePopup(data) {
