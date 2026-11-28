@@ -1569,6 +1569,8 @@
     .picnic-actions .button { min-height: 34px; padding: .45rem .7rem; font-size: .66rem; }
     .world-character.picnic-seated { top: 82%; bottom: auto; width: clamp(44px, 5.4vw, 66px); }
     .world-character-shadow.picnic-seated { top: 82%; bottom: auto; width: clamp(30px, 4vw, 46px); }
+    .world-character.picnic-lean > svg { transform-origin: 50% 88%; animation: picnicLean 5.2s ease-in-out infinite; }
+    @keyframes picnicLean { 0%, 18%, 100% { transform: translateX(0) rotate(0); } 38%, 68% { transform: translateX(clamp(8px, 2vw, 24px)) rotate(7deg); } }
     .picnic-cloud { position: absolute; z-index: 4; width: clamp(130px, 17vw, 220px); height: clamp(60px, 7vw, 86px); background: var(--scene-cloud); box-shadow: 7px 7px color-mix(in srgb, var(--scene-mountain-back) 28%, transparent); pointer-events: none; animation: picnicCloudFloat 6s ease-in-out infinite; }
     .picnic-cloud::before, .picnic-cloud::after { position: absolute; bottom: 0; background: inherit; content: ""; }
     .picnic-cloud::before { left: 16%; width: 38%; height: 145%; }
@@ -1666,6 +1668,31 @@
       .tab-bar { min-height: 46px; padding: .18rem .4rem max(.18rem, env(safe-area-inset-bottom)); }
       .tab-button { gap: .2rem; padding: .2rem .3rem; font-size: .54rem; }
       .tab-button .icon { width: 17px; height: 17px; }
+      body.picnic-view .hud { min-height: 40px; padding: max(.18rem, env(safe-area-inset-top)) .5rem .18rem; gap: .35rem; }
+      body.picnic-view .brand-mark { width: 24px; height: 24px; }
+      body.picnic-view .brand { gap: .3rem; font-size: .54rem; }
+      body.picnic-view .player-chip { padding: .16rem .32rem; font-size: .5rem; }
+      body.picnic-view .level-chip { font-size: .44rem; }
+      body.picnic-view .hud-button { min-height: 25px; padding: .18rem .32rem; font-size: .48rem; }
+      body.picnic-view .hud-actions { gap: .16rem; }
+      body.picnic-view .role-badge { font-size: .44rem; }
+      body.picnic-view .tab-bar { min-height: 41px; padding: .12rem .25rem max(.12rem, env(safe-area-inset-bottom)); }
+      body.picnic-view .tab-button { min-height: 35px; gap: .12rem; padding: .12rem .2rem; font-size: .46rem; }
+      body.picnic-view .tab-button .icon { width: 14px; height: 14px; }
+      body.picnic-view .picnic-heading { top: .35rem; left: .55rem; max-width: 40%; }
+      body.picnic-view .picnic-heading .eyebrow { display: none; }
+      body.picnic-view .picnic-heading h1 { margin: 0; font-size: .82rem; line-height: 1.05; text-shadow: 1px 1px var(--panel-deep); }
+      body.picnic-view .picnic-actions { top: .3rem; right: .4rem; gap: .22rem; }
+      body.picnic-view .picnic-actions .button { min-height: 24px; padding: .18rem .36rem; gap: .25rem; font-size: .48rem; }
+      body.picnic-view .picnic-actions .icon { width: 12px; height: 12px; }
+      body.picnic-view .world-character.picnic-seated { width: 50px; }
+      body.picnic-view .world-character-shadow.picnic-seated { width: 34px; }
+      body.picnic-view .picnic-cloud { width: 112px; height: 48px; box-shadow: 4px 4px color-mix(in srgb, var(--scene-mountain-back) 28%, transparent); }
+      body.picnic-view .picnic-cloud.one { top: 26%; left: 3%; }
+      body.picnic-view .picnic-cloud.two { top: 45%; left: 34%; }
+      body.picnic-view .picnic-cloud.three { top: 20%; right: 27%; }
+      body.picnic-view .picnic-cloud.four { top: 50%; right: 2%; }
+      body.picnic-view .cloud-message { max-width: 88%; font-size: .68rem; line-height: 1.05; text-shadow: 1px 1px rgba(255, 255, 255, .45); }
       .page-viewport { touch-action: pan-x pan-y; }
       .app-page { padding: .55rem clamp(.7rem, 2.5vw, 1.4rem); }
       .nature-page { padding: 0; }
@@ -2381,7 +2408,7 @@ You are loved more than this little game could ever hold.</p>
 
       <section class="app-page picnic-page" id="page-picnic" data-page="picnic">
         <div class="picnic-scene">
-          <svg class="picnic-landscape" viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" shape-rendering="crispEdges" aria-hidden="true">
+          <svg class="picnic-landscape" id="picnic-landscape" viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" shape-rendering="crispEdges" aria-hidden="true">
             <defs>
               <pattern id="picnic-blanket-pattern" width="48" height="48" patternUnits="userSpaceOnUse">
                 <rect width="48" height="48" fill="#f3d7c7"/>
@@ -2442,6 +2469,7 @@ You are loved more than this little game could ever hold.</p>
         </div>
         <div class="picnic-actions">
           <button class="button button-gold" type="button" id="picnic-together"><svg class="icon"><use href="#i-heart"></use></svg><span data-field="picnicTogether">Picnic together</span></button>
+          <button class="button button-ghost" type="button" id="picnic-lean" aria-pressed="false" disabled><svg class="icon"><use href="#i-heart"></use></svg><span data-field="picnicLeanButton">Lean together</span></button>
           <button class="button button-ghost" type="button" id="cloud-compose" hidden><svg class="icon"><use href="#i-cloud"></use></svg><span data-field="cloudCompose">Write a cloud</span></button>
         </div>
       </section>
@@ -2888,6 +2916,11 @@ You are loved more than this little game could ever hold.</p>
       picnicTogetherReady: "Shane and Zyrell are enjoying the mountain picnic.",
       picnicTogetherLocal: "Picnic set on this device. Cloud sync is unavailable.",
       picnicTogetherError: "Could not move the couple here: {error}",
+      picnicLeanButton: "Lean together",
+      picnicLeanOffButton: "Sit close",
+      picnicLeanOn: "Shane is leaning on Zyrell's shoulder.",
+      picnicLeanOff: "Shane and Zyrell are sitting close.",
+      picnicLeanNeedPicnic: "Choose Picnic together first.",
       craftProductDew: "Moon Dew",
       craftProductPetal: "Rose Petal",
       craftProductMint: "Mint Leaf",
@@ -3724,6 +3757,8 @@ You are loved more than this little game could ever hold.</p>
     let coffeeBoostUntil = 0;
     let coffeeBoostMultiplier = 1;
     let cafeSeated = false;
+    let picnicSeated = false;
+    let picnicLean = false;
     let cafeDrinkAnimationUntil = 0;
     let cafeDrinkTimer = 0;
     let cafeStats = { brewed: 0, drunk: 0 };
@@ -4008,9 +4043,19 @@ You are loved more than this little game could ever hold.</p>
       if (id === "photo-viewer") $("#photo-viewer-image").removeAttribute("src");
     }
 
+    function syncPicnicViewport() {
+      const landscape = $("#picnic-landscape");
+      if (!landscape) return;
+      const compact = window.matchMedia("(orientation: landscape) and (max-height: 600px)").matches;
+      landscape.setAttribute("viewBox", compact ? "0 220 1200 480" : "0 0 1200 700");
+      landscape.setAttribute("preserveAspectRatio", compact ? "none" : "xMidYMid slice");
+    }
+
     function showPage(pageId, updateHash = true) {
       if (!pages.includes(pageId)) pageId = "home";
       currentPage = pageId;
+      document.body.classList.toggle("picnic-view", pageId === "picnic");
+      syncPicnicViewport();
       const index = pages.indexOf(pageId);
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const draggingCharacter = activeHouseDrag?.kind === "character" || activeRoamDrag || activeWorldSlimeDrag;
@@ -4464,6 +4509,7 @@ You are loved more than this little game could ever hold.</p>
       $("#auth-button").textContent = copyText(user ? "authSignOut" : "authSignIn", user ? "Sign out" : "Sign in");
       $("#access-button").textContent = copyText("hudAccess", "Access");
       $("#photo-viewer-title").textContent = copyText("photoViewerTitle", "Gallery memory");
+      updatePicnicUi();
       updateChatUi();
       renderGeneratedCopy();
       document.title = documentTitle(currentPage);
@@ -6956,6 +7002,74 @@ You are loved more than this little game could ever hold.</p>
       });
     }
 
+    function picnicTogetherX(person) {
+      return person.key === "girl" || person.gender === "girl" ? .48 : .56;
+    }
+
+    function hasPicnicTogetherPlacement() {
+      const people = visibleCharacters();
+      return people.length === 2 && people.every((person) => {
+        const worldX = Number(person.worldX);
+        const legacyX = person.key === "girl" || person.gender === "girl" ? .36 : .64;
+        return characterWorldPage(person) === "picnic"
+          && person.zone === "yard"
+          && (Math.abs(worldX - picnicTogetherX(person)) < .002 || Math.abs(worldX - legacyX) < .002);
+      });
+    }
+
+    function setPicnicSeated(seated, rebuild = true) {
+      picnicSeated = seated;
+      picnicLean = seated;
+      if (seated && cafeSeated) setCafeSeated(false, false);
+      const picnicIndex = pages.indexOf("picnic");
+      visibleCharacters().forEach((person) => {
+        const motion = roamMotion.get(person.id);
+        if (!motion) return;
+        if (seated) {
+          motion.x = picnicIndex + picnicTogetherX(person);
+          motion.targetX = motion.x;
+          motion.targetPage = "picnic";
+          motion.vx = 0;
+          motion.jumpY = 0;
+          motion.jumpV = 0;
+          motion.onGround = true;
+          motion.nextPlan = performance.now() + 1400;
+          motion.nextHop = performance.now() + 3200;
+        }
+        if (!rebuild) applyRoamMotion(motion);
+      });
+      if (rebuild) renderRoamingCharacters();
+      updatePicnicUi();
+    }
+
+    function updatePicnicUi() {
+      const button = $("#picnic-lean");
+      if (!button) return;
+      button.disabled = !picnicSeated;
+      button.setAttribute("aria-pressed", String(picnicLean));
+      const label = button.querySelector("span");
+      if (label) label.textContent = copyText(picnicLean ? "picnicLeanOffButton" : "picnicLeanButton", picnicLean ? "Sit close" : "Lean together");
+    }
+
+    function togglePicnicLean() {
+      if (!picnicSeated) {
+        showToast(copyText("picnicLeanNeedPicnic", "Choose Picnic together first."));
+        return;
+      }
+      picnicLean = !picnicLean;
+      visibleCharacters().forEach((person) => {
+        const motion = roamMotion.get(person.id);
+        if (motion) applyRoamMotion(motion);
+      });
+      updatePicnicUi();
+      showToast(copyText(picnicLean ? "picnicLeanOn" : "picnicLeanOff", picnicLean ? "Shane is leaning on Zyrell's shoulder." : "Shane and Zyrell are sitting close."));
+    }
+
+    function syncPicnicSeatState() {
+      const seated = charactersLoaded && hasPicnicTogetherPlacement();
+      if (picnicSeated !== seated) setPicnicSeated(seated, false);
+    }
+
     function applyRoamMotion(motion) {
       if (!motion.element) return;
       const pageCount = pages.length;
@@ -6978,6 +7092,8 @@ You are loved more than this little game could ever hold.</p>
       if (motion.element.classList.contains("walking") !== walking) motion.element.classList.toggle("walking", walking);
       if (motion.element.classList.contains("cafe-seated") !== cafe) motion.element.classList.toggle("cafe-seated", cafe);
       if (motion.element.classList.contains("picnic-seated") !== picnic) motion.element.classList.toggle("picnic-seated", picnic);
+      const leaning = picnic && picnicSeated && picnicLean && (motion.person?.key === "girl" || motion.person?.gender === "girl");
+      if (motion.element.classList.contains("picnic-lean") !== leaning) motion.element.classList.toggle("picnic-lean", leaning);
       if (picnic) {
         motion.element.style.top = "82%";
         motion.element.style.bottom = "auto";
@@ -7072,7 +7188,7 @@ You are loved more than this little game could ever hold.</p>
           motion.nextPlan = time + 1800;
           motion.nextHop = time + 3200;
         }
-        if (cafeSeated) {
+        if (cafeSeated || picnicSeated) {
           applyRoamMotion(motion);
           return;
         }
@@ -7206,10 +7322,13 @@ You are loved more than this little game could ever hold.</p>
         return;
       }
       const results = await Promise.all(people.map((person) => {
-        const worldX = person.key === "girl" || person.gender === "girl" ? .36 : .64;
+        const worldX = picnicTogetherX(person);
         return persistCharacterPlacement(person, { zone: "yard", x: .34, y: .22, worldPage: "picnic", worldX }, true);
       }));
-      if (results.every(Boolean)) showToast(copyText("picnicTogetherReady", "Shane and Zyrell are enjoying the mountain picnic."));
+      if (results.every(Boolean)) {
+        setPicnicSeated(true);
+        showToast(copyText("picnicTogetherReady", "Shane and Zyrell are enjoying the mountain picnic."));
+      }
     }
 
     function startRoamDrag(person, event) {
@@ -7220,6 +7339,7 @@ You are loved more than this little game could ever hold.</p>
       }
       event.preventDefault();
       if (cafeSeated) setCafeSeated(false, false);
+      if (picnicSeated) setPicnicSeated(false, false);
       const motion = ensureRoamMotion(person);
       const element = event.currentTarget;
       const rect = element.getBoundingClientRect();
@@ -8253,6 +8373,7 @@ You are loved more than this little game could ever hold.</p>
     }
 
     function setCafeSeated(seated, rebuild = true) {
+      if (seated && picnicSeated) setPicnicSeated(false, false);
       cafeSeated = seated;
       if (!seated) {
         cafeDrinkAnimationUntil = 0;
@@ -10095,6 +10216,7 @@ You are loved more than this little game could ever hold.</p>
         fs.onSnapshot(fs.collection(db, "characters"), (snapshot) => {
           characters = snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
           charactersLoaded = true;
+          syncPicnicSeatState();
           renderCharacters();
           renderRoamingCharacters();
           updateWardrobe();
@@ -10217,6 +10339,7 @@ You are loved more than this little game could ever hold.</p>
     window.addEventListener("resize", () => {
       const index = pages.indexOf(currentPage);
       viewport.scrollTo({ left: index * viewport.clientWidth, behavior: "auto" });
+      syncPicnicViewport();
       if (cafeSeated) syncCafeSeatPositions();
       syncPersistentTrash();
     });
@@ -10346,6 +10469,7 @@ You are loved more than this little game could ever hold.</p>
     $("#cloud-compose").addEventListener("click", openCloudComposer);
     $("#cloud-form").addEventListener("submit", sendCloudMessage);
     $("#picnic-together").addEventListener("click", picnicTogether);
+    $("#picnic-lean").addEventListener("click", togglePicnicLean);
     $("#copy-uid").addEventListener("click", async () => {
       try {
         await navigator.clipboard.writeText(user.uid);
